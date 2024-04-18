@@ -1,0 +1,16 @@
+{
+    "test Task": "test Task",
+    "Login_successful": "Login successful!",
+    "login_failed": "Login failed. Please check your credentials.",
+    "lets_sign_you_in": "Let's sign you in.",
+    "msg_welcome":"Welcome back. \nYou've been missed!",
+    "sign_up_now":"Sign Up Now",
+    "msg_singup":"Welcome. \nYou will be enjoy!",
+    "dont_have_an_account": "Don't have an account?",
+    "have_an_account": "have an account?",
+    "username":"Username",
+    "password":"Password",
+    "register":"Register",
+    "login":"Login",
+    "home_msg":"Welcome to the Home Screen!"
+  }

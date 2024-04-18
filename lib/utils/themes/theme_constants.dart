@@ -124,22 +124,20 @@ class AppTheme {
         scaffoldBackgroundColor: AppColors.scaffoldBackgrounDark,
         canvasColor: AppColors.cardColorDark,
         inputDecorationTheme: InputDecorationTheme(
-          enabledBorder: OutlineInputBorder(
-            borderRadius: AppDefaults.borderRadius,
-            borderSide: BorderSide.none,
-          ),
+          hintStyle: const TextStyle(color: Colors.white),
           focusedBorder: OutlineInputBorder(
-            borderRadius: AppDefaults.borderRadius,
-            borderSide: const BorderSide(
-              color: AppColors.primary,
-            ),
+            borderRadius: BorderRadius.circular(17.0),
+            borderSide: const BorderSide(color: Colors.grey),
           ),
-          fillColor: AppColors.cardColorDark,
-          filled: true,
-          floatingLabelBehavior: FloatingLabelBehavior.never,
-          labelStyle: const TextStyle(color: AppColors.placeholder),
-          iconColor: AppColors.placeholder,
-          hintStyle: const TextStyle(color: AppColors.placeholder),
+          enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(17.0),
+              borderSide: const BorderSide(color: Colors.grey)),
+          labelStyle: const TextStyle(color: AppColors.greyedTextColor),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 24.0, horizontal: 24.0),
         ),
         iconTheme: const IconThemeData(color: AppColors.primary),
         listTileTheme: const ListTileThemeData(iconColor: AppColors.primary),

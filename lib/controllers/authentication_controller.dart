@@ -5,7 +5,7 @@ class AuthenticationController {
 
   AuthenticationController();
 
-  Future<UserCredential> signUpWithEmailAndPassword(
+  Future<UserCredential?> signUpWithEmailAndPassword(
       String email, String password) async {
     try {
       return await _auth.createUserWithEmailAndPassword(
@@ -14,20 +14,7 @@ class AuthenticationController {
       );
     } catch (e) {
       print("Error signing up: $e");
-      rethrow;
-    }
-  }
-
-  Future<UserCredential> signInWithEmailAndPassword(
-      String email, String password) async {
-    try {
-      return await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-    } catch (e) {
-      print("Error signing in: $e");
-      rethrow;
+      return null;
     }
   }
 
@@ -37,6 +24,19 @@ class AuthenticationController {
     } catch (e) {
       print("Error signing out: $e");
       throw e;
+    }
+  }
+
+  Future<UserCredential?> signInWithEmailAndPassword(
+      String email, String password) async {
+    try {
+      return await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+    } on FirebaseAuthException catch (e) {
+      print("Error signing out: $e");
+      return null; // Return null if authentication fails
     }
   }
 }

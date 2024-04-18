@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-abstract class SnackMixin {
+mixin SnackMixin {
   void showError(BuildContext context, String e) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

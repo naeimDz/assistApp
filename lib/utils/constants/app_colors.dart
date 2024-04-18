@@ -7,6 +7,9 @@ class AppColors {
   static const Color secondary = Color(0xFF00868C);
   static const Color whiteText = Color.fromARGB(252, 251, 247, 255);
   static const Color blackText = Color.fromARGB(252, 72, 69, 84);
+  static const Color greyedTextColor = Color(0xFF71717C);
+  static const Color darkColor = Color(0xFF191720);
+  static const Color borderColor = Color(0xFF585761);
   // Others Color
   static const Color ascaffoldBackground = Color.fromRGBO(238, 237, 242, 1);
   static const Color scaffoldBackground = Color(0xff00868c);
