@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "459844940177",
+    "project_id": "appstartup-383e8",
+    "storage_bucket": "appstartup-383e8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:459844940177:android:7834be9a041997f6fa6a30",
+        "android_client_info": {
+          "package_name": "com.kudllabs.assistantstartup.assistantsapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1U3imuP1nGL08xtzPtImnUNywaoj-Cr4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
