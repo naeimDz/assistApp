@@ -1,3 +1,5 @@
+import 'package:assistantsapp/utils/routes/route_name_strings.dart';
+
 import '../../controllers/authentication_controller.dart';
 import '../../mixins/snack_mixin.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +10,6 @@ import 'components/msg_welcome.dart';
 import 'signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
-  static const String logInScreen = 'LogIn';
   const LoginScreen({super.key});
   @override
   LoginScreenState createState() => LoginScreenState();
@@ -77,7 +78,7 @@ class LoginScreenState extends State<LoginScreen> with SnackMixin {
                     if (res != null && mounted) {
                       showSuccess(context, AppStrings.loginSuccessMessage.tr());
                       Navigator.pushReplacementNamed(
-                          context, HomeScreen.homeScreen);
+                          context, RouteNameStrings.homeScreen);
                     } else {
                       showError(context, AppStrings.loginErrorMessage.tr());
                     }

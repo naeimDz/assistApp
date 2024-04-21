@@ -1,3 +1,5 @@
+import 'package:assistantsapp/utils/routes/route_name_strings.dart';
+
 import '../../controllers/authentication_controller.dart';
 import '../../mixins/snack_mixin.dart';
 import 'package:flutter/material.dart';
@@ -53,7 +55,7 @@ class SingupScreenState extends State<SingupScreen> with SnackMixin {
               ),
               GestureDetector(
                 onTap: () =>
-                    Navigator.popAndPushNamed(context, LoginScreen.logInScreen),
+                    Navigator.popAndPushNamed(context, RouteNameStrings.logIn),
                 child: Text(" Login".tr()),
               ),
             ],
@@ -80,7 +82,7 @@ class SingupScreenState extends State<SingupScreen> with SnackMixin {
                   if (res != null && mounted) {
                     showSuccess(context, AppStrings.loginSuccessMessage.tr());
                     Navigator.pushReplacementNamed(
-                        context, HomeScreen.homeScreen);
+                        context, RouteNameStrings.homeScreen);
                   } else {
                     showError(context, AppStrings.loginErrorMessage.tr());
                   }
