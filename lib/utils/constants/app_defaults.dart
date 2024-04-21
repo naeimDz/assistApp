@@ -28,6 +28,12 @@ class AppDefaults {
       offset: const Offset(0, 2),
       color: Colors.black.withOpacity(0.04),
     ),
+    BoxShadow(
+      color: Colors.grey.withOpacity(0.2),
+      spreadRadius: 2,
+      blurRadius: 8,
+      offset: Offset(0, 0),
+    ),
   ];
 
   static Duration duration = const Duration(milliseconds: 300);

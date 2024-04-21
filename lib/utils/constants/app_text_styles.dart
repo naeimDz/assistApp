@@ -1,8 +1,20 @@
 import 'package:flutter/material.dart';
 
+/// Class containing commonly used text styles for the app.
 class AppTextStyles {
   static const String fontFamily = 'Dubai';
 
+  // Title Text Styles
+  static const TextStyle title = TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 24,
+  );
+
+  static TextStyle titleWithOpacity(bool opacity) => title.copyWith(
+        color: opacity ? Colors.grey[400] : Colors.black,
+      );
+
+  // Heading Text Styles
   static const TextStyle h1 = TextStyle(
     fontFamily: fontFamily,
     fontSize: 40,
@@ -32,6 +44,7 @@ class AppTextStyles {
     fontWeight: FontWeight.w700,
   );
 
+  // Body Text Styles
   static const TextStyle body = TextStyle(
     fontFamily: fontFamily,
     fontSize: 16,
@@ -40,15 +53,15 @@ class AppTextStyles {
   static const TextStyle bodySm = TextStyle(
     fontFamily: fontFamily,
     fontSize: 14,
-
   );
 
   static const TextStyle bodyLg = TextStyle(
     fontFamily: fontFamily,
-    fontWeight: FontWeight.w400,
     fontSize: 18,
+    fontWeight: FontWeight.w400,
   );
 
+  // Caption Text Style
   static const TextStyle caption = TextStyle(
     fontFamily: fontFamily,
     fontSize: 10,
