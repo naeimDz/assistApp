@@ -12,7 +12,7 @@ class AppTheme {
       textTheme: ThemeData.light()
           .textTheme
           .apply(fontFamily: AppTextStyles.fontFamily),
-      scaffoldBackgroundColor: AppColors.ascaffoldBackground,
+      scaffoldBackgroundColor: AppColors.scaffoldBackground,
       cardColor: AppColors.cardColor,
       canvasColor: AppColors.cardColor,
       listTileTheme: const ListTileThemeData(
@@ -50,7 +50,7 @@ class AppTheme {
         floatingLabelBehavior: FloatingLabelBehavior.never,
       ),
       appBarTheme: const AppBarTheme(
-          backgroundColor: AppColors.ascaffoldBackground,
+          backgroundColor: AppColors.scaffoldBackground,
           elevation: 0,
           systemOverlayStyle: SystemUiOverlayStyle(
             statusBarBrightness: Brightness.light,

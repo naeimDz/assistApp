@@ -43,18 +43,18 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         body: HeaderHome(),
         bottomNavigationBar: BottomNavigationBar(
-          items: [
+          items: const [
             BottomNavigationBarItem(
-              icon: Icon(Icons.history_edu),
-              label: 'Category 1',
+              icon: Icon(Icons.home_filled),
+              label: 'Home',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.category),
-              label: 'Category 2',
+              icon: Icon(Icons.notifications_active),
+              label: 'Notification',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.category),
-              label: 'Category 3',
+              icon: Icon(Icons.settings),
+              label: 'settings',
             ),
           ],
           currentIndex: _selectedIndex,
