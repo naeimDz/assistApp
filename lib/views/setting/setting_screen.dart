@@ -1,6 +1,12 @@
 import 'package:assistantsapp/utils/constants/app_colors.dart';
+import 'package:assistantsapp/utils/routes/route_name_strings.dart';
 import 'package:assistantsapp/views/sharedwidgets/headline_with_row.dart';
 import 'package:flutter/material.dart';
+
+import '../profile/user/user_profile_view.dart';
+import '../profile_detail/profile_detail_screen.dart';
+import '../profile_detail/profile_detail_view.dart';
+import '../testview.dart';
 
 class SettingScreen extends StatelessWidget {
   const SettingScreen({super.key});
@@ -22,21 +28,26 @@ class SettingScreen extends StatelessWidget {
               title: const Text('personal data'),
               leading: const Icon(Icons.person),
               onTap: () {
-                // Navigate to edit profile screen
+                Navigator.pushNamed(
+                    context, RouteNameStrings.assistantProfileScreen);
               },
             ),
             ListTile(
               title: Text('Edit Password'),
               leading: Icon(Icons.password),
               onTap: () {
-                // Navigate to edit profile screen
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ProfileDetailScreen()));
               },
             ),
             ListTile(
               title: const Text('im a assistant'),
               leading: const Icon(Icons.assistant),
               onTap: () {
-                // Navigate to edit profile screen
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => TestView()));
               },
             ),
             Divider(),
@@ -77,6 +88,14 @@ class SettingScreen extends StatelessWidget {
             ListTile(
               title: Text('terme of use'),
               leading: Icon(Icons.data_usage),
+              onTap: () {
+                // Navigate to edit profile screen
+              },
+            ),
+            ListTile(
+              title: Text("Terms and Conditions"),
+              subtitle: Text("legal, terms and conditions"),
+              leading: const Icon(Icons.file_copy),
               onTap: () {
                 // Navigate to edit profile screen
               },

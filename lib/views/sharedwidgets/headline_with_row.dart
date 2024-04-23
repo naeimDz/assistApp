@@ -1,8 +1,7 @@
-import 'package:assistantsapp/utils/constants/app_colors.dart';
-import 'package:assistantsapp/utils/constants/app_defaults.dart';
-import 'package:assistantsapp/utils/constants/app_text_styles.dart';
-import 'package:assistantsapp/utils/constants/sizedbox_const.dart';
 import 'package:flutter/material.dart';
+import '../../utils/constants/app_defaults.dart';
+import '../../utils/constants/app_text_styles.dart';
+import '../../utils/constants/sizedbox_const.dart';
 
 class HeadlineRow extends StatelessWidget {
   const HeadlineRow({
