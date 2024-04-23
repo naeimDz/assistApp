@@ -1,17 +1,52 @@
-import 'package:assistantsapp/controllers/authentication_controller.dart';
+//import 'package:assistantsapp/controllers/authentication_controller.dart';
 import 'package:assistantsapp/views/home/widgets/header.dart';
 import 'package:flutter/material.dart';
-import '../auth_screen/login_screen.dart';
+import '../../utils/routes/route_name_strings.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        leading: const Icon(
+          Icons.logo_dev,
+          size: 50,
+          color: Colors.pink,
+        ),
+        leadingWidth: 100,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.exit_to_app_rounded),
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, RouteNameStrings.logIn);
+              //_authController.signOut();
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.edit),
+            onPressed: () {
+              Navigator.pushNamed(context, RouteNameStrings.settingScreen);
+            },
+          ),
+        ],
+        centerTitle: true,
+      ),
+      body: HeaderHome(),
+      bottomNavigationBar: const MyBottomNavigatiobBar(),
+    );
+  }
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  final AuthenticationController _authController = AuthenticationController();
+class MyBottomNavigatiobBar extends StatefulWidget {
+  const MyBottomNavigatiobBar({super.key});
+
+  @override
+  State<MyBottomNavigatiobBar> createState() => _MyBottomNavigatiobBarState();
+}
+
+class _MyBottomNavigatiobBarState extends State<MyBottomNavigatiobBar> {
   int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
@@ -22,45 +57,23 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        drawer: const Drawer(),
-        appBar: AppBar(
-          actions: [
-            IconButton(
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            LoginScreen()), // Navigate to login screen
-                  );
-                  _authController.signOut();
-                },
-                icon: Icon(Icons.exit_to_app_rounded))
-          ],
-          centerTitle: true,
+    return BottomNavigationBar(
+      items: const [
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home_filled),
+          label: 'Home',
         ),
-        body: HeaderHome(),
-        bottomNavigationBar: BottomNavigationBar(
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home_filled),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.notifications_active),
-              label: 'Notification',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.settings),
-              label: 'settings',
-            ),
-          ],
-          currentIndex: _selectedIndex,
-          onTap: _onItemTapped,
+        BottomNavigationBarItem(
+          icon: Icon(Icons.notifications_active),
+          label: 'Notification',
         ),
-      ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.settings),
+          label: 'settings',
+        ),
+      ],
+      currentIndex: _selectedIndex,
+      onTap: _onItemTapped,
     );
   }
 }

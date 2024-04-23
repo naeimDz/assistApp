@@ -7,8 +7,8 @@ class Provider {
   String email;
   String firstName;
   String lastName;
-  String latitude;
-  String longitude;
+  //String latitude;
+  //String longitude;
   String city;
   String country;
   int postalCode;
@@ -28,8 +28,8 @@ class Provider {
     required this.email,
     this.firstName = "",
     this.lastName = "",
-    this.latitude = "",
-    this.longitude = "",
+    // this.latitude = "",
+    //this.longitude = "",
     this.city = "",
     this.country = "",
     this.postalCode = 0,
@@ -53,8 +53,8 @@ class Provider {
       email: data['email'],
       firstName: data['firstName'],
       lastName: data['lastName'],
-      latitude: data['latitude'],
-      longitude: data['longitude'],
+      //latitude: data['latitude'],
+      //longitude: data['longitude'],
       city: data['city'],
       country: data['country'],
       postalCode: data['postalCode'],
@@ -77,8 +77,8 @@ class Provider {
       email: json['email'],
       firstName: json['firstName'],
       lastName: json['lastName'],
-      latitude: json['latitude'],
-      longitude: json['longitude'],
+      //latitude: json['latitude'],
+      //longitude: json['longitude'],
       city: json['city'],
       country: json['country'],
       postalCode: json['postalCode'],
@@ -104,8 +104,8 @@ class Provider {
       'email': email,
       'firstName': firstName,
       'lastName': lastName,
-      'latitude': latitude,
-      'longitude': longitude,
+      //'latitude': latitude,
+      //'longitude': longitude,
       'city': city,
       'country': country,
       'postalCode': postalCode,
