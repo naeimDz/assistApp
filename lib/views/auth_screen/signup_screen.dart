@@ -7,7 +7,6 @@ import '../../utils/constants/app_strings.dart';
 import 'components/msg_welcome.dart';
 
 class SingupScreen extends StatefulWidget {
-  static const String singUpScreen = 'SingUp';
   const SingupScreen({super.key});
   @override
   SingupScreenState createState() => SingupScreenState();

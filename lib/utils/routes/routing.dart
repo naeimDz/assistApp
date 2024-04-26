@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 
 import '../../views/auth_screen/login_screen.dart';
 import '../../views/auth_screen/signup_screen.dart';
-import '../../views/profile/assistant/assistant_profile_screen.dart';
+import '../../views/profile_detail/profile_detail_screen.dart';
+import '../../views/profile_edit/user/user_profile_view.dart';
 import '../../views/setting/setting_screen.dart';
 
 class Routes {
@@ -18,8 +19,10 @@ class Routes {
         return _buildRoute(const SingupScreen());
       case RouteNameStrings.settingScreen:
         return _buildRoute(const SettingScreen());
-      case RouteNameStrings.assistantProfileScreen:
-        return _buildRoute(const AssistantProfileScreen());
+      case RouteNameStrings.profileDetailScreen:
+        return _buildRoute(const ProfileDetailScreen());
+      case RouteNameStrings.editProfileView:
+        return _buildRoute(EditProfileView());
       default:
         return _buildRoute(const HomeScreen());
     }

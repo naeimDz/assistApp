@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import '../../utils/constants/app_strings.dart';
 import 'components/msg_welcome.dart';
-import 'signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -50,7 +49,7 @@ class LoginScreenState extends State<LoginScreen> with SnackMixin {
                 ),
                 GestureDetector(
                   onTap: () => Navigator.popAndPushNamed(
-                      context, SingupScreen.singUpScreen),
+                      context, RouteNameStrings.signUp),
                   child: Text(" Register".tr()),
                 ),
               ],

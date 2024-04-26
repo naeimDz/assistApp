@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Provider {
+class ServiceProvider {
   String id;
   String username;
   String password;
@@ -21,7 +21,7 @@ class Provider {
   int phoneNumber;
   String imageUrl;
 
-  Provider({
+  ServiceProvider({
     required this.id,
     required this.username,
     required this.password,
@@ -43,10 +43,10 @@ class Provider {
     this.imageUrl = "",
   });
 
-  factory Provider.fromFirestore(DocumentSnapshot doc) {
+  factory ServiceProvider.fromFirestore(DocumentSnapshot doc) {
     Map<String, dynamic> data = (doc.data() as Map<String, dynamic>);
 
-    return Provider(
+    return ServiceProvider(
       id: doc.id,
       username: data['username'],
       password: data['password'],
@@ -69,8 +69,8 @@ class Provider {
     );
   }
 
-  factory Provider.fromJson(Map<String, dynamic> json) {
-    return Provider(
+  factory ServiceProvider.fromJson(Map<String, dynamic> json) {
+    return ServiceProvider(
       id: json['id'],
       username: json['username'],
       password: json['password'],

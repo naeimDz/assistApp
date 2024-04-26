@@ -3,6 +3,8 @@ import 'package:assistantsapp/utils/constants/app_colors.dart';
 import 'package:assistantsapp/utils/constants/sizedbox_const.dart';
 import 'package:assistantsapp/views/home/widgets/assistant_card.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../../providers/list_assistant.dart';
 import '../../../utils/constants/app_defaults.dart';
 import '../../../utils/constants/app_text_styles.dart';
 
@@ -60,49 +62,54 @@ class _HeaderHomeState extends State<HeaderHome> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return ListView(
       physics: const BouncingScrollPhysics(),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(bottom: 8),
-                  child: Text("hello, Naeim", style: AppTextStyles.h1),
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: EdgeInsets.only(bottom: 8),
+                child: Text("hello, Naeim", style: AppTextStyles.h1),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 16),
+                child: Text(
+                  "lets find your assistant",
+                  style: AppTextStyles.h4,
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(bottom: 16),
-                  child: Text(
-                    "lets find your assistant",
-                    style: AppTextStyles.h4,
+              ),
+              AppSizedBox.h20,
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: List.generate(
+                    3, // Number of options
+                    (index) =>
+                        option(ServiceType.values.elementAt(index).name, index),
                   ),
                 ),
-                AppSizedBox.h20,
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: List.generate(
-                      3, // Number of options
-                      (index) => option(
-                          ServiceType.values.elementAt(index).name, index),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-          SizedBox(height: 24),
-          AssistantCard(),
-          AssistantCard(),
-          AssistantCard(),
-          AssistantCard(),
-          AssistantCard(),
-          AssistantCard(),
-        ],
-      ),
+        ),
+        AppSizedBox.h15,
+        Consumer<ListAssistant>(builder: (context, listAssistant, child) {
+          return Wrap(
+            // Use Wrap instead of Row for better multiline behavior
+            children: List.generate(
+              listAssistant.listAssistants
+                  .length, // Define a variable for number of cards
+              (index) => AssistantCard(
+                serviceProvider: listAssistant.listAssistants[index],
+                // Pass any properties needed by the AssistantCard widget here
+              ),
+            ),
+          );
+        }),
+      ],
     );
   }
 }
