@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import '../../views/auth_screen/login_screen.dart';
 import '../../views/auth_screen/signup_screen.dart';
 import '../../views/profile_detail/profile_detail_screen.dart';
-import '../../views/profile_edit/user/user_profile_view.dart';
+import '../../views/setting/profile_edit/user/user_profile_view.dart';
 import '../../views/setting/setting_screen.dart';
 
 class Routes {

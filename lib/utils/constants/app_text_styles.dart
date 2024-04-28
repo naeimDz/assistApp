@@ -1,8 +1,25 @@
 import 'package:flutter/material.dart';
 
+import 'screen_ratio.dart';
+
 /// Class containing commonly used text styles for the app.
 class AppTextStyles {
   static const String fontFamily = 'Dubai';
+
+  static TextStyle pageHeaderBigTextStyle(
+    BuildContext context, {
+    Color? color,
+    bool isBold = false,
+    bool hasUnderline = false,
+  }) =>
+      TextStyle(
+        fontSize: 34 * (ScreenRatio.fontRatio == 0 ? 1 : ScreenRatio.fontRatio),
+        letterSpacing: 0.41 * ScreenRatio.widthRatio,
+        fontWeight: isBold ? FontWeight.w800 : FontWeight.normal,
+        decoration:
+            hasUnderline ? TextDecoration.underline : TextDecoration.none,
+        color: color ?? Theme.of(context).textTheme.bodyMedium!.color,
+      );
 
   // Title Text Styles
   static const TextStyle title = TextStyle(

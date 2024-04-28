@@ -1,7 +1,9 @@
+import 'package:assistantsapp/providers/authentication_provider.dart';
 import 'package:assistantsapp/utils/routes/route_name_strings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'controllers/authentication_controller.dart';
 import 'providers/bottom_bar_index.dart';
 import 'providers/list_assistant.dart';
 import 'providers/user_provider.dart';
@@ -17,6 +19,9 @@ void main() async {
     providers: [
       ChangeNotifierProvider(create: (context) => BottomBarIndex()),
       ChangeNotifierProvider(create: (context) => UserProvider()),
+      ChangeNotifierProvider(
+        create: (context) => AuthenticationProvider(AuthenticationController()),
+      ),
       ChangeNotifierProvider(
         create: (context) => ListAssistant(),
       )

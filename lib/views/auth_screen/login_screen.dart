@@ -1,8 +1,9 @@
 import 'package:assistantsapp/utils/routes/route_name_strings.dart';
-import '../../controllers/authentication_controller.dart';
+import 'package:provider/provider.dart';
 import '../../mixins/snack_mixin.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import '../../providers/authentication_provider.dart';
 import '../../utils/constants/app_strings.dart';
 import 'components/msg_welcome.dart';
 
@@ -16,7 +17,6 @@ class LoginScreenState extends State<LoginScreen> with SnackMixin {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final AuthenticationController _authController = AuthenticationController();
   bool obscureText = true;
   void toggleObscureText() {
     setState(() {
@@ -69,9 +69,10 @@ class LoginScreenState extends State<LoginScreen> with SnackMixin {
                   if (_formKey.currentState!.validate()) {
                     String email = _emailController.text.trim();
                     String password = _passwordController.text.trim();
-                    var res = await _authController.signInWithEmailAndPassword(
-                        email, password);
-                    print(res);
+                    var res = await Provider.of<AuthenticationProvider>(context,
+                            listen: false)
+                        .signIn(email, password);
+
                     if (res != null && mounted) {
                       showSuccess(context, AppStrings.loginSuccessMessage.tr());
                       Navigator.pushReplacementNamed(

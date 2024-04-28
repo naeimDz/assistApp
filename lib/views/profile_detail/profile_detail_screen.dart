@@ -1,61 +1,67 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../providers/list_assistant.dart';
 
 class ProfileDetailScreen extends StatelessWidget {
   const ProfileDetailScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Access the selected assistant from the provider
+    final assistant = Provider.of<ListAssistant>(context).currentAssistant;
     return Scaffold(
       appBar: AppBar(
         title: Text('Assistant Profile'),
       ),
-      body: const SingleChildScrollView(
-        padding: EdgeInsets.all(20),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(
+            const Center(
               child: CircleAvatar(
                 radius: 60,
                 // Placeholder image
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Text(
-              'John Doe',
+              "${assistant!.firstName} ${assistant!.lastName}",
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             Text(
-              'Personal Assistant',
-              style: TextStyle(fontSize: 18, color: Colors.grey),
+              assistant.specialitiesList[0],
+              style: const TextStyle(fontSize: 18, color: Colors.grey),
             ),
-            SizedBox(height: 20),
-            Text(
+            const SizedBox(height: 20),
+            const Text(
               'Description:',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 10),
-            Text(
+            const SizedBox(height: 10),
+            const Text(
               'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce suscipit massa id velit ultrices, vitae lacinia mauris volutpat.',
               style: TextStyle(fontSize: 16),
             ),
-            SizedBox(height: 20),
-            Text(
+            const SizedBox(height: 20),
+            const Text(
               'Contact Information:',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             ListTile(
-              leading: Icon(Icons.phone),
-              title: Text('+1 234 567 890'),
+              leading: const Icon(Icons.phone),
+              title: Text(assistant.phoneNumber.toString()),
             ),
             ListTile(
-              leading: Icon(Icons.email),
-              title: Text('john.doe@example.com'),
+              leading: const Icon(Icons.email),
+              title: Text(assistant.email),
             ),
             ListTile(
               leading: Icon(Icons.location_on),
-              title: Text('123 Main St, City, Country'),
+              title: Text(
+                  '${assistant?.address ?? ''}, ${assistant?.city ?? ''}, ${assistant?.country ?? ''}'),
             ),
           ],
         ),

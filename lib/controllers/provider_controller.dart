@@ -7,16 +7,14 @@ class ServiceProviderController {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
-  Future<void> addServiceProvider(ServiceProvider ServiceProvider) async {
+  Future<void> createUserProfile(String userId, String email) async {
     try {
-      await _db.collection('ServiceProviders').doc(ServiceProvider.id).set({
-        'uid': ServiceProvider.id,
-        'email': ServiceProvider.email,
-        'name': ServiceProvider.username,
-        'phoneNumber': ServiceProvider.phoneNumber,
+      await _db.collection('providers').doc(userId).set({
+        'email': email,
+        // Add additional user data here
       });
     } catch (e) {
-      print("Error adding ServiceProvider: $e");
+      print("Error creating user profile: $e");
       throw e;
     }
   }
@@ -62,11 +60,10 @@ class ServiceProviderController {
 
   Future<List<ServiceProvider>> getAllServiceProviders() async {
     try {
-      QuerySnapshot querySnapshot =
-          await _db.collection('ServiceProviders').get();
+      QuerySnapshot querySnapshot = await _db.collection('providers').get();
+
       return querySnapshot.docs
-          .map((doc) =>
-              ServiceProvider.fromJson(doc.data() as Map<String, dynamic>))
+          .map((doc) => ServiceProvider.fromFirestore(doc))
           .toList();
     } catch (e) {
       print('Error getting all ServiceProviders: $e');

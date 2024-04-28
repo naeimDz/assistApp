@@ -1,17 +1,20 @@
+import 'package:assistantsapp/controllers/provider_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthenticationController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
+  final ServiceProviderController _serviceProviderController =
+      ServiceProviderController();
   AuthenticationController();
 
   Future<UserCredential?> signUpWithEmailAndPassword(
       String email, String password) async {
     try {
-      return await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+      final userCredential = await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      await _serviceProviderController.createUserProfile(
+          userCredential.user!.uid, email);
+      return userCredential;
     } catch (e) {
       print("Error signing up: $e");
       return null;

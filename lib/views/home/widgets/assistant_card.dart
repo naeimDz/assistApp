@@ -3,10 +3,10 @@ import 'package:assistantsapp/utils/constants/app_defaults.dart';
 import 'package:assistantsapp/utils/constants/sizedbox_const.dart';
 import 'package:assistantsapp/utils/routes/route_name_strings.dart';
 import 'package:flutter/material.dart';
-//import 'package:provider/provider.dart';
+import 'package:provider/provider.dart';
 
 import '../../../models/assistant.dart';
-//import '../../../providers/list_assistant.dart';
+import '../../../providers/list_assistant.dart';
 
 class AssistantCard extends StatelessWidget {
   final ServiceProvider serviceProvider;
@@ -14,18 +14,19 @@ class AssistantCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final currentAssistant = Provider.of<ListAssistant>(context).currentAssistant;
-
     return GestureDetector(
-      onTap: () =>
-          Navigator.pushNamed(context, RouteNameStrings.profileDetailScreen),
+      onTap: () {
+        Provider.of<ListAssistant>(context, listen: false)
+            .setCurrentAssistant(serviceProvider);
+        Navigator.pushNamed(context, RouteNameStrings.profileDetailScreen);
+      },
       child: Container(
         margin: const EdgeInsets.all(AppDefaults.margin),
         decoration: BoxDecoration(
           boxShadow: AppDefaults.boxShadow,
         ),
         child: Container(
-          height: 150,
+          height: 170,
           padding: const EdgeInsets.all(AppDefaults.padding),
           decoration: BoxDecoration(
               color: AppColors.cardColor,
@@ -36,6 +37,7 @@ class AssistantCard extends StatelessWidget {
               Row(
                 children: [
                   const CircleAvatar(
+                    radius: 40,
                     backgroundColor: AppColors.placeholder,
                   ),
                   AppSizedBox.w15,

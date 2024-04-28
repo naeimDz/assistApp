@@ -1,8 +1,10 @@
 //import 'package:assistantsapp/controllers/authentication_controller.dart';
 import 'package:assistantsapp/views/home/widgets/header.dart';
 import 'package:assistantsapp/views/setting/setting_screen.dart';
+import 'package:assistantsapp/views/testview.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../providers/authentication_provider.dart';
 import '../../providers/bottom_bar_index.dart';
 //import '../../providers/user_provider.dart';
 import '../../utils/routes/route_name_strings.dart';
@@ -12,9 +14,8 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //UserProvider userProvider = Provider.of<UserProvider>(context);
-    print("home screen");
     return Scaffold(
+      backgroundColor: Colors.brown[100],
       appBar: AppBar(
         leading: const Icon(
           Icons.logo_dev,
@@ -23,13 +24,16 @@ class HomeScreen extends StatelessWidget {
         ),
         leadingWidth: 100,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.exit_to_app_rounded),
-            onPressed: () {
-              Navigator.pushReplacementNamed(context, RouteNameStrings.logIn);
-              //_authController.signOut();
-            },
-          ),
+          Consumer<AuthenticationProvider>(builder: (context, authProvider, _) {
+            return IconButton(
+              icon: const Icon(Icons.exit_to_app_rounded),
+              onPressed: () {
+                //  _authController.signOut();
+                authProvider.signOut();
+                Navigator.pushReplacementNamed(context, RouteNameStrings.logIn);
+              },
+            );
+          }),
         ],
         centerTitle: true,
       ),
@@ -49,7 +53,7 @@ class PageRouter extends StatelessWidget {
     // Define a list of widgets for each page
     final List<Widget> pages = [
       const HeaderHome(),
-      const SizedBox(),
+      const TestView(),
       const SettingScreen(),
     ];
 
