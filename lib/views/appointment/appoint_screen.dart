@@ -1,4 +1,7 @@
+import 'package:assistantsapp/controllers/appointment_controller.dart';
 import 'package:assistantsapp/controllers/assistant/assistant_provider.dart';
+import 'package:assistantsapp/models/appointment.dart';
+import 'package:assistantsapp/services/firestore_service.dart';
 import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -14,8 +17,9 @@ class AppointScreen extends StatefulWidget {
 
 class _AppointScreenState extends State<AppointScreen> {
   final TextEditingController _descriptionController = TextEditingController();
-  final TextEditingController _priceController = TextEditingController();
-  double _durationHours = 3.0;
+  final TextEditingController _priceController =
+      TextEditingController(text: "1000");
+  Duration _durationHours = Duration(hours: 3.toInt()) as Duration;
   DateTime _selectedDate = DateTime.now();
 
   @override
@@ -26,7 +30,6 @@ class _AppointScreenState extends State<AppointScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final assistant = Provider.of<AssistantProvider>(context).selectedAssistant;
     // final chatMessageController = ChatMessageController();
 
     return Scaffold(
@@ -180,7 +183,7 @@ class _AppointScreenState extends State<AppointScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Duration: (${_durationHours.floor()} hours) ",
+            "Duration: (${_durationHours.inHours} hours) ",
             style: const TextStyle(
               color: Color.fromARGB(255, 45, 42, 42),
               fontSize: 20,
@@ -190,14 +193,14 @@ class _AppointScreenState extends State<AppointScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18),
             child: Slider(
-              value: _durationHours,
+              value: _durationHours.inHours.toDouble(),
               min: 1.0,
               max: 12.0,
               divisions: 11,
-              label: 'Duration (hours): ${_durationHours.round()}',
+              label: 'Duration (hours): ${_durationHours.inHours}',
               onChanged: (value) {
                 setState(() {
-                  _durationHours = value;
+                  _durationHours = Duration(hours: value.toInt());
                 });
               },
             ),
@@ -260,6 +263,8 @@ class _AppointScreenState extends State<AppointScreen> {
       onTap: () {
         final textDescription = _descriptionController.text;
         _descriptionController.clear();
+
+        makeAppointment();
       },
       child: Container(
         margin: const EdgeInsets.only(left: 17, right: 17, bottom: 17),
@@ -281,6 +286,24 @@ class _AppointScreenState extends State<AppointScreen> {
         ),
       ),
     );
+  }
+
+  void makeAppointment() {
+    var assistant = Provider.of<AssistantProvider>(context, listen: false)
+        .selectedAssistant;
+    var currentUser = FirestoreService().auth.currentUser;
+    var newAppointment = Appointment(
+        assistantDisplayName: assistant?.lastName ?? assistant!.username,
+        assistantEmail: assistant!.email,
+        providerId: assistant.id,
+        clientEmail: currentUser!.email!,
+        clientDisplayName: currentUser.displayName!,
+        dateTime: _selectedDate,
+        duration: _durationHours,
+        price: double.parse(_priceController.text),
+        clientId: currentUser.uid);
+
+    AppointmentController().createAppointment(newAppointment);
   }
 
   Widget _buildChip(String label) {

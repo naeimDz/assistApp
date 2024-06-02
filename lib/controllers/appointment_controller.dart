@@ -2,9 +2,8 @@ import '../models/appointment.dart';
 import '../services/firestore_service.dart';
 
 class AppointmentController {
-  final FirestoreService _firestoreService;
+  final FirestoreService _firestoreService = FirestoreService();
   final String collectionName = 'appointments';
-  AppointmentController(this._firestoreService);
 
   Future<void> createAppointment(Appointment appointment) async {
     await _firestoreService.firestore

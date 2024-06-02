@@ -12,7 +12,7 @@ class AssistantDetailScreen extends StatelessWidget {
     final assistant = Provider.of<AssistantProvider>(context).selectedAssistant;
     return Scaffold(
       appBar: AppBar(
-        title: Text(assistant?.firstName ?? ""),
+        title: Text(assistant?.username ?? ""),
       ),
       body: SingleChildScrollView(
         // Wrap body with SingleChildScrollView
@@ -72,6 +72,8 @@ class AssistantDetailScreen extends StatelessWidget {
             Center(
               child: ElevatedButton(
                 onPressed: () {
+                  Provider.of<AssistantProvider>(context, listen: false)
+                      .selectAssistant(assistant!.id);
                   Navigator.pushNamed(context, RouteNameStrings.appointScreen);
                 },
                 child: const Text('Make Appointment'),
