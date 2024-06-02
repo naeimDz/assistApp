@@ -28,7 +28,8 @@ void main() async {
         ChangeNotifierProvider(create: (context) => AssistantProvider()),
         ChangeNotifierProvider(create: (context) => ClientProvider()),
         ChangeNotifierProvider(create: (context) => EnterpriseProvider()),
-        ChangeNotifierProvider(create: (context) => AuthenticationController())
+        ChangeNotifierProvider(create: (context) => AuthenticationController()),
+
         // Add more providers if needed
       ],
       child: EasyLocalization(

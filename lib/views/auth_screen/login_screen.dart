@@ -1,4 +1,5 @@
 import 'package:assistantsapp/controllers/authentication_controller.dart';
+import 'package:assistantsapp/services/determine_user.dart';
 import 'package:assistantsapp/utils/routes/route_name_strings.dart';
 import '../../mixins/snack_mixin.dart';
 import 'package:flutter/material.dart';
@@ -68,9 +69,11 @@ class LoginScreenState extends State<LoginScreen> with SnackMixin {
                   if (_formKey.currentState!.validate()) {
                     String email = _emailController.text.trim();
                     String password = _passwordController.text.trim();
-                    AuthenticationController().signin(email, password);
+                    await AuthenticationController().signin(email, password);
 
                     if (mounted) {
+                      DetermineUser().determineUserRole("email", email: email);
+
                       showSuccess(context, AppStrings.loginSuccessMessage.tr());
                       Navigator.pushReplacementNamed(
                           context, RouteNameStrings.homeScreen);
@@ -84,17 +87,13 @@ class LoginScreenState extends State<LoginScreen> with SnackMixin {
           ),
         ],
       ),
-      appBar: AppBar(
-        elevation: 0,
-        leading: const Icon(Icons.turn_left),
-      ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 60),
         child: Column(
           children: [
             MsgWelcome(
-              messageWelcome: "${AppStrings.messageWelcomeloginScreen}",
-              headlineWelcome: "${AppStrings.headlineWelcomeLoginScreen}",
+              messageWelcome: AppStrings.messageWelcomeloginScreen,
+              headlineWelcome: AppStrings.headlineWelcomeLoginScreen,
             ),
             const SizedBox(
               height: 40,

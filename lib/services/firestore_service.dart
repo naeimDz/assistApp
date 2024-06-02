@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:assistantsapp/services/shared_preferences_manager.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -12,15 +13,21 @@ class FirestoreService {
   // Getters for easier access to Firestore and FirebaseAuth instances
   FirebaseFirestore get firestore => _firestore;
   FirebaseAuth get auth => _auth;
-
   // Stream to listen for changes in the current user's data (optional)
   Stream<DocumentSnapshot<Map<String, dynamic>>>? getCurrentUserDataStream() {
+    var role = SharedPreferencesManager.getUserRole();
     final uid = _auth.currentUser?.uid;
     if (uid == null) return null;
-    return _firestore
-        .collection('users')
-        .doc(uid)
-        .snapshots(); // Replace 'users' with your actual collection name
+    if (role != "user") {
+      return _firestore
+          .collection('users')
+          .doc(uid)
+          .snapshots(); // Replace 'users' with your actual collection name
+    } else if (role != "assistant") {
+      return _firestore.collection('providers').doc(uid).snapshots();
+    } else {
+      return _firestore.collection('enterprises').doc(uid).snapshots();
+    }
   }
 
   // Function to fetch all documents  from a specific collection

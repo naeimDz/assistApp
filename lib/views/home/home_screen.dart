@@ -1,7 +1,9 @@
 //import 'package:assistantsapp/controllers/authentication_controller.dart';
+import 'package:assistantsapp/controllers/authentication_controller.dart';
+import 'package:assistantsapp/utils/routes/route_name_strings.dart';
+import 'package:assistantsapp/views/conversation/conversation_screen.dart';
 import 'package:assistantsapp/views/home/widgets/header.dart';
 import 'package:assistantsapp/views/setting/setting_screen.dart';
-import 'package:assistantsapp/views/testview.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/bottom_bar_index.dart';
@@ -21,16 +23,16 @@ class HomeScreen extends StatelessWidget {
         ),
         leadingWidth: 100,
         actions: [
-          /*Consumer<AuthenticationProvider>(builder: (context, authProvider, _) {
+          Consumer<AuthenticationController>(
+              builder: (context, authProvider, _) {
             return IconButton(
               icon: const Icon(Icons.exit_to_app_rounded),
               onPressed: () {
-                //  _authController.signOut();
-                authProvider.signOut();
+                authProvider.signout();
                 Navigator.pushReplacementNamed(context, RouteNameStrings.logIn);
               },
             );
-          }),*/
+          }),
         ],
         centerTitle: true,
       ),
@@ -50,8 +52,8 @@ class PageRouter extends StatelessWidget {
     // Define a list of widgets for each page
     final List<Widget> pages = [
       const HeaderHome(),
-      const TestView(),
       const SizedBox(),
+      const ConversationListScreen(),
       const SettingScreen(),
     ];
 
