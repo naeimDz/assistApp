@@ -1,26 +1,62 @@
-import 'package:assistantsapp/views/sharedwidgets/build_input_text_form.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../services/firestore_service.dart';
+
 class EditProfileView extends StatefulWidget {
+  const EditProfileView({super.key});
+
   @override
-  _EditProfileViewState createState() => _EditProfileViewState();
+  EditProfileViewState createState() => EditProfileViewState();
 }
 
-class _EditProfileViewState extends State<EditProfileView> {
-  String _firstName = "";
-  String _lastName = "";
-  String _email = "";
-  String? _gender;
+class EditProfileViewState extends State<EditProfileView> {
+  late TextEditingController _firstNameController;
+  late TextEditingController _lastNameController;
+  late TextEditingController _genderController;
+  late TextEditingController _birthdayController;
 
   bool _hasChanges = false; // Flag to track changes
 
   final _formKey = GlobalKey<FormState>(); // For form validation
 
   @override
+  void initState() {
+    super.initState();
+    _firstNameController = TextEditingController();
+    _lastNameController = TextEditingController();
+    _genderController = TextEditingController();
+    _birthdayController = TextEditingController();
+
+    // ... other initializations
+
+    final userStream = FirestoreService().getCurrentUserDataStream();
+    if (userStream != null) {
+      userStream.listen((snapshot) {
+        if (snapshot.exists) {
+          final userData = snapshot.data()!;
+          _firstNameController.text = userData['firstName'] as String;
+          _lastNameController.text = userData['lastName'] as String;
+          _genderController.text = userData['gender'] as String;
+          _birthdayController.text = userData['birthDay'] as String;
+        }
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    _genderController.dispose();
+    _birthdayController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Profile"),
+        title: Text("Edit Profile"),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -34,89 +70,94 @@ class _EditProfileViewState extends State<EditProfileView> {
                   title: "Basic Information",
                   child: Column(
                     children: [
-                      //first name input field
-                      buildInputField(
-                          initialValue: _firstName,
+                      // First Name Text Field
+                      TextFormField(
+                        controller: _firstNameController,
+                        decoration: InputDecoration(
                           labelText: "First Name",
-                          prefixIcon: Icons.person_2_rounded,
-                          onChanged: (p0) {
-                            setState(() {
-                              _firstName = p0;
-                              _hasChanges = true;
-                            });
-                          }),
-                      //last name input field
-                      buildInputField(
-                          initialValue: _lastName,
-                          labelText: "Last Name",
-                          prefixIcon: Icons.person_2_rounded,
-                          onChanged: (p0) {
-                            setState(() {
-                              _lastName = p0;
-                              _hasChanges = true;
-                            });
-                          }),
-                      //emailinput field
-                      buildInputField(
-                        initialValue: _email,
-                        labelText: "Email",
-                        prefixIcon: Icons.email,
-                        keyboardType: TextInputType.emailAddress,
-                        validator: (value) =>
-                            value!.isEmpty ? "Please enter your email" : null,
+                          prefixIcon: Icon(Icons.person),
+                        ),
                         onChanged: (value) {
                           setState(() {
-                            _email = value;
                             _hasChanges = true;
                           });
                         },
                       ),
-                      //dropdown form input  gender
-                      Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: DropdownButtonFormField<String>(
-                          value: "Man",
-                          decoration: const InputDecoration(
-                            labelText: 'Gender',
-                            prefixIcon: Icon(Icons.person_outline),
-                            border: OutlineInputBorder(),
-                          ),
-                          validator: (value) => value!.isEmpty
-                              ? "make sure choose your gender"
-                              : null,
-                          onChanged: (value) {
-                            print(_gender);
-                            _gender = value;
-                            _hasChanges = true;
-                          },
-                          // Set initial value or null
-                          items: ['Man', 'Woman']
-                              .map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                          }).toList(),
+
+                      // Last Name Text Field
+                      TextFormField(
+                        controller: _lastNameController,
+                        decoration: InputDecoration(
+                          labelText: "Last Name",
+                          prefixIcon: Icon(Icons.person),
                         ),
+                        onChanged: (value) {
+                          setState(() {
+                            _hasChanges = true;
+                          });
+                        },
                       ),
+
+                      // Gender Text Field
+                      TextFormField(
+                        controller: _genderController,
+                        decoration: InputDecoration(
+                          labelText: "Gender",
+                          prefixIcon: Icon(Icons.person_outline),
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            _hasChanges = true;
+                          });
+                        },
+                      ),
+
+                      TextFormField(
+                        controller: _birthdayController,
+                        decoration: InputDecoration(
+                          labelText: "Birthday",
+                          prefixIcon: Icon(Icons.calendar_today),
+                          suffixIcon: IconButton(
+                            icon: Icon(Icons.calendar_today),
+                            onPressed: () async {
+                              final selectedDate = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime(1996),
+                                lastDate: DateTime(2002),
+                              );
+
+                              if (selectedDate != null) {
+                                setState(() {
+                                  _birthdayController.text =
+                                      "${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}";
+                                  _hasChanges = true;
+                                });
+                              }
+                            },
+                          ),
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            _hasChanges = true;
+                          });
+                        },
+                      )
                     ],
                   ),
                 ),
 
                 // Save Button with change detection
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _hasChanges
                       ? () {
                           if (_formKey.currentState!.validate()) {
-                            // Save profile information (implement API call or local storage)
-                            print("Profile saved!");
-                            setState(() {
-                              _hasChanges = false;
-                            });
+                            // Save profile information
+                            updateUserProfile();
                           }
                         }
-                      : null, // Disable button if no changes
+                      : null,
                   child: Text("Save"),
                 ),
               ],
@@ -125,6 +166,31 @@ class _EditProfileViewState extends State<EditProfileView> {
         ),
       ),
     );
+  }
+
+  // Function to update user profile
+  void updateUserProfile() {
+    String firstName = _firstNameController.text;
+    String lastName = _lastNameController.text;
+    String gender = _genderController.text;
+    String birthday = _birthdayController.text;
+
+    // Update user object with new data
+    var updatedData = {
+      "firstName": firstName,
+      "lastName": lastName,
+      "gender": gender,
+      "birthday": birthday,
+      // Populate other user properties as needed
+    };
+
+    // Call user controller provider to update user data
+    //UserControllerProvider().updateUser(updatedUser);
+
+    // Reset flag and show success message or handle navigation
+    setState(() {
+      _hasChanges = false;
+    });
   }
 }
 
@@ -143,7 +209,7 @@ class ProfileSection extends StatelessWidget {
           title,
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10),
         child,
       ],
     );

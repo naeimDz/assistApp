@@ -9,4 +9,5 @@ class AppStrings {
   static String messageWelcomeSingupScreen = "msg_singup".tr();
   static String instructionMsgLoginScreen = "dont_have_an_account".tr();
   static String instructionMsgSingupScreen = "have_an_account".tr();
+  static String letsFindYourAssistant = "lets_find_your_assistant".tr();
 }

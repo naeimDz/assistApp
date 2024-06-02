@@ -1,122 +1,103 @@
+import 'package:assistantsapp/models/enum/role_enum.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class ServiceProvider {
-  String id;
-  String username;
-  String password;
-  String email;
-  String firstName;
-  String lastName;
-  //String latitude;
-  //String longitude;
-  String city;
-  String country;
-  int postalCode;
-  String address;
-  List<String> specialitiesList;
-  String joinDate;
-  String servicePrice;
-  List<String> qualificationsList;
-  bool isValidated;
-  int phoneNumber;
-  String imageUrl;
+import 'address.dart';
+import 'enum/gender.dart';
+import 'enum/service_type.dart';
 
-  ServiceProvider({
+class Assistant {
+  final String id;
+  final String username;
+  final String email;
+  final Role role;
+
+  final String firstName;
+  final String lastName;
+  final Gender gender;
+  // final Timestamp birthday;
+  final String? profileBio;
+  final Address? address;
+
+  final String? phoneNumber;
+  final List<DocumentReference>? appointments;
+  final ServiceType serviceType;
+  final Timestamp? joinDate;
+  final String? servicePrice;
+  final List<String>? skillsList;
+  final bool isValidated;
+  final bool associatedToEnterprise;
+
+  final String? imageUrl;
+
+  const Assistant({
     required this.id,
     required this.username,
-    required this.password,
     required this.email,
-    this.firstName = "",
-    this.lastName = "",
-    // this.latitude = "",
-    //this.longitude = "",
-    this.city = "",
-    this.country = "",
-    this.postalCode = 0,
-    this.address = "",
-    this.specialitiesList = const [],
-    this.joinDate = "",
-    this.servicePrice = "",
-    this.qualificationsList = const [],
+    this.profileBio,
+    required this.role,
+    required this.firstName,
+    required this.lastName,
+    this.gender = Gender.man,
+//    required this.birthday,
+    this.address,
+    this.phoneNumber,
+    this.appointments,
+    this.serviceType = ServiceType.childCare,
+    this.joinDate,
+    this.servicePrice,
+    this.skillsList,
     this.isValidated = false,
-    this.phoneNumber = 213,
-    this.imageUrl = "",
+    this.associatedToEnterprise = false,
+    this.imageUrl,
   });
 
-  factory ServiceProvider.fromFirestore(DocumentSnapshot doc) {
-    Map<String, dynamic> data = (doc.data() as Map<String, dynamic>);
+  factory Assistant.fromJson(Map<String, dynamic> json) {
+    if (json.isEmpty) {
+      throw FormatException('Assistant data is null or empty');
+    }
 
-    return ServiceProvider(
-      id: doc.id,
-      username: data['username'],
-      password: data['password'],
-      email: data['email'],
-      firstName: data['firstName'],
-      lastName: data['lastName'],
-      //latitude: data['latitude'],
-      //longitude: data['longitude'],
-      city: data['city'],
-      country: data['country'],
-      postalCode: data['postalCode'],
-      address: data['address'],
-      specialitiesList: List<String>.from(data['specialitiesList']),
-      joinDate: data['joinDate'],
-      servicePrice: data['servicePrice'],
-      qualificationsList: List<String>.from(data['qualificationsList']),
-      isValidated: data['isValidated'],
-      phoneNumber: data['phoneNumber'],
-      imageUrl: data['imageUrl'],
-    );
-  }
-
-  factory ServiceProvider.fromJson(Map<String, dynamic> json) {
-    return ServiceProvider(
+    return Assistant(
       id: json['id'],
       username: json['username'],
-      password: json['password'],
       email: json['email'],
+      role: Role.values.byName(json['role']),
       firstName: json['firstName'],
       lastName: json['lastName'],
-      //latitude: json['latitude'],
-      //longitude: json['longitude'],
-      city: json['city'],
-      country: json['country'],
-      postalCode: json['postalCode'],
-      address: json['address'],
-      specialitiesList: json['specialitiesList'] != null
-          ? List<String>.from(json['specialitiesList'])
-          : [],
-      joinDate: json['joinDate'],
-      servicePrice: json['servicePrice'],
-      qualificationsList: json['qualificationsList'] != null
-          ? List<String>.from(json['qualificationsList'])
-          : [],
-      isValidated: json['isValidated'],
+      gender: Gender.values.byName(json['gender']),
+      // birthday: Timestamp.fromDate(json['birthday']),
+      address: Address.fromJson(json['address'] as Map<String, dynamic>),
+      appointments: (json['appointments']),
       phoneNumber: json['phoneNumber'],
+      profileBio: json['profileBio'],
+      serviceType: ServiceType.values.byName(json['serviceType']),
+      //   joinDate: Timestamp.fromDate(json['joinDate']),
+      servicePrice: json['servicePrice'],
+      skillsList: (json['skillsList'] as List<dynamic>).cast<String>(),
+      isValidated: json['isValidated'] as bool,
+      associatedToEnterprise: json['associatedToEnterprise'] as bool,
       imageUrl: json['imageUrl'],
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'username': username,
-      'password': password,
-      'email': email,
-      'firstName': firstName,
-      'lastName': lastName,
-      //'latitude': latitude,
-      //'longitude': longitude,
-      'city': city,
-      'country': country,
-      'postalCode': postalCode,
-      'address': address,
-      'specialitiesList': specialitiesList,
-      'joinDate': joinDate,
-      'servicePrice': servicePrice,
-      'qualificationsList': qualificationsList,
-      'isValidated': isValidated,
-      'phoneNumber': phoneNumber,
-      'imageUrl': imageUrl,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'username': username,
+        'email': email,
+        'role': role.name,
+        'firstName': firstName,
+        'lastName': lastName,
+        'gender': gender.name,
+        //   'birthday': birthday.toDate(), // Use toIso8601String for serialization
+        'address': address?.toJson(),
+        'profileBio': profileBio,
+        'phoneNumber': phoneNumber,
+        'serviceType': serviceType.name,
+        'appointments': appointments,
+        //  'joinDate': joinDate?.toDate(),
+        'servicePrice': servicePrice,
+        'skillsList': skillsList,
+        'isValidated': isValidated,
+        'associatedToEnterprise': associatedToEnterprise,
+        'imageUrl': imageUrl,
+      };
 }

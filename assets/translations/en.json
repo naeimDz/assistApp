@@ -12,5 +12,6 @@
     "password":"Password",
     "register":"Register",
     "login":"Login",
-    "home_msg":"Welcome to the Home Screen!"
+    "home_msg":"Welcome to the Home Screen!",
+    "lets_find_your_assistant":"lets find your assistant"
   }

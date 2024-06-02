@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../providers/list_assistant.dart';
-
 class ProfileDetailScreen extends StatelessWidget {
   const ProfileDetailScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     // Access the selected assistant from the provider
-    final assistant = Provider.of<ListAssistant>(context).currentAssistant;
+    //final assistant = Provider.of<ListAssistant>(context).currentAssistant;
     return Scaffold(
       appBar: AppBar(
         title: Text('Assistant Profile'),
@@ -26,14 +24,14 @@ class ProfileDetailScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            Text(
+            /* Text(
               "${assistant!.firstName} ${assistant!.lastName}",
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            Text(
+             Text(
               assistant.specialitiesList[0],
               style: const TextStyle(fontSize: 18, color: Colors.grey),
-            ),
+            ),*/
             const SizedBox(height: 20),
             const Text(
               'Description:',
@@ -50,7 +48,7 @@ class ProfileDetailScreen extends StatelessWidget {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
-            ListTile(
+            /* ListTile(
               leading: const Icon(Icons.phone),
               title: Text(assistant.phoneNumber.toString()),
             ),
@@ -58,11 +56,11 @@ class ProfileDetailScreen extends StatelessWidget {
               leading: const Icon(Icons.email),
               title: Text(assistant.email),
             ),
-            ListTile(
+           ListTile(
               leading: Icon(Icons.location_on),
               title: Text(
                   '${assistant?.address ?? ''}, ${assistant?.city ?? ''}, ${assistant?.country ?? ''}'),
-            ),
+            ),*/
           ],
         ),
       ),

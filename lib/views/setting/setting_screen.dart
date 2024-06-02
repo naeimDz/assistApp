@@ -94,18 +94,19 @@ class SettingScreen extends StatelessWidget {
             },
           ),
           ListTile(
-            title: Text('terme of use'),
-            leading: Icon(Icons.data_usage),
+            title: const Text('Privacy Policy'),
+            leading: const Icon(Icons.data_usage),
             onTap: () {
-              // Navigate to edit profile screen
+              Navigator.pushNamed(
+                  context, RouteNameStrings.privacyPolicyScreen);
             },
           ),
           ListTile(
-            title: Text("Terms and Conditions"),
-            subtitle: Text("legal, terms and conditions"),
+            title: const Text("Terms and Conditions"),
+            subtitle: const Text("legal, terms and conditions"),
             leading: const Icon(Icons.file_copy),
             onTap: () {
-              // Navigate to edit profile screen
+              Navigator.pushNamed(context, RouteNameStrings.termsConditions);
             },
           ),
           Divider(),

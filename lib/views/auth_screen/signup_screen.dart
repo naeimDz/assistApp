@@ -1,25 +1,28 @@
-import 'package:assistantsapp/utils/routes/route_name_strings.dart';
-import '../../controllers/authentication_controller.dart';
-import '../../mixins/snack_mixin.dart';
+import 'package:assistantsapp/services/firestore_service.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import '../../services/shared_preferences_manager.dart';
 import '../../utils/constants/app_strings.dart';
 import 'components/msg_welcome.dart';
+import '../../mixins/snack_mixin.dart';
+import '../../controllers/authentication_controller.dart';
+import 'package:assistantsapp/utils/routes/route_name_strings.dart';
 
-class SingupScreen extends StatefulWidget {
-  const SingupScreen({super.key});
+class SignupScreen extends StatefulWidget {
+  const SignupScreen({super.key});
+
   @override
-  SingupScreenState createState() => SingupScreenState();
+  _SignupScreenState createState() => _SignupScreenState();
 }
 
-class SingupScreenState extends State<SingupScreen> with SnackMixin {
+class _SignupScreenState extends State<SignupScreen> with SnackMixin {
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final AuthenticationController _authController = AuthenticationController();
-
+  String? _selectedType;
   bool obscureText = true;
+
   void toggleObscureText() {
     setState(() {
       obscureText = !obscureText;
@@ -37,134 +40,209 @@ class SingupScreenState extends State<SingupScreen> with SnackMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: Wrap(children: [
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                AppStrings.instructionMsgSingupScreen,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w200,
+      bottomNavigationBar: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  AppStrings.instructionMsgSingupScreen,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w200,
+                  ),
                 ),
+                GestureDetector(
+                  onTap: () => Navigator.popAndPushNamed(
+                      context, RouteNameStrings.logIn),
+                  child: Text(" Login".tr()),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: SizedBox(
+              height: 50,
+              width: double.infinity,
+              child: ElevatedButton(
+                child: Text(
+                  'Register'.tr(),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                onPressed: () async {
+                  _signUp();
+                },
               ),
-              GestureDetector(
-                onTap: () =>
-                    Navigator.popAndPushNamed(context, RouteNameStrings.logIn),
-                child: Text(" Login".tr()),
+            ),
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.only(
+              left: 20,
+              right: 20,
+              top: 50,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 20),
+          child: Column(
+            children: [
+              MsgWelcome(
+                messageWelcome: AppStrings.messageWelcomeSingupScreen,
+                headlineWelcome: AppStrings.headlineWelcomeSingupScreen,
+              ),
+              const SizedBox(
+                height: 40,
+              ),
+              Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    TextFormField(
+                      controller: _emailController,
+                      decoration: InputDecoration(
+                        labelText: 'Email'.tr(),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25.0),
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter your Email'.tr();
+                        }
+                        return null; // here add other validator rules
+                      },
+                    ),
+                    const SizedBox(height: 16.0),
+                    TextFormField(
+                      controller: _usernameController,
+                      decoration: InputDecoration(
+                        labelText: 'Username'.tr(),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25.0),
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter your Display Name'.tr();
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16.0),
+                    TextFormField(
+                      controller: _passwordController,
+                      decoration: InputDecoration(
+                        suffixIcon: GestureDetector(
+                          onTap: () => toggleObscureText(),
+                          child: Icon(
+                            obscureText
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                        ),
+                        labelText: 'Password'.tr(),
+                      ),
+                      obscureText: obscureText,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter your password'.tr();
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16.0),
+                    DropdownButtonFormField<String>(
+                      value: _selectedType,
+                      decoration: InputDecoration(
+                        labelText: 'Account Type',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25.0),
+                        ),
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedType = value;
+                        });
+                      },
+                      items: const [
+                        DropdownMenuItem(
+                          value: 'User',
+                          child: Text('User'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'Assistant',
+                          child: Text('Assistant'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'Enterprise',
+                          child: Text('Enterprise'),
+                        ),
+                      ],
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please select account type';
+                        }
+                        return null;
+                      },
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: SizedBox(
-            height: 50,
-            width: double.infinity,
-            child: ElevatedButton(
-              child: Text(
-                'Register'.tr(),
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              onPressed: () async {
-                if (_formKey.currentState!.validate()) {
-                  String email = _emailController.text.trim();
-                  String password = _passwordController.text.trim();
-                  // String userName = _usernameController.text.trim();
-                  var res = await _authController.signUpWithEmailAndPassword(
-                      email, password);
-                  print(res);
-                  if (res != null && mounted) {
-                    showSuccess(context, AppStrings.loginSuccessMessage.tr());
-                    Navigator.pushReplacementNamed(
-                        context, RouteNameStrings.homeScreen);
-                  } else {
-                    showError(context, AppStrings.loginErrorMessage.tr());
-                  }
-                }
-              },
-            ),
-          ),
-        ),
-      ]),
-      appBar: AppBar(
-        elevation: 0,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-        child: Wrap(
-          spacing: 10,
-          children: [
-            MsgWelcome(
-                messageWelcome: AppStrings.messageWelcomeSingupScreen,
-                headlineWelcome: AppStrings.headlineWelcomeSingupScreen),
-            const SizedBox(
-              height: 40,
-            ),
-            Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  TextFormField(
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                      labelText: 'Email'.tr(),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25.0),
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter your Email'.tr();
-                      }
-                      return null; // here add other validator rules
-                    },
-                  ),
-                  const SizedBox(height: 16.0),
-                  TextFormField(
-                    controller: _usernameController,
-                    decoration: InputDecoration(
-                      labelText: 'Usernamel'.tr(),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25.0),
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter your username'.tr();
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16.0),
-                  TextFormField(
-                    controller: _passwordController,
-                    decoration: InputDecoration(
-                      suffixIcon: GestureDetector(
-                        onTap: () => toggleObscureText(),
-                        child: Icon(
-                          obscureText ? Icons.visibility : Icons.visibility_off,
-                        ),
-                      ),
-                      labelText: 'Password'.tr(),
-                    ),
-                    obscureText: obscureText,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter your password'.tr();
-                      }
-                      return null;
-                    },
-                  ),
-                ],
-              ),
-            ),
-            const Expanded(child: SizedBox()),
-          ],
-        ),
       ),
     );
+  }
+
+  void _signUp() async {
+    if (_formKey.currentState!.validate()) {
+      String email = _emailController.text.trim();
+      String password = _passwordController.text.trim();
+      String userName = _usernameController.text.trim();
+      final AuthenticationController authController =
+          AuthenticationController();
+      var user =
+          await authController.signUpWithEmailAndPassword(email, password);
+      var dataUser = {
+        "email": email,
+        "role": _selectedType,
+        "firstName": userName,
+        "joinDate": DateTime.now()
+      };
+      if (mounted) {
+        showSuccess(context, AppStrings.loginSuccessMessage.tr());
+        FirestoreService firestoreService = FirestoreService();
+
+        SharedPreferencesManager.setUserRole(_selectedType!);
+        switch (_selectedType) {
+          case "User":
+            await firestoreService.createDocument(
+                "usersTest", user.uid, dataUser);
+
+            Navigator.pushReplacementNamed(
+                context, RouteNameStrings.homeScreen);
+            break;
+          case "Assistant":
+            await firestoreService.createDocument(
+                "assistants", user.uid, dataUser);
+            Navigator.pushReplacementNamed(
+                context, RouteNameStrings.profileDetailScreen);
+            break;
+          case "Enterprise":
+            await firestoreService.createDocument(
+                "enterprises", user.uid, dataUser);
+            Navigator.pushReplacementNamed(
+                context, RouteNameStrings.homeScreen);
+            break;
+        }
+      } else {
+        showError(context, AppStrings.loginErrorMessage.tr());
+      }
+    }
   }
 }

@@ -1,9 +1,8 @@
+import 'package:assistantsapp/controllers/authentication_controller.dart';
 import 'package:assistantsapp/utils/routes/route_name_strings.dart';
-import 'package:provider/provider.dart';
 import '../../mixins/snack_mixin.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import '../../providers/authentication_provider.dart';
 import '../../utils/constants/app_strings.dart';
 import 'components/msg_welcome.dart';
 
@@ -69,11 +68,9 @@ class LoginScreenState extends State<LoginScreen> with SnackMixin {
                   if (_formKey.currentState!.validate()) {
                     String email = _emailController.text.trim();
                     String password = _passwordController.text.trim();
-                    var res = await Provider.of<AuthenticationProvider>(context,
-                            listen: false)
-                        .signIn(email, password);
+                    AuthenticationController().signin(email, password);
 
-                    if (res != null && mounted) {
+                    if (mounted) {
                       showSuccess(context, AppStrings.loginSuccessMessage.tr());
                       Navigator.pushReplacementNamed(
                           context, RouteNameStrings.homeScreen);

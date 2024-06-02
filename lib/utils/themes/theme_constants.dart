@@ -1,3 +1,4 @@
+import 'package:assistantsapp/utils/constants/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../constants/app_colors.dart';
@@ -19,6 +20,11 @@ class AppTheme {
         tileColor: AppColors.cardColor,
         contentPadding: EdgeInsets.symmetric(horizontal: 17.0, vertical: 5.0),
       ),
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+          backgroundColor: AppColors.scaffoldBackground,
+          selectedItemColor: AppColors.primary,
+          showUnselectedLabels: false,
+          unselectedItemColor: AppColors.blackText),
       textButtonTheme: TextButtonThemeData(
         style: ButtonStyle(
           textStyle: MaterialStateProperty.all(
@@ -120,6 +126,9 @@ class AppTheme {
               displayColor: Colors.white,
               bodyColor: Colors.white,
             ),
+        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+            backgroundColor: AppColors.cardColorDark,
+            selectedItemColor: AppColors.primary),
         cardColor: AppColors.cardColorDark,
         scaffoldBackgroundColor: AppColors.scaffoldBackgrounDark,
         canvasColor: AppColors.cardColorDark,
@@ -140,7 +149,8 @@ class AppTheme {
               const EdgeInsets.symmetric(vertical: 24.0, horizontal: 24.0),
         ),
         iconTheme: const IconThemeData(color: AppColors.primary),
-        listTileTheme: const ListTileThemeData(iconColor: AppColors.primary),
+        listTileTheme: const ListTileThemeData(
+            iconColor: AppColors.primary, textColor: AppColors.whiteText),
         appBarTheme: const AppBarTheme(
           backgroundColor: AppColors.scaffoldBackgrounDark,
           elevation: 0,

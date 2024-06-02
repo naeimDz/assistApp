@@ -4,10 +4,8 @@ import 'package:assistantsapp/views/setting/setting_screen.dart';
 import 'package:assistantsapp/views/testview.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../providers/authentication_provider.dart';
 import '../../providers/bottom_bar_index.dart';
 //import '../../providers/user_provider.dart';
-import '../../utils/routes/route_name_strings.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -15,7 +13,6 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.brown[100],
       appBar: AppBar(
         leading: const Icon(
           Icons.logo_dev,
@@ -24,7 +21,7 @@ class HomeScreen extends StatelessWidget {
         ),
         leadingWidth: 100,
         actions: [
-          Consumer<AuthenticationProvider>(builder: (context, authProvider, _) {
+          /*Consumer<AuthenticationProvider>(builder: (context, authProvider, _) {
             return IconButton(
               icon: const Icon(Icons.exit_to_app_rounded),
               onPressed: () {
@@ -33,7 +30,7 @@ class HomeScreen extends StatelessWidget {
                 Navigator.pushReplacementNamed(context, RouteNameStrings.logIn);
               },
             );
-          }),
+          }),*/
         ],
         centerTitle: true,
       ),
@@ -54,6 +51,7 @@ class PageRouter extends StatelessWidget {
     final List<Widget> pages = [
       const HeaderHome(),
       const TestView(),
+      const SizedBox(),
       const SettingScreen(),
     ];
 
@@ -78,8 +76,12 @@ class MyBottomNavigatiobBar extends StatelessWidget {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.notifications_active),
-            label: 'Notification',
+            icon: Icon(Icons.schedule),
+            label: 'schedule',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.chat),
+            label: 'Chat',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
