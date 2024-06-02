@@ -1,7 +1,13 @@
 import 'package:assistantsapp/controllers/appointment_controller.dart';
 import 'package:assistantsapp/controllers/assistant/assistant_provider.dart';
+import 'package:assistantsapp/controllers/conversations/conversation_controller.dart';
+import 'package:assistantsapp/controllers/conversations/message_controller.dart';
 import 'package:assistantsapp/models/appointment.dart';
+import 'package:assistantsapp/models/conversations.dart';
+import 'package:assistantsapp/models/message.dart';
 import 'package:assistantsapp/services/firestore_service.dart';
+import 'package:assistantsapp/views/conversation/message_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -185,7 +191,6 @@ class _AppointScreenState extends State<AppointScreen> {
           Text(
             "Duration: (${_durationHours.inHours} hours) ",
             style: const TextStyle(
-              color: Color.fromARGB(255, 45, 42, 42),
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
@@ -219,7 +224,6 @@ class _AppointScreenState extends State<AppointScreen> {
           const Text(
             "price",
             style: TextStyle(
-              color: Color.fromARGB(255, 45, 42, 42),
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
@@ -236,7 +240,6 @@ class _AppointScreenState extends State<AppointScreen> {
           const Text(
             "Description",
             style: TextStyle(
-              color: Color.fromARGB(255, 45, 42, 42),
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
@@ -260,11 +263,22 @@ class _AppointScreenState extends State<AppointScreen> {
 
   Widget _buildBookButton() {
     return GestureDetector(
-      onTap: () {
-        final textDescription = _descriptionController.text;
-        _descriptionController.clear();
-
-        makeAppointment();
+      onTap: () async {
+        var dis = makeAppointment();
+        DocumentReference<Object?> ref = await makeConversation();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Appointment booked successfully!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => MessageScreen(
+                  conversationId: ref.id,
+                  displayName: dis!)), // Replace with your success screen
+        );
       },
       child: Container(
         margin: const EdgeInsets.only(left: 17, right: 17, bottom: 17),
@@ -288,7 +302,7 @@ class _AppointScreenState extends State<AppointScreen> {
     );
   }
 
-  void makeAppointment() {
+  String? makeAppointment() {
     var assistant = Provider.of<AssistantProvider>(context, listen: false)
         .selectedAssistant;
     var currentUser = FirestoreService().auth.currentUser;
@@ -304,6 +318,34 @@ class _AppointScreenState extends State<AppointScreen> {
         clientId: currentUser.uid);
 
     AppointmentController().createAppointment(newAppointment);
+    return assistant.lastName;
+  }
+
+  Future<DocumentReference<Object?>> makeConversation() async {
+    var assistant = Provider.of<AssistantProvider>(context, listen: false)
+        .selectedAssistant;
+    var currentUser = FirestoreService().auth.currentUser;
+    final textDescription = _descriptionController.text == ""
+        ? "I hope this message finds you well. I am writing to request an appointment with you "
+        : _descriptionController.text;
+    _descriptionController.clear();
+    var newConversation = Conversation(
+        assistantDisplayName: assistant!.username,
+        assistantId: assistant.id,
+        lastMessage: textDescription,
+        userDisplayName: currentUser!.displayName!,
+        userId: currentUser.uid);
+    var ref = await ConversationController()
+        .createOrCheckConversation(newConversation, currentUser.uid);
+
+    MessageController().addMessage(
+        ref!.id,
+        Message(
+            senderUid: currentUser.uid,
+            content: textDescription,
+            timestamp: Timestamp.now()));
+
+    return ref;
   }
 
   Widget _buildChip(String label) {

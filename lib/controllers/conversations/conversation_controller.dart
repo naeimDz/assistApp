@@ -13,7 +13,7 @@ class ConversationController {
       // Query Firestore for existing conversations
       final querySnapshot = await _firestoreService.firestore
           .collection(collectionName)
-          .where('assistantId', isEqualTo: id)
+          // .where('assistantId', isEqualTo: id)
           .where('userId', isEqualTo: id)
           .get();
 
