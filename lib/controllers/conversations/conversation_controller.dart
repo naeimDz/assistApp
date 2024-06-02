@@ -91,7 +91,8 @@ class ConversationController {
           .asyncMap((snapshot) async {
         List<Conversation> conversations = [];
         for (var doc in snapshot.docs) {
-          Conversation conversation = Conversation.fromJson(doc.data());
+          Conversation conversation =
+              Conversation.fromJson(doc.data(), id: doc.id);
 
           conversations.add(conversation);
         }

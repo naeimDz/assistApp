@@ -1,4 +1,3 @@
-import 'package:assistantsapp/services/firestore_service.dart';
 import 'package:flutter/material.dart';
 import '../../controllers/conversations/conversation_controller.dart';
 import '../../models/conversations.dart';
@@ -11,17 +10,22 @@ class ConversationListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Conversations')),
+      appBar: AppBar(
+          centerTitle: false,
+          title: const Text(
+            'Conversations',
+            style: TextStyle(fontSize: 22),
+          )),
       body: StreamBuilder<List<Conversation>>(
         stream: ConversationController()
             .getConversationsStream(SharedPreferencesManager.getUserRole()),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No conversations found.'));
+            return const Center(child: Text('No conversations found.'));
           } else {
             List<Conversation> conversations = snapshot.data!;
 
@@ -30,14 +34,19 @@ class ConversationListScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 Conversation conversation = conversations[index];
                 return ListTile(
+                  leading: CircleAvatar(
+                    child: Text(
+                        '${conversation.assistantDisplayName[0].toUpperCase()}${conversation.userDisplayName[0].toUpperCase()}'),
+                  ),
                   title: Text(conversation.assistantDisplayName),
                   subtitle: Text(conversation.lastMessage),
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            MessageScreen(conversationId: conversation.userId),
+                        builder: (context) => MessageScreen(
+                            conversationId: conversation.id!,
+                            displayName: conversation.assistantDisplayName),
                       ),
                     );
                   },

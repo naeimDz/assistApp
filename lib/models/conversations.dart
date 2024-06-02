@@ -1,4 +1,5 @@
 class Conversation {
+  final String? id;
   final String assistantDisplayName;
   final String assistantId;
   final String lastMessage;
@@ -6,6 +7,7 @@ class Conversation {
   final String userId;
 
   const Conversation({
+    this.id,
     required this.assistantDisplayName,
     required this.assistantId,
     required this.lastMessage,
@@ -13,8 +15,9 @@ class Conversation {
     required this.userId,
   });
 
-  factory Conversation.fromJson(Map<String, dynamic> json) {
+  factory Conversation.fromJson(Map<String, dynamic> json, {String? id}) {
     return Conversation(
+      id: id,
       assistantDisplayName: json['assistantDisplayName'] as String,
       assistantId: json['assistantId'] as String,
       lastMessage: json['lastMessage'] as String,
