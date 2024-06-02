@@ -26,4 +26,8 @@ class Address {
         'province': province ?? "",
         'zipCode': zipCode ?? "",
       };
+  @override
+  String toString() {
+    return "${province ?? ""}, $city, $street";
+  }
 }

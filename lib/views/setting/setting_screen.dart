@@ -1,3 +1,4 @@
+import 'package:assistantsapp/services/firestore_service.dart';
 import 'package:assistantsapp/utils/routes/route_name_strings.dart';
 import 'package:assistantsapp/views/sharedwidgets/headline_with_row.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +28,7 @@ class SettingScreen extends StatelessWidget {
                     child: IconButton(
                       icon: const Icon(Icons.edit),
                       onPressed: () =>
+                          //  FirestoreService().updateUserPhoto(imageFile);
                           print("Edit Picture"), // Implement image picking
                     ),
                   ),

@@ -8,4 +8,5 @@ class RouteNameStrings {
   static const String assistantEditing = "assistantEditing";
   static const String privacyPolicyScreen = "PrivacyPolicyScreen";
   static const String termsConditions = "TermsConditions";
+  static const String appointScreen = "AppointScreen";
 }

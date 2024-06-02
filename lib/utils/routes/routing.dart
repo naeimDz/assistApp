@@ -1,4 +1,5 @@
 import 'package:assistantsapp/utils/routes/route_name_strings.dart';
+import 'package:assistantsapp/views/appointment/appoint_screen.dart';
 import 'package:assistantsapp/views/home/home_screen.dart';
 import 'package:assistantsapp/views/setting/privacy_and_terms_screen.dart';
 import 'package:assistantsapp/views/setting/terms_conditions.dart';
@@ -25,10 +26,13 @@ class Routes {
         return _buildRoute(const AssistantDetailScreen());
       case RouteNameStrings.editProfileView:
         return _buildRoute(EditProfileView());
+      case RouteNameStrings.appointScreen:
+        return _buildRoute(const AppointScreen());
       case RouteNameStrings.privacyPolicyScreen:
         return _buildRoute(const PrivacyPolicyScreen());
       case RouteNameStrings.termsConditions:
         return _buildRoute(const TermsConditions());
+
       default:
         return _buildRoute(const HomeScreen());
     }

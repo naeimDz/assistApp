@@ -5,6 +5,7 @@ import 'package:assistantsapp/utils/constants/sizedbox_const.dart';
 import 'package:assistantsapp/utils/routes/route_name_strings.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -89,10 +90,14 @@ class AssistantCard extends StatelessWidget {
                     onPressed: () async {
                       // Handle call action with permissions and error handling
                       final phoneNumber = serviceProvider.phoneNumber;
+
                       if (phoneNumber?.isNotEmpty == true) {
-                        final url = 'tel:$phoneNumber';
-                        if (await canLaunchUrl(Uri.parse(url))) {
-                          await launchUrl(Uri.parse(url));
+                        final Uri launchUri = Uri(
+                          scheme: 'tel',
+                          path: phoneNumber,
+                        );
+                        if (await canLaunchUrl(launchUri)) {
+                          await launchUrl(launchUri);
                         } else {
                           // Handle cases where the phone cannot be launched (e.g., emulator)
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -115,8 +120,13 @@ class AssistantCard extends StatelessWidget {
                   ),
                   IconButton(
                     icon: const Icon(Icons.email, color: AppColors.primary),
-                    onPressed: () {
-                      // Implement email action
+                    onPressed: () async {
+                      await Clipboard.setData(
+                          ClipboardData(text: serviceProvider.email));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('email Copied to clipboard!')),
+                      );
                     },
                     tooltip: 'Email',
                   ),

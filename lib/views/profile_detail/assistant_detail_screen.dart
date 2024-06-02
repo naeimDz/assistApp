@@ -1,4 +1,5 @@
 import 'package:assistantsapp/controllers/assistant/assistant_provider.dart';
+import 'package:assistantsapp/utils/routes/route_name_strings.dart';
 import 'package:assistantsapp/views/sharedwidgets/circle_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +28,8 @@ class AssistantDetailScreen extends StatelessWidget {
             Center(
               child: Text(
                 '${assistant?.firstName} ${assistant?.lastName} ',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
               ),
             ),
             const SizedBox(height: 8),
@@ -37,7 +39,7 @@ class AssistantDetailScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            Text(
+            const Text(
               'Skills :',
               style: TextStyle(fontSize: 30, fontWeight: FontWeight.w500),
             ),
@@ -56,23 +58,23 @@ class AssistantDetailScreen extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             ListTile(
-              leading: Icon(Icons.phone),
+              leading: const Icon(Icons.phone),
               title: Text(assistant?.phoneNumber ?? 'N/A'),
             ),
             ListTile(
-              leading: Icon(Icons.email),
-              title: Text(assistant!.email),
+              leading: const Icon(Icons.email),
+              title: Text(assistant?.email ?? ""),
             ),
             ListTile(
-              leading: Icon(Icons.location_on),
-              title: Text(assistant.address?.toString() ?? 'N/A'),
+              leading: const Icon(Icons.location_on),
+              title: Text(assistant?.address.toString() ?? ""),
             ),
             Center(
               child: ElevatedButton(
                 onPressed: () {
-                  // Implement your appointment booking logic here
+                  Navigator.pushNamed(context, RouteNameStrings.appointScreen);
                 },
-                child: Text('Make Appointment'),
+                child: const Text('Make Appointment'),
               ),
             ),
           ],
