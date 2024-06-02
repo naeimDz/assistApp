@@ -231,7 +231,7 @@ class _SignupScreenState extends State<SignupScreen> with SnackMixin {
             await firestoreService.createDocument(
                 "assistants", user.uid, dataUser);
             Navigator.pushReplacementNamed(
-                context, RouteNameStrings.profileDetailScreen);
+                context, RouteNameStrings.assistantDetailScreen);
             break;
           case "Enterprise":
             await firestoreService.createDocument(

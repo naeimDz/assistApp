@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../models/assistant.dart';
+import '../../sharedwidgets/circle_avatar.dart';
 
 class AssistantCard extends StatelessWidget {
   final Assistant serviceProvider;
@@ -21,7 +22,7 @@ class AssistantCard extends StatelessWidget {
       onTap: () {
         Provider.of<AssistantProvider>(context, listen: false)
             .selectAssistant(serviceProvider.id);
-        Navigator.pushNamed(context, RouteNameStrings.profileDetailScreen);
+        Navigator.pushNamed(context, RouteNameStrings.assistantDetailScreen);
       },
       child: Container(
         margin: const EdgeInsets.all(AppDefaults.margin),
@@ -38,14 +39,8 @@ class AssistantCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  CircleAvatar(
-                    radius: 40,
-                    backgroundImage: serviceProvider.imageUrl != null
-                        ? NetworkImage(serviceProvider.imageUrl!)
-                        : const AssetImage('assets/images/default_avatar.png')
-                            as ImageProvider,
-                    backgroundColor: AppColors.placeholder,
-                  ),
+                  circleAvatar(
+                      serviceProvider.imageUrl, serviceProvider.firstName),
                   AppSizedBox.w15,
                   Expanded(
                     child: Column(

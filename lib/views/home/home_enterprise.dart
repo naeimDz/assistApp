@@ -1,10 +1,10 @@
+/*
 import 'package:assistantsapp/models/subscription.dart';
 import 'package:assistantsapp/utils/routes/route_name_strings.dart';
 import 'package:assistantsapp/views/association/list_clients_for_enterprise.dart';
 import 'package:assistantsapp/views/sharedwidgets/list_assistants_for_enterprise.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-/*
 import '../../controllers/assistant/assistant_provider.dart';
 import '../../controllers/subscription_controller.dart';
 import '../../models/assistant.dart';

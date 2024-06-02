@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.darkTheme,
+      theme: AppTheme.lightTheme,
       initialRoute: FirebaseAuth.instance.currentUser != null
           ? RouteNameStrings.homeScreen
           : RouteNameStrings.signUp,
