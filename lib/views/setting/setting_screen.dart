@@ -47,15 +47,17 @@ class SettingScreen extends StatelessWidget {
           SizedBox(height: 10),
           ListTile(
             title: const Text('personal data'),
-            leading: const Icon(Icons.person),
+            leading: const Icon(Icons.data_object),
             onTap: () {
-              Navigator.pushNamed(context, RouteNameStrings.editProfileView);
+              Navigator.pushNamed(context, RouteNameStrings.editPersonalScreen);
             },
           ),
           ListTile(
-            title: Text('Edit Password'),
-            leading: Icon(Icons.password),
-            onTap: () {},
+            title: Text('Contact data'),
+            leading: Icon(Icons.contact_page),
+            onTap: () {
+              Navigator.pushNamed(context, RouteNameStrings.editContactScreen);
+            },
           ),
           ListTile(
             //trailing: Icon(Icons.arrow_forward),

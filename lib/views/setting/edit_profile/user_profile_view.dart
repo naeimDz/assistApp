@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../services/firestore_service.dart';
+import '../../../services/firestore_service.dart';
 
 class EditProfileView extends StatefulWidget {
   const EditProfileView({super.key});
@@ -122,7 +122,6 @@ class EditProfileViewState extends State<EditProfileView> {
                             onPressed: () async {
                               final selectedDate = await showDatePicker(
                                 context: context,
-                                initialDate: DateTime.now(),
                                 firstDate: DateTime(1996),
                                 lastDate: DateTime(2002),
                               );

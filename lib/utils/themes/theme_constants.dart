@@ -134,7 +134,7 @@ class AppTheme {
         cardColor: AppColors.cardColorDark,
         scaffoldBackgroundColor: AppColors.scaffoldBackgrounDark,
         canvasColor: AppColors.cardColorDark,
-        inputDecorationTheme: InputDecorationTheme(
+        /*inputDecorationTheme: InputDecorationTheme(
           hintStyle: const TextStyle(color: Colors.white),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(17.0),
@@ -147,6 +147,45 @@ class AppTheme {
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20.0),
           ),
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 24.0, horizontal: 24.0),
+        ),*/
+        inputDecorationTheme: InputDecorationTheme(
+          // Hint text color that adapts to dark mode
+          hintStyle: TextStyle(
+            color: Colors.black54,
+          ),
+
+          // Focused border with a slight contrast in dark mode
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(17.0),
+            borderSide: BorderSide(
+              color: Colors.grey,
+            ),
+          ),
+
+          // Enabled border with a subtle difference in dark mode
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(17.0),
+            borderSide: BorderSide(
+              color: Colors.grey.shade200,
+            ),
+          ),
+
+          // Label text color that adjusts to dark mode background
+          labelStyle: TextStyle(
+            color: AppColors.greyedTextColor, // Use your app's color
+          ),
+
+          // Consistent border style with slightly adjusted color for dark mode
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20.0),
+            borderSide: BorderSide(
+              color: Colors.grey.shade200,
+            ),
+          ),
+
+          // Content padding remains consistent
           contentPadding:
               const EdgeInsets.symmetric(vertical: 24.0, horizontal: 24.0),
         ),

@@ -1,14 +1,15 @@
 import 'package:assistantsapp/utils/routes/route_name_strings.dart';
 import 'package:assistantsapp/views/appointment/appoint_screen.dart';
 import 'package:assistantsapp/views/home/home_screen.dart';
-import 'package:assistantsapp/views/setting/privacy_and_terms_screen.dart';
-import 'package:assistantsapp/views/setting/terms_conditions.dart';
+import 'package:assistantsapp/views/setting/privacy/privacy_and_terms_screen.dart';
+import 'package:assistantsapp/views/setting/privacy/terms_conditions.dart';
 import 'package:flutter/material.dart';
 
 import '../../views/auth_screen/login_screen.dart';
 import '../../views/auth_screen/signup_screen.dart';
 import '../../views/profile_detail/assistant_detail_screen.dart';
-import '../../views/setting/profile_edit/user/user_profile_view.dart';
+import '../../views/setting/edit_profile/edit_info_contact_screen.dart';
+import '../../views/setting/edit_profile/edit_info_personal_screen.dart';
 import '../../views/setting/setting_screen.dart';
 
 class Routes {
@@ -24,8 +25,10 @@ class Routes {
         return _buildRoute(const SettingScreen());
       case RouteNameStrings.assistantDetailScreen:
         return _buildRoute(const AssistantDetailScreen());
-      case RouteNameStrings.editProfileView:
-        return _buildRoute(EditProfileView());
+      case RouteNameStrings.editPersonalScreen:
+        return _buildRoute(const EditInfoScreen());
+      case RouteNameStrings.editContactScreen:
+        return _buildRoute(const EditContactScreen());
       case RouteNameStrings.appointScreen:
         return _buildRoute(const AppointScreen());
       case RouteNameStrings.privacyPolicyScreen:
