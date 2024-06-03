@@ -1,13 +1,18 @@
+import 'package:assistantsapp/providers/dark_mode.dart';
 import 'package:assistantsapp/services/firestore_service.dart';
 import 'package:assistantsapp/utils/routes/route_name_strings.dart';
+import 'package:assistantsapp/views/sharedwidgets/circle_avatar.dart';
 import 'package:assistantsapp/views/sharedwidgets/headline_with_row.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SettingScreen extends StatelessWidget {
   const SettingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    var fir = FirestoreService().auth.currentUser?.photoURL;
+    var name = FirestoreService().auth.currentUser?.displayName;
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -19,9 +24,7 @@ class SettingScreen extends StatelessWidget {
               Stack(
                 alignment: Alignment.center,
                 children: [
-                  CircleAvatar(
-                    radius: 70,
-                  ),
+                  circleAvatar(fir, name, radius: 80),
                   Positioned(
                     bottom: 0,
                     right: 0,
@@ -73,15 +76,18 @@ class SettingScreen extends StatelessWidget {
               // Update push notification setting
             },
           ),
-          ListTile(
-            title: Text('Dark Mode'),
-            trailing: Switch(
-              value: false, // Replace with actual value
-              onChanged: (value) {
-                // Toggle dark mode
-              },
-            ),
+          Consumer<ThemeNotifier>(
+            builder: (context, themeNotifier, child) {
+              return SwitchListTile(
+                title: const Text('Dark Mode'),
+                value: themeNotifier.isDarkMode,
+                onChanged: (value) {
+                  themeNotifier.toggleTheme();
+                },
+              );
+            },
           ),
+
           Divider(),
           const HeadlineRow(
             headline: "Privacy",

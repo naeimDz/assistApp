@@ -87,7 +87,7 @@ class Appointment {
         'price': price,
         'providerId': providerId,
         'recurrencePattern': recurrencePattern.name,
-        'status': status.toString(),
+        'status': status.name,
         'allDay': allDay,
         'enterpriseCreator': enterpriseCreator
       };

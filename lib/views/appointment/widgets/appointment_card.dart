@@ -1,4 +1,6 @@
+import 'package:assistantsapp/controllers/appointment_controller.dart';
 import 'package:assistantsapp/models/appointment.dart';
+import 'package:assistantsapp/services/shared_preferences_manager.dart';
 import 'package:flutter/material.dart';
 import '../../../models/enum/appointment_status.dart';
 import '../../../services/date_utils.dart';
@@ -12,12 +14,12 @@ class AppointmentCard extends StatefulWidget {
 }
 
 class _AppointmentCardState extends State<AppointmentCard> {
-  late AppointmentStatus _status;
+  late String _status;
 
   @override
   void initState() {
     super.initState();
-    _status = widget.appointment.status;
+    _status = widget.appointment.status.name;
   }
 
   @override
@@ -114,7 +116,7 @@ class _AppointmentCardState extends State<AppointmentCard> {
                             width: 5,
                           ),
                           Text(
-                            _status.name,
+                            _status,
                             style: const TextStyle(color: Colors.black54),
                           ),
                         ],
@@ -139,8 +141,8 @@ class _AppointmentCardState extends State<AppointmentCard> {
 
   Widget buildActionButtons() {
     switch (_status) {
-      case AppointmentStatus.pending:
-      case AppointmentStatus.confirmed:
+      case "pending":
+      case "confirmed":
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -158,10 +160,27 @@ class _AppointmentCardState extends State<AppointmentCard> {
             ),
           ],
         );
-      case AppointmentStatus.cancelledByClient:
-      case AppointmentStatus.cancelledByProvider:
-      case AppointmentStatus.completed:
-      case AppointmentStatus.noShow:
+      case "cancelledByClient":
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            buildActionButton(
+              buttonText: 'Reschedule',
+              backgroundColor: const Color(0xFF7165D6),
+              textColor: Colors.white,
+              onPressed: () => showReschedulingDialog(),
+            ),
+            buildActionButton(
+              buttonText: 'Cancel',
+              backgroundColor: const Color(0xFFF4F6FA),
+              textColor: Colors.black,
+              onPressed: () => showCancellationDialog(),
+            ),
+          ],
+        );
+      case "cancelledByProvider":
+      case "completed":
+
         // case AppointmentStatus.rescheduled:
         return const SizedBox.shrink();
       default:
@@ -199,12 +218,15 @@ class _AppointmentCardState extends State<AppointmentCard> {
   }
 
   void showCancellationDialog() {
+    final TextEditingController _noteController =
+        TextEditingController(text: "Reason for cancellation ");
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text("Cancel Appointment"),
-          content: const TextField(
+          content: TextField(
+            controller: _noteController,
             maxLines: 17,
             minLines: 3,
             decoration: InputDecoration(hintText: "Reason for cancellation"),
@@ -216,9 +238,22 @@ class _AppointmentCardState extends State<AppointmentCard> {
             ),
             TextButton(
               onPressed: () {
-                // Perform cancellation logic here
+                var role = SharedPreferencesManager.getUserRole();
+                var noteCancellation = _noteController.text;
+                Map<String, dynamic> data = {
+                  'cancellationReason': noteCancellation
+                };
+
+                if (role == "user") {
+                  data['status'] = AppointmentStatus.cancelledByClient.name;
+                } else {
+                  data['status'] = AppointmentStatus.cancelledByProvider.name;
+                }
+
                 setState(() {
-                  _status = AppointmentStatus.cancelledByClient;
+                  _status = data['status'];
+                  AppointmentController().updateAppointment(
+                      widget.appointment.appointmentID!, data);
                 });
                 Navigator.of(context).pop();
               },
@@ -243,7 +278,7 @@ class _AppointmentCardState extends State<AppointmentCard> {
               onPressed: () {
                 // Perform rescheduling logic here
                 setState(() {
-                  _status = AppointmentStatus.confirmed;
+                  _status = AppointmentStatus.confirmed.name;
                 });
                 Navigator.of(context).pop();
               },
@@ -259,21 +294,20 @@ class _AppointmentCardState extends State<AppointmentCard> {
     );
   }
 
-  Color getStatusColor(AppointmentStatus status) {
+  Color getStatusColor(String status) {
     switch (status) {
-      case AppointmentStatus.pending:
+      case "pending":
         return Colors.orange;
-      case AppointmentStatus.confirmed:
+      case "confirmed":
         return Colors.green;
-      case AppointmentStatus.cancelledByClient:
-      case AppointmentStatus.cancelledByProvider:
+      case "cancelledByClient":
+      case "cancelledByProvider":
         return Colors.black;
-      case AppointmentStatus.completed:
+      case "completed":
         return Colors.blue;
       /*case AppointmentStatus.rescheduled:
         return Colors.purple;*/
-      case AppointmentStatus.noShow:
-        return Colors.red;
+
       default:
         return Colors.grey;
     }
