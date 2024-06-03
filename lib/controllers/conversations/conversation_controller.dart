@@ -8,12 +8,12 @@ class ConversationController {
   final String collectionName = 'conversations';
 
   Future<DocumentReference?> createOrCheckConversation(
-      Conversation conversation, String id) async {
+      Conversation conversation, String id, String Assistid) async {
     try {
       // Query Firestore for existing conversations
       final querySnapshot = await _firestoreService.firestore
           .collection(collectionName)
-          // .where('assistantId', isEqualTo: id)
+          .where('assistantId', isEqualTo: Assistid)
           .where('userId', isEqualTo: id)
           .get();
 

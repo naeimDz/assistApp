@@ -40,10 +40,10 @@ class Appointment {
     this.enterpriseCreator = "",
   });
 
-  factory Appointment.fromJson(Map<String, dynamic> json, {String? id}) {
+  factory Appointment.fromJson(Map<String, dynamic> json, String id) {
     try {
       return Appointment(
-        appointmentID: id ?? json['appointmentID'],
+        appointmentID: id,
         assistantDisplayName: json['assistantDisplayName'] as String,
         assistantEmail: json['assistantEmail'] as String,
         cancellationReason: json['cancellationReason'] as String,
@@ -89,6 +89,6 @@ class Appointment {
         'recurrencePattern': recurrencePattern.name,
         'status': status.toString(),
         'allDay': allDay,
-        'enterpriseCreator': enterpriseCreator ?? ""
+        'enterpriseCreator': enterpriseCreator
       };
 }

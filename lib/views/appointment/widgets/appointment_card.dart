@@ -1,8 +1,6 @@
-/*import 'package:assistantsapp/models/appointment.dart';
+import 'package:assistantsapp/models/appointment.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-import '../../../controllers/appointment_controller_provider.dart';
+import '../../../models/enum/appointment_status.dart';
 import '../../../services/date_utils.dart';
 
 class AppointmentCard extends StatefulWidget {
@@ -14,12 +12,12 @@ class AppointmentCard extends StatefulWidget {
 }
 
 class _AppointmentCardState extends State<AppointmentCard> {
-  late String _status;
+  late AppointmentStatus _status;
 
   @override
   void initState() {
     super.initState();
-    _status = widget.appointment.status.name;
+    _status = widget.appointment.status;
   }
 
   @override
@@ -44,18 +42,26 @@ class _AppointmentCardState extends State<AppointmentCard> {
                 children: [
                   ListTile(
                     title: Text(
-                      widget.appointment.assistantDisplayName ??
-                          widget.appointment.assistantEmail ??
-                          "AssistantName",
+                      widget.appointment.assistantDisplayName,
                       style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
+                          fontWeight: FontWeight.bold, color: Colors.black54),
                     ),
-                    subtitle: Text(
-                        "scheduled with ${widget.appointment.clientdisplayName}"),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "scheduled with ${widget.appointment.clientDisplayName}",
+                          style: const TextStyle(color: Colors.black54),
+                        ),
+                        Text(
+                          widget.appointment.enterpriseCreator ?? "",
+                          style: const TextStyle(color: Colors.purple),
+                        ),
+                      ],
+                    ),
                     trailing: Text(
                       "${widget.appointment.price.round()}DZD",
-                      style: const TextStyle(fontSize: 17),
+                      style: const TextStyle(color: Colors.black54),
                     ),
                   ),
                   const Padding(
@@ -72,19 +78,13 @@ class _AppointmentCardState extends State<AppointmentCard> {
                         children: [
                           const Icon(
                             Icons.calendar_month,
-                            color: Colors.black54,
                           ),
                           const SizedBox(
                             width: 5,
                           ),
                           Text(
-                            widget.appointment.appointmentCreation?.day != null
-                                ? Utils.apiDayFormat(
-                                    widget.appointment.dateTime)
-                                : "",
-                            style: const TextStyle(
-                              color: Colors.black54,
-                            ),
+                            Utils.apiDayFormat(widget.appointment.dateTime),
+                            style: const TextStyle(color: Colors.black54),
                           ),
                         ],
                       ),
@@ -92,16 +92,13 @@ class _AppointmentCardState extends State<AppointmentCard> {
                         children: [
                           const Icon(
                             Icons.access_time_filled,
-                            color: Colors.black54,
                           ),
                           const SizedBox(
                             width: 5,
                           ),
                           Text(
                             "${widget.appointment.duration.inHours.toString()} hours",
-                            style: const TextStyle(
-                              color: Colors.black54,
-                            ),
+                            style: const TextStyle(color: Colors.black54),
                           )
                         ],
                       ),
@@ -117,10 +114,8 @@ class _AppointmentCardState extends State<AppointmentCard> {
                             width: 5,
                           ),
                           Text(
-                            _status,
-                            style: const TextStyle(
-                              color: Colors.black54,
-                            ),
+                            _status.name,
+                            style: const TextStyle(color: Colors.black54),
                           ),
                         ],
                       )
@@ -144,13 +139,13 @@ class _AppointmentCardState extends State<AppointmentCard> {
 
   Widget buildActionButtons() {
     switch (_status) {
-      case 'scheduled':
-      case 'confirmed':
+      case AppointmentStatus.pending:
+      case AppointmentStatus.confirmed:
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             buildActionButton(
-              buttonText: 'Rescheduled',
+              buttonText: 'Reschedule',
               backgroundColor: const Color(0xFF7165D6),
               textColor: Colors.white,
               onPressed: () => showReschedulingDialog(),
@@ -163,8 +158,14 @@ class _AppointmentCardState extends State<AppointmentCard> {
             ),
           ],
         );
+      case AppointmentStatus.cancelledByClient:
+      case AppointmentStatus.cancelledByProvider:
+      case AppointmentStatus.completed:
+      case AppointmentStatus.noShow:
+        // case AppointmentStatus.rescheduled:
+        return const SizedBox.shrink();
       default:
-        return SizedBox.shrink();
+        return const SizedBox.shrink();
     }
   }
 
@@ -215,15 +216,9 @@ class _AppointmentCardState extends State<AppointmentCard> {
             ),
             TextButton(
               onPressed: () {
-                Provider.of<AppointmentController>(
-                  context,
-                  listen: false,
-                ).updateAppointmentStatus(
-                  widget.appointment.id!,
-                  AppointmentStatus.cancelled.name,
-                );
+                // Perform cancellation logic here
                 setState(() {
-                  _status = AppointmentStatus.cancelled.name;
+                  _status = AppointmentStatus.cancelledByClient;
                 });
                 Navigator.of(context).pop();
               },
@@ -240,40 +235,19 @@ class _AppointmentCardState extends State<AppointmentCard> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Change Status'),
-          content: const Text('Select the new status for the appointment.'),
+          title: const Text('Reschedule Appointment'),
+          content:
+              const Text('Select a new date and time for the appointment.'),
           actions: [
             TextButton(
               onPressed: () {
-                Provider.of<AppointmentController>(
-                  context,
-                  listen: false,
-                ).updateAppointmentStatus(
-                  widget.appointment.id!,
-                  AppointmentStatus.completed.name,
-                );
+                // Perform rescheduling logic here
                 setState(() {
-                  _status = AppointmentStatus.completed.name;
+                  _status = AppointmentStatus.confirmed;
                 });
                 Navigator.of(context).pop();
               },
-              child: const Text('Complete'),
-            ),
-            TextButton(
-              onPressed: () {
-                Provider.of<AppointmentController>(
-                  context,
-                  listen: false,
-                ).updateAppointmentStatus(
-                  widget.appointment.id!,
-                  AppointmentStatus.confirmed.name,
-                );
-                setState(() {
-                  _status = AppointmentStatus.confirmed.name;
-                });
-                Navigator.of(context).pop();
-              },
-              child: const Text('Confirm'),
+              child: const Text('Reschedule'),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -285,19 +259,23 @@ class _AppointmentCardState extends State<AppointmentCard> {
     );
   }
 
-  Color getStatusColor(String status) {
+  Color getStatusColor(AppointmentStatus status) {
     switch (status) {
-      case 'scheduled':
+      case AppointmentStatus.pending:
         return Colors.orange;
-      case 'cancelled':
-        return Colors.black;
-      case 'completed':
-        return Colors.blue;
-      case 'confirmed':
+      case AppointmentStatus.confirmed:
         return Colors.green;
-      default:
+      case AppointmentStatus.cancelledByClient:
+      case AppointmentStatus.cancelledByProvider:
         return Colors.black;
+      case AppointmentStatus.completed:
+        return Colors.blue;
+      /*case AppointmentStatus.rescheduled:
+        return Colors.purple;*/
+      case AppointmentStatus.noShow:
+        return Colors.red;
+      default:
+        return Colors.grey;
     }
   }
 }
-*/

@@ -38,8 +38,10 @@ class ConversationListScreen extends StatelessWidget {
                     child: Text(
                         '${conversation.assistantDisplayName[0].toUpperCase()}${conversation.userDisplayName[0].toUpperCase()}'),
                   ),
-                  title: Text(conversation.assistantDisplayName),
-                  subtitle: Text(conversation.lastMessage),
+                  title: Text(
+                      "${conversation.assistantDisplayName} __ ${conversation.userDisplayName}"),
+                  subtitle:
+                      Text("${conversation.lastMessage.substring(0, 40)}....."),
                   onTap: () {
                     Navigator.push(
                       context,

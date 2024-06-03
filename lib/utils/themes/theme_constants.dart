@@ -126,6 +126,8 @@ class AppTheme {
               displayColor: Colors.white,
               bodyColor: Colors.white,
             ),
+        dialogTheme:
+            const DialogTheme(backgroundColor: AppColors.cardColorDark),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
             backgroundColor: AppColors.cardColorDark,
             selectedItemColor: AppColors.primary),

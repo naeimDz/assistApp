@@ -1,6 +1,7 @@
 //import 'package:assistantsapp/controllers/authentication_controller.dart';
 import 'package:assistantsapp/controllers/authentication_controller.dart';
 import 'package:assistantsapp/utils/routes/route_name_strings.dart';
+import 'package:assistantsapp/views/appointment/appointment_screen.dart';
 import 'package:assistantsapp/views/conversation/conversation_screen.dart';
 import 'package:assistantsapp/views/home/widgets/header.dart';
 import 'package:assistantsapp/views/setting/setting_screen.dart';
@@ -52,7 +53,7 @@ class PageRouter extends StatelessWidget {
     // Define a list of widgets for each page
     final List<Widget> pages = [
       const HeaderHome(),
-      const SizedBox(),
+      const AppointmentScreen(),
       const ConversationListScreen(),
       const SettingScreen(),
     ];

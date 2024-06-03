@@ -94,4 +94,9 @@ class FirestoreService {
       throw e; // Re-throw for further handling
     }
   }
+
+  Query query(String collectionPath) {
+    Query query = _firestore.collection(collectionPath);
+    return query;
+  }
 }

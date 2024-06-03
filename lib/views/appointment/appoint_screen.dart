@@ -36,8 +36,6 @@ class _AppointScreenState extends State<AppointScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // final chatMessageController = ChatMessageController();
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -57,6 +55,7 @@ class _AppointScreenState extends State<AppointScreen> {
             // _buildAvailableSlots(),
             _buildDurationSlider(),
             _buildDescriptionInput(),
+            const SizedBox(height: 17),
             _buildBookButton(),
           ],
         ),
@@ -266,6 +265,8 @@ class _AppointScreenState extends State<AppointScreen> {
       onTap: () async {
         var dis = makeAppointment();
         DocumentReference<Object?> ref = await makeConversation();
+        print(ref);
+        print("///////////////******************//////////////////");
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Appointment booked successfully!'),
@@ -307,15 +308,16 @@ class _AppointScreenState extends State<AppointScreen> {
         .selectedAssistant;
     var currentUser = FirestoreService().auth.currentUser;
     var newAppointment = Appointment(
-        assistantDisplayName: assistant?.lastName ?? assistant!.username,
-        assistantEmail: assistant!.email,
-        providerId: assistant.id,
-        clientEmail: currentUser!.email!,
-        clientDisplayName: currentUser.displayName!,
-        dateTime: _selectedDate,
-        duration: _durationHours,
-        price: double.parse(_priceController.text),
-        clientId: currentUser.uid);
+      assistantDisplayName: assistant?.lastName ?? assistant!.username,
+      assistantEmail: assistant!.email,
+      providerId: assistant.id,
+      clientEmail: currentUser!.email!,
+      clientDisplayName: currentUser.displayName!,
+      dateTime: _selectedDate,
+      duration: _durationHours,
+      price: double.parse(_priceController.text),
+      clientId: currentUser.uid,
+    );
 
     AppointmentController().createAppointment(newAppointment);
     return assistant.lastName;
@@ -335,8 +337,8 @@ class _AppointScreenState extends State<AppointScreen> {
         lastMessage: textDescription,
         userDisplayName: currentUser!.displayName!,
         userId: currentUser.uid);
-    var ref = await ConversationController()
-        .createOrCheckConversation(newConversation, currentUser.uid);
+    var ref = await ConversationController().createOrCheckConversation(
+        newConversation, currentUser.uid, assistant.id);
 
     MessageController().addMessage(
         ref!.id,

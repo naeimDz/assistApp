@@ -16,39 +16,46 @@ class AppointmentController {
     final snapshot =
         await _firestoreService.getDocumentById(collectionName, appointmentId);
     if (snapshot != null && snapshot.exists) {
-      return Appointment.fromJson(snapshot.data()!);
+      return Appointment.fromJson(snapshot.data()!, appointmentId);
     }
     return null;
   }
 
-  Future<List<Appointment>> getAllAppointments() async {
-    final snapshot = await _firestoreService.getAllDocuments(collectionName);
-    if (snapshot != null) {
-      return snapshot.docs
-          .map((doc) => Appointment.fromJson(doc.data()))
-          .toList();
-    }
-    return [];
-  }
-
   Future<void> updateAppointment(
-      String appointmentId, Appointment appointment) async {
-    await _firestoreService.updateDocument(
-        collectionName, appointmentId, appointment.toJson());
+      String appointmentId, Map<String, dynamic> data) async {
+    await _firestoreService.updateDocument(collectionName, appointmentId, data);
   }
 
   Future<void> deleteAppointment(String appointmentId) async {
     await _firestoreService.deleteDocument(collectionName, appointmentId);
   }
 
-  Stream<List<Appointment>> getAppointmentsStream() {
-    return _firestoreService.firestore
-        .collection(collectionName)
-        .snapshots()
-        .map((snapshot) {
+  Stream<List<Appointment?>> getAppointmentsStreamByField(String role,
+      {String? fieldId}) {
+    var query = _firestoreService.query(collectionName);
+    // Filter by role (optional)
+    if (role == 'user') {
+      query = query.where('clientId', isEqualTo: fieldId);
+    } else if (role == 'assistant') {
+      query = query.where('providerId', isEqualTo: fieldId);
+    }
+
+    return query.snapshots().map((snapshot) {
       return snapshot.docs
-          .map((doc) => Appointment.fromJson(doc.data()))
+          .map((doc) {
+            try {
+              return Appointment.fromJson(
+                  doc.data() as Map<String, dynamic>, doc.id);
+            } catch (e) {
+              print('Error parsing appointment: $e');
+              return null;
+            }
+          })
+          .where((appointment) => appointment != null)
           .toList();
+    }).handleError((error) {
+      print('Error fetching appointments: $error');
+      return [];
     });
   }
 }
