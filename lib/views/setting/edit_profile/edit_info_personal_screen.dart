@@ -1,6 +1,9 @@
 import 'package:assistantsapp/models/enum/gender.dart';
 import 'package:flutter/material.dart';
 
+import '../../../services/date_utils.dart';
+import '../../../services/firestore_service.dart';
+
 class EditInfoScreen extends StatefulWidget {
   const EditInfoScreen({super.key});
 
@@ -10,10 +13,48 @@ class EditInfoScreen extends StatefulWidget {
 
 class _EditInfoScreenState extends State<EditInfoScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _firstNameController = TextEditingController();
-  final TextEditingController _lastNameController = TextEditingController();
-  final TextEditingController _birthdayController = TextEditingController();
+  late TextEditingController _firstNameController;
+  late TextEditingController _lastNameController;
+  late TextEditingController _birthdayController;
   Gender? _selectedGender;
+  @override
+  void initState() {
+    super.initState();
+    _firstNameController = TextEditingController();
+    _lastNameController = TextEditingController();
+    // _genderController = TextEditingController();
+    _birthdayController = TextEditingController();
+
+    // ... other initializations
+
+    final userStream = FirestoreService().getCurrentUserDataStream();
+
+    if (userStream != null) {
+      userStream.listen((snapshot) {
+        if (snapshot.exists) {
+          final userData = snapshot.data()!;
+
+          // Convert Timestamp to DateTime
+          final birthday = userData['birthday'].toDate();
+
+          _firstNameController.text = userData['firstName'] as String;
+          _lastNameController.text = userData['lastName'] as String;
+          _selectedGender = Gender.values.byName(userData['gender'] as String);
+          // Use Utils class for formatting (replace 'dd MMM yyyy' with your desired format)
+          _birthdayController.text = Utils.fullDayFormat(birthday);
+        }
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    //  _genderController.dispose();
+    _birthdayController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +98,7 @@ class _EditInfoScreenState extends State<EditInfoScreen> {
               const SizedBox(height: 16),
               DropdownButtonFormField<Gender>(
                 decoration: const InputDecoration(
-                  labelText: 'Gender',
+                  labelText: "Gender",
                   border: OutlineInputBorder(),
                 ),
                 value: _selectedGender,
@@ -90,14 +131,14 @@ class _EditInfoScreenState extends State<EditInfoScreen> {
                 onTap: () async {
                   DateTime? pickedDate = await showDatePicker(
                     context: context,
-                    initialDate: DateTime.now(),
+                    //initialDate: DateTime.now(),
                     firstDate: DateTime(1954),
                     lastDate: DateTime(2004),
                   );
                   if (pickedDate != null) {
                     setState(() {
                       _birthdayController.text =
-                          "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
+                          "${pickedDate.year}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.day.toString().padLeft(2, '0')}";
                     });
                   }
                 },

@@ -17,8 +17,9 @@ class FirestoreService {
   Stream<DocumentSnapshot<Map<String, dynamic>>>? getCurrentUserDataStream() {
     var role = SharedPreferencesManager.getUserRole();
     final uid = _auth.currentUser?.uid;
+
     if (uid == null) return null;
-    if (role != "user") {
+    if (role == "user") {
       return _firestore
           .collection('users')
           .doc(uid)
