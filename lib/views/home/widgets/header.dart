@@ -14,6 +14,7 @@ import 'package:assistantsapp/views/home/widgets/assistant_card.dart';
 import 'package:assistantsapp/views/sharedwidgets/segment_options.dart';
 
 import '../../../services/handle_snapshot.dart';
+import 'enterprise_card.dart';
 
 class HeaderHome extends StatefulWidget {
   const HeaderHome({super.key});
@@ -102,7 +103,9 @@ class _HeaderHomeState extends State<HeaderHome> {
   Widget _buildEnterpriseList(List<Enterprise> listEnterprises) {
     return Column(
       children: listEnterprises
-          .map((enterprise) => Text(enterprise.enterpriseName))
+          .map((enterprise) => EnterpriseCard(
+                enterprise: enterprise,
+              ))
           .toList(), // Replace with your EnterpriseCard or similar widget
     );
   }

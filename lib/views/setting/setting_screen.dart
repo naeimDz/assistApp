@@ -63,7 +63,10 @@ class SettingScreen extends StatelessWidget {
             //trailing: Icon(Icons.arrow_forward),
             title: const Text('im a assistant'),
             leading: const Icon(Icons.assistant),
-            onTap: () {},
+            onTap: () {
+              Navigator.pushNamed(
+                  context, RouteNameStrings.editAssistantProfileView);
+            },
           ),
           Divider(),
           const HeadlineRow(

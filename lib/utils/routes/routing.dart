@@ -1,6 +1,8 @@
 import 'package:assistantsapp/utils/routes/route_name_strings.dart';
 import 'package:assistantsapp/views/appointment/appoint_screen.dart';
 import 'package:assistantsapp/views/home/home_screen.dart';
+import 'package:assistantsapp/views/profile_detail/enterprise_detail_screen.dart';
+import 'package:assistantsapp/views/setting/edit_profile/edit_assistant_profile_screen.dart';
 import 'package:assistantsapp/views/setting/privacy/privacy_and_terms_screen.dart';
 import 'package:assistantsapp/views/setting/privacy/terms_conditions.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +27,10 @@ class Routes {
         return _buildRoute(const SettingScreen());
       case RouteNameStrings.assistantDetailScreen:
         return _buildRoute(const AssistantDetailScreen());
+      case RouteNameStrings.enterpriseDetailScreen:
+        return _buildRoute(const EnterpriseDetailScreen());
+      case RouteNameStrings.editAssistantProfileView:
+        return _buildRoute(const EditAssistantProfileView());
       case RouteNameStrings.editPersonalScreen:
         return _buildRoute(const EditInfoScreen());
       case RouteNameStrings.editContactScreen:

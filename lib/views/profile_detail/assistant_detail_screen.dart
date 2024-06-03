@@ -44,12 +44,20 @@ class AssistantDetailScreen extends StatelessWidget {
               style: TextStyle(fontSize: 30, fontWeight: FontWeight.w500),
             ),
             const SizedBox(height: 8),
+            /*
+Text(
+  (assistant.skillsList == null || assistant.skillsList.isEmpty)
+      ? 'No Skills'
+      : assistant.skillsList.map((skills) => Text(skill, style: const TextStyle(fontSize: 16))).toList().toString(),
+  style: const TextStyle(fontSize: 16),
+),
+            */
             Wrap(
               spacing: 8,
               children: assistant?.skillsList
                       ?.map((skill) => Chip(label: Text(skill)))
                       .toList() ??
-                  [],
+                  [const Text("No Skiils")],
             ),
             const SizedBox(height: 16),
             const Text(

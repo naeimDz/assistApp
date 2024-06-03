@@ -28,6 +28,6 @@ class Address {
       };
   @override
   String toString() {
-    return "${province ?? ""}, $city, $street";
+    return "${province ?? 'Unknown City'}, $city, $street";
   }
 }

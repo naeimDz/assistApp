@@ -33,7 +33,7 @@ class AssistantCard extends StatelessWidget {
           boxShadow: AppDefaults.boxShadow,
         ),
         child: Container(
-          height: 220,
+          height: 240,
           padding: const EdgeInsets.all(AppDefaults.padding),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -41,7 +41,8 @@ class AssistantCard extends StatelessWidget {
               Row(
                 children: [
                   circleAvatar(
-                      serviceProvider.imageUrl, serviceProvider.firstName),
+                      serviceProvider.imageUrl, serviceProvider.firstName,
+                      radius: 40),
                   AppSizedBox.w15,
                   Expanded(
                     child: Column(
@@ -51,28 +52,44 @@ class AssistantCard extends StatelessWidget {
                           '${serviceProvider.firstName} ${serviceProvider.lastName}',
                           style: const TextStyle(
                             color: AppColors.blackText,
-                            fontSize: 18,
+                            fontSize: 24,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
-                          "${serviceProvider.address?.city ?? 'Unknown City'} • Joined ${DateFormat.yMMMd().format(serviceProvider.joinDate?.toDate() ?? DateTime.now())}",
-                          style: TextStyle(
-                            color: AppColors.greyedTextColor,
-                            fontSize: 14,
+                          serviceProvider.serviceType.name,
+                          style: const TextStyle(
+                            color: AppColors.blackText,
+                            fontSize: 17,
+                            fontWeight: FontWeight.w300,
                           ),
                         ),
                       ],
                     ),
                   ),
-                  const Icon(
-                    Icons.arrow_forward_ios,
-                    color: AppColors.greyedTextColor,
+                ],
+              ),
+              AppSizedBox.h15,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "•  ${serviceProvider.address.toString()} ",
+                    style: TextStyle(
+                      color: AppColors.greyedTextColor,
+                      fontSize: 14,
+                    ),
+                  ),
+                  Text(
+                    "• Joined ${DateFormat.yMMMd().format(serviceProvider.joinDate?.toDate() ?? DateTime.now())}",
+                    style: TextStyle(
+                      color: AppColors.greyedTextColor,
+                      fontSize: 14,
+                    ),
                   ),
                 ],
               ),
               const Spacer(),
-              AppSizedBox.h15,
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [

@@ -63,7 +63,11 @@ class _EditContactScreenState extends State<EditContactScreen> {
           key: _formKey,
           child: ListView(
             children: [
-              const SizedBox(height: 12),
+              Text(
+                'Address Information',
+                style: Theme.of(context).textTheme.headline6,
+              ),
+              const SizedBox(height: 16),
               TextFormField(
                 controller: _provinceController,
                 decoration: const InputDecoration(
@@ -104,6 +108,11 @@ class _EditContactScreenState extends State<EditContactScreen> {
                   }
                   return null;
                 },
+              ),
+              const SizedBox(height: 32),
+              Text(
+                'Phone Number',
+                style: Theme.of(context).textTheme.headline6,
               ),
               const SizedBox(height: 16),
               TextFormField(

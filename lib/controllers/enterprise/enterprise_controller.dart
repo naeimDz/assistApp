@@ -40,4 +40,40 @@ class EnterpriseController {
   Future<void> deleteEnterprise(String id) async {
     await _db.deleteDocument(collectionName, id);
   }
+/*
+  Future<void> addToEnterprise(
+      String enterpriseId, String id, String? isAssistant) async {
+    DocumentReference enterpriseRef =await _db.getDocumentById(collectionName, enterpriseId);
+
+    // Determine the correct collection reference
+    DocumentReference userOrAssistantRef;
+    if (isAssistant == "Assistant") {
+      userOrAssistantRef = Database.dbInstance.collection('providers').doc(id);
+    } else {
+      userOrAssistantRef = Database.dbInstance.collection('users').doc(id);
+    }
+
+    await _db.firestore.runTransaction((transaction) async {
+      DocumentSnapshot enterpriseSnapshot =
+          await transaction.get(enterpriseRef);
+
+      if (enterpriseSnapshot.exists) {
+        // Retrieve the correct list based on whether it's an assistant or not
+        List<dynamic> usersOrAssists = isAssistant == "Assistant"
+            ? List.from(enterpriseSnapshot.get('assists') ?? [])
+            : List.from(enterpriseSnapshot.get('users') ?? []);
+
+        // Add the new reference
+        usersOrAssists.add(userOrAssistantRef);
+
+        // Remove duplicates by converting to a set and back to a list
+        usersOrAssists = usersOrAssists.toSet().toList();
+
+        // Update the Firestore document with the deduplicated list
+        transaction.update(enterpriseRef, {
+          isAssistant == "Assistant" ? 'assists' : 'clients': usersOrAssists
+        });
+      }
+    });
+  }*/
 }
