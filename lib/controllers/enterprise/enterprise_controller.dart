@@ -63,7 +63,7 @@ class EnterpriseController {
     // Determine the correct collection reference
     DocumentReference userOrAssistantRef;
     if (isAssistant) {
-      userOrAssistantRef = _db.firestore.collection('providers').doc(id);
+      userOrAssistantRef = _db.firestore.collection('assistants').doc(id);
     } else {
       userOrAssistantRef = _db.firestore.collection('users').doc(id);
     }

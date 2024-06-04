@@ -2,7 +2,6 @@ import 'package:assistantsapp/controllers/assistant/assistant_provider.dart';
 import 'package:assistantsapp/utils/constants/app_colors.dart';
 import 'package:assistantsapp/utils/constants/app_defaults.dart';
 import 'package:assistantsapp/utils/constants/sizedbox_const.dart';
-import 'package:assistantsapp/utils/routes/route_name_strings.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,8 +13,9 @@ import '../../sharedwidgets/circle_avatar.dart';
 
 class AssistantCard extends StatelessWidget {
   final Assistant serviceProvider;
-
-  const AssistantCard({super.key, required this.serviceProvider});
+  final String nextScreen;
+  const AssistantCard(
+      {super.key, required this.serviceProvider, required this.nextScreen});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class AssistantCard extends StatelessWidget {
       onTap: () {
         Provider.of<AssistantProvider>(context, listen: false)
             .selectAssistant(serviceProvider.id);
-        Navigator.pushNamed(context, RouteNameStrings.assistantDetailScreen);
+        Navigator.pushNamed(context, nextScreen);
       },
       child: Container(
         margin: const EdgeInsets.all(AppDefaults.margin),

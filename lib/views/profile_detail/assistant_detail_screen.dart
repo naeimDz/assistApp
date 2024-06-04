@@ -1,8 +1,12 @@
 import 'package:assistantsapp/controllers/assistant/assistant_provider.dart';
+import 'package:assistantsapp/services/shared_preferences_manager.dart';
 import 'package:assistantsapp/utils/routes/route_name_strings.dart';
 import 'package:assistantsapp/views/sharedwidgets/circle_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../../controllers/enterprise/enterprise_provider.dart';
+import '../../services/firestore_service.dart';
 
 class AssistantDetailScreen extends StatelessWidget {
   const AssistantDetailScreen({super.key});
@@ -44,14 +48,6 @@ class AssistantDetailScreen extends StatelessWidget {
               style: TextStyle(fontSize: 30, fontWeight: FontWeight.w500),
             ),
             const SizedBox(height: 8),
-            /*
-Text(
-  (assistant.skillsList == null || assistant.skillsList.isEmpty)
-      ? 'No Skills'
-      : assistant.skillsList.map((skills) => Text(skill, style: const TextStyle(fontSize: 16))).toList().toString(),
-  style: const TextStyle(fontSize: 16),
-),
-            */
             Wrap(
               spacing: 8,
               children: assistant?.skillsList
@@ -80,11 +76,22 @@ Text(
             Center(
               child: ElevatedButton(
                 onPressed: () {
-                  Provider.of<AssistantProvider>(context, listen: false)
-                      .selectAssistant(assistant!.id);
-                  Navigator.pushNamed(context, RouteNameStrings.appointScreen);
+                  var role = SharedPreferencesManager.getUserRole();
+                  if (role != 'enterprise') {
+                    var enterpriseId = FirestoreService().auth.currentUser!.uid;
+
+                    EnterpriseProvider()
+                        .addToEnterprise(enterpriseId, assistant!.id, true);
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text('Subscribe sent successfully! '),
+                      backgroundColor: Colors.green,
+                    ));
+                  } else {
+                    Navigator.pushNamed(
+                        context, RouteNameStrings.appointScreen);
+                  }
                 },
-                child: const Text('Make Appointment'),
+                child: Text("lets connect"),
               ),
             ),
           ],

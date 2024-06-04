@@ -39,7 +39,7 @@ class AppointmentController {
     } else if (role == 'assistant') {
       query = query.where('providerId', isEqualTo: fieldId);
     }
-
+    query = query.orderBy('dateTime', descending: false);
     return query.snapshots().map((snapshot) {
       return snapshot.docs
           .map((doc) {

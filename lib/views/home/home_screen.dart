@@ -1,10 +1,12 @@
 //import 'package:assistantsapp/controllers/authentication_controller.dart';
 import 'package:assistantsapp/controllers/authentication_controller.dart';
+import 'package:assistantsapp/services/shared_preferences_manager.dart';
 import 'package:assistantsapp/utils/routes/route_name_strings.dart';
 import 'package:assistantsapp/views/appointment/appointment_screen.dart';
 import 'package:assistantsapp/views/conversation/conversation_screen.dart';
 import 'package:assistantsapp/views/home/home_enterprise.dart';
 import 'package:assistantsapp/views/home/widgets/header.dart';
+
 import 'package:assistantsapp/views/setting/setting_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +18,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var role = SharedPreferencesManager.getUserRole();
     return Scaffold(
       appBar: AppBar(
         leading: const Icon(
@@ -38,14 +41,21 @@ class HomeScreen extends StatelessWidget {
         ],
         centerTitle: true,
       ),
-      body: const PageRouter(),
+      body: role == "enterprise"
+          ? const PageRouter(
+              widgetHome: HeaderHome(),
+            )
+          : const PageRouter(
+              widgetHome: HomeEnterprise(),
+            ),
       bottomNavigationBar: const MyBottomNavigatiobBar(),
     );
   }
 }
 
 class PageRouter extends StatelessWidget {
-  const PageRouter({super.key});
+  final Widget widgetHome;
+  const PageRouter({super.key, required this.widgetHome});
 
   @override
   Widget build(BuildContext context) {
@@ -53,8 +63,8 @@ class PageRouter extends StatelessWidget {
 
     // Define a list of widgets for each page
     final List<Widget> pages = [
-      const HeaderHome(),
-      const HomeEnterprise(),
+      widgetHome,
+      const AppointmentScreen(),
       const ConversationListScreen(),
       const SettingScreen(),
     ];

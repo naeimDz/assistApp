@@ -1,3 +1,4 @@
+import 'package:assistantsapp/utils/routes/route_name_strings.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../models/assistant.dart';
@@ -12,8 +13,10 @@ Widget buildAssistantList(
 
   return Column(
     children: [
-      ...filteredAssistants
-          .map((assistant) => AssistantCard(serviceProvider: assistant)),
+      ...filteredAssistants.map((assistant) => AssistantCard(
+            serviceProvider: assistant,
+            nextScreen: RouteNameStrings.assistantDetailScreen,
+          )),
     ],
   );
 }

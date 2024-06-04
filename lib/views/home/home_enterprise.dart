@@ -1,3 +1,4 @@
+import 'package:assistantsapp/controllers/client/client_provider.dart';
 import 'package:assistantsapp/controllers/enterprise/enterprise_provider.dart';
 import 'package:assistantsapp/models/assistant.dart';
 import 'package:assistantsapp/models/client.dart';
@@ -27,12 +28,12 @@ class HomeEnterprise extends StatefulWidget {
 class _HomeEnterpriseState extends State<HomeEnterprise> {
   int _selectedIndex = 0; // Track the selected index
   var role = SharedPreferencesManager.getUserRole();
-  var id = FirestoreService().auth.currentUser!.uid;
+  var EnterpriseID = FirestoreService().auth.currentUser!.uid;
   @override
   Widget build(BuildContext context) {
     final enterpriseProvider =
         Provider.of<EnterpriseProvider>(context, listen: false);
-    enterpriseProvider.selectEnterprise(id);
+    enterpriseProvider.selectEnterprise(EnterpriseID);
 
     return ListView(
       children: [
@@ -92,6 +93,7 @@ class _HomeEnterpriseState extends State<HomeEnterprise> {
                       Assistant.fromJson(doc.data() as Map<String, dynamic>);
                   return AssistantCard(
                     serviceProvider: assistant,
+                    nextScreen: RouteNameStrings.appointScreen,
                   );
                 }).toList(),
               );
@@ -120,8 +122,11 @@ class _HomeEnterpriseState extends State<HomeEnterprise> {
                         const SizedBox(height: 10),
                         GestureDetector(
                           onTap: () {
-                            /* Provider.of<UserController>(context, listen: false)
-                        .userCurrent = user;
+                            Provider.of<ClientProvider>(context, listen: false)
+                                .selectClient(client.id);
+                            Navigator.pushNamed(
+                                context, RouteNameStrings.appointScreen);
+                            /*
                     Provider.of<UserController>(context, listen: false)
                         .setusersCurrent(users);
                     showDialog(

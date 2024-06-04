@@ -1,4 +1,4 @@
-/*import 'package:assistantsapp/models/assistant.dart';
+import 'package:assistantsapp/models/assistant.dart';
 import 'package:flutter/material.dart';
 
 class AssistantCardSimple extends StatelessWidget {
@@ -35,7 +35,7 @@ class AssistantCardSimple extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              subtitle: Text(assistant.serviceType ?? ""),
+              subtitle: Text(assistant.serviceType.name ?? ""),
               /* trailing: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       mainAxisAlignment: MainAxisAlignment.center,
@@ -61,7 +61,7 @@ class AssistantCardSimple extends StatelessWidget {
               child: Text(
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                assistant.qualificationsList.toString(),
+                assistant.skillsList.toString(),
                 style: const TextStyle(color: Colors.black),
               ),
             )
@@ -71,4 +71,3 @@ class AssistantCardSimple extends StatelessWidget {
     );
   }
 }
-*/

@@ -1,8 +1,10 @@
 import 'package:assistantsapp/models/enum/appointment_status.dart';
 import 'package:assistantsapp/services/firestore_service.dart';
 import 'package:assistantsapp/services/shared_preferences_manager.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../../controllers/appointment_controller.dart';
+import '../../controllers/enterprise/enterprise_provider.dart';
 import '../../models/appointment.dart';
 import 'widgets/appointment_card.dart';
 import 'widgets/appointment_filter.dart';
@@ -28,72 +30,131 @@ class AppointmentScreenState extends State<AppointmentScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Appointments'),
-          actions: [
-            DropdownButton<AppointmentStatus>(
-              value: _selectedStatus,
-              items: AppointmentStatus.values.map((status) {
-                return DropdownMenuItem<AppointmentStatus>(
-                  value: status,
-                  child: Text(status.name.toUpperCase()),
-                );
-              }).toList(),
-              onChanged: (newStatus) =>
-                  setState(() => _selectedStatus = newStatus!),
-            ),
-          ],
-        ),
-        body:
-            //  SharedPreferencesManager.getUserRole() != 'Enterprise'?
-            StreamBuilder<List<Appointment?>>(
-          stream: _appointmentController.getAppointmentsStreamByField(role,
-              fieldId: id),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return Center(child: Text('No appointments found'));
-            } else {
-              final List<Appointment?>? filteredAppointments =
-                  filterAppointments(snapshot.data, _selectedStatus.name);
-
-              return ListView.builder(
-                itemCount: filteredAppointments?.length,
-                itemBuilder: (context, index) {
-                  return AppointmentCard(
-                      appointment: filteredAppointments![index]!);
-                },
+      appBar: AppBar(
+        title: const Text('Appointments'),
+        actions: [
+          DropdownButton<AppointmentStatus>(
+            value: _selectedStatus,
+            items: AppointmentStatus.values.map((status) {
+              return DropdownMenuItem<AppointmentStatus>(
+                value: status,
+                child: Text(status.name.toUpperCase()),
               );
-            }
-          },
-        )
-        /*: FutureBuilder<List<Appointment>>(
-              future: _appointmentController
-                  .getAppointmentsForEnterprise(Database.auth.currentUser!.uid),
+            }).toList(),
+            onChanged: (newStatus) =>
+                setState(() => _selectedStatus = newStatus!),
+          ),
+        ],
+      ),
+      body: SharedPreferencesManager.getUserRole() != 'Enterprise'
+          ? StreamBuilder<List<Appointment?>>(
+              stream: _appointmentController.getAppointmentsStreamByField(role,
+                  fieldId: id),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(child: Text('No appointments found'));
+                } else {
+                  final List<Appointment?>? filteredAppointments =
+                      filterAppointments(snapshot.data, _selectedStatus.name);
+
+                  return ListView.builder(
+                    itemCount: filteredAppointments?.length,
+                    itemBuilder: (context, index) {
+                      return AppointmentCard(
+                          appointment: filteredAppointments![index]!);
+                    },
+                  );
+                }
+              },
+            )
+          : FutureBuilder<List<DocumentSnapshot>>(
+              future: EnterpriseProvider().fetchAppointments(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                }
+                var data = snapshot.data;
+                if (data == null || data.isEmpty) {
                   return const Center(child: Text('No appointments found'));
                 } else {
-                  final List<Appointment> filteredAppointments =
-                      filterAppointments(snapshot.data!, _selectedStatus.name);
+                  //      final List<Appointment?>? filteredAppointments =filterAppointments(data, _selectedStatus.name);
 
-                  return ListView.builder(
-                    itemCount: filteredAppointments.length,
-                    itemBuilder: (context, index) {
-                      return AppointmentCard(
-                          appointment: filteredAppointments[index]);
-                    },
+                  return Wrap(
+                    children: data.map((DocumentSnapshot doc) {
+                      var appointment = Appointment.fromJson(
+                          doc.data() as Map<String, dynamic>, doc.id);
+
+                      // Filter based on assistant.status (assuming assistant.status is a property)
+                      if (appointment.status.name == _selectedStatus.name) {
+                        return AppointmentCard(
+                            appointment:
+                                appointment); // Replace with your desired widget
+                      } else {
+                        return const SizedBox.shrink();
+                      }
+                    }).toList(),
                   );
                 }
               },
-            ),*/
-        );
+            ),
+    );
   }
 }
+/*
+
+
+          FutureBuilder<List<DocumentSnapshot>>(
+              future: enterpriseProvider.fetchClients(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                }
+                if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                }
+                var clients = snapshot.data;
+                if (clients == null || clients.isEmpty) {
+                  return const Text('No Clients available.');
+                }
+                return Wrap(
+                  children: clients.map((DocumentSnapshot doc) {
+                    var client =
+                        Client.fromJson(doc.data() as Map<String, dynamic>);
+                    return Column(
+                      children: [
+                        const SizedBox(height: 10),
+                        GestureDetector(
+                          onTap: () {
+                            /* Provider.of<UserController>(context, listen: false)
+                        .userCurrent = user;
+                    Provider.of<UserController>(context, listen: false)
+                        .setusersCurrent(users);
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return DialogMakeAttendingListAssistants();
+                      },
+                    );*/
+                          },
+                          child: ListTile(
+                            leading: CircleAvatar(
+                              child: Text(client.firstName[0]),
+                            ),
+                            subtitle: Text(
+                                "${client.address.province}${client.address.city}"),
+                            title:
+                                Text("${client.firstName}${client.lastName}"),
+                          ),
+                        ),
+                      ],
+                    );
+                  }).toList(),
+                );
+              }),
+*/
