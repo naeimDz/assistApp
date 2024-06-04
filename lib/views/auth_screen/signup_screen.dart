@@ -1,3 +1,6 @@
+import 'package:assistantsapp/controllers/enterprise/enterprise_provider.dart';
+import 'package:assistantsapp/models/enterprise.dart';
+import 'package:assistantsapp/models/enum/role_enum.dart';
 import 'package:assistantsapp/services/firestore_service.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -234,8 +237,14 @@ class _SignupScreenState extends State<SignupScreen> with SnackMixin {
                 context, RouteNameStrings.assistantDetailScreen);
             break;
           case "Enterprise":
-            await firestoreService.createDocument(
-                "enterprises", user.uid, dataUser);
+            Enterprise newData = Enterprise(
+                enterpriseID: user.uid,
+                enterpriseName: userName,
+                email: email,
+                role: Role.enterprise);
+            EnterpriseProvider().addEnterprise(newData);
+            /*await firestoreService.createDocument(
+                "enterprises", user.uid, dataUser);*/
             Navigator.pushReplacementNamed(
                 context, RouteNameStrings.homeScreen);
             break;

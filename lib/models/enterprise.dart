@@ -47,7 +47,6 @@ class Enterprise {
     if (json.isEmpty) {
       throw FormatException('Enterprise data is null or empty');
     }
-
     return Enterprise(
       enterpriseID: json['enterpriseID'] as String,
       enterpriseName: json['enterpriseName'] as String,

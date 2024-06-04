@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../../models/enterprise.dart';
 import 'enterprise_controller.dart';
@@ -36,5 +37,35 @@ class EnterpriseProvider with ChangeNotifier {
   Future<void> deleteEnterprise(String id) async {
     await _enterpriseController.deleteEnterprise(id);
     await fetchEnterprises();
+  }
+
+  Future<List<DocumentSnapshot>> fetchAppointments() async {
+    if (_selectedEnterprise != null) {
+      return await _enterpriseController
+          .getDocuments(_selectedEnterprise!.appointments);
+    }
+    return [];
+  }
+
+  Future<List<DocumentSnapshot>> fetchAssistants(
+      {Enterprise? selectedEnterprise}) async {
+    if (_selectedEnterprise != null) {
+      return await _enterpriseController
+          .getDocuments(_selectedEnterprise!.assistants);
+    }
+    return [];
+  }
+
+  Future<List<DocumentSnapshot>> fetchClients() async {
+    if (_selectedEnterprise != null) {
+      return await _enterpriseController
+          .getDocuments(_selectedEnterprise!.clients);
+    }
+    return [];
+  }
+
+  Future<void> addToEnterprise(
+      String enterpriseId, String id, bool isAssistant) async {
+    await _enterpriseController.addToEnterprise(enterpriseId, id, isAssistant);
   }
 }

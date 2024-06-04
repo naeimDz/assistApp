@@ -1,6 +1,6 @@
 enum SubscriptionType { enterpriseToAssistant, assistantToClient }
 
-class Subscription {
+class Invitaion {
   final String id;
   final String senderId; // Can be enterprise or assistant ID based on type
   final String recipientId; // Can be assistant or client ID based on type
@@ -8,7 +8,7 @@ class Subscription {
   final String status; // e.g., "pending", "accepted", "rejected"
   final DateTime createdAt; // Use DateTime.now() for creation time
 
-  const Subscription({
+  const Invitaion({
     required this.id,
     required this.senderId,
     required this.recipientId,
@@ -17,12 +17,12 @@ class Subscription {
     required this.createdAt,
   });
 
-  factory Subscription.fromJson(Map<String, dynamic> json) {
+  factory Invitaion.fromJson(Map<String, dynamic> json) {
     if (json.isEmpty) {
       throw FormatException('Subscription data is null or empty');
     }
 
-    return Subscription(
+    return Invitaion(
       id: json['id'] as String,
       senderId: json['senderId'] as String,
       recipientId: json['recipientId'] as String,

@@ -1,15 +1,19 @@
-/*
-import 'package:assistantsapp/models/subscription.dart';
-import 'package:assistantsapp/utils/routes/route_name_strings.dart';
-import 'package:assistantsapp/views/association/list_clients_for_enterprise.dart';
-import 'package:assistantsapp/views/sharedwidgets/list_assistants_for_enterprise.dart';
+import 'package:assistantsapp/controllers/enterprise/enterprise_provider.dart';
+import 'package:assistantsapp/models/assistant.dart';
+import 'package:assistantsapp/models/client.dart';
+import 'package:assistantsapp/services/firestore_service.dart';
+import 'package:assistantsapp/utils/constants/app_text_styles.dart';
+import 'package:assistantsapp/services/shared_preferences_manager.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../controllers/assistant/assistant_provider.dart';
 import '../../controllers/subscription_controller.dart';
-import '../../models/assistant.dart';
-import '../../services/shared_preferences_manager.dart';
-import '../../utils/constants/app_text_styles.dart';
+import '../../models/subscription.dart';
+import '../../services/handle_snapshot.dart';
+import '../../utils/routes/route_name_strings.dart';
+import '../sharedwidgets/build_list_assist.dart';
 import '../sharedwidgets/segment_options.dart';
 import 'widgets/assistant_card.dart';
 
@@ -23,26 +27,33 @@ class HomeEnterprise extends StatefulWidget {
 class _HomeEnterpriseState extends State<HomeEnterprise> {
   int _selectedIndex = 0; // Track the selected index
   var role = SharedPreferencesManager.getUserRole();
+  var id = FirestoreService().auth.currentUser!.uid;
   @override
   Widget build(BuildContext context) {
+    final enterpriseProvider =
+        Provider.of<EnterpriseProvider>(context, listen: false);
+    enterpriseProvider.selectEnterprise(id);
+
     return ListView(
       children: [
         const Padding(
           padding: EdgeInsets.all(17.0),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Padding(
-              padding: EdgeInsets.only(bottom: 8),
-              child: Text("HI, there", style: AppTextStyles.h1),
-            ),
-            Padding(
-              padding: EdgeInsets.only(bottom: 16),
-              child: Text(
-                "",
-                style: AppTextStyles.body,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(bottom: 8),
+                child: Text("HI, there", style: AppTextStyles.h1),
               ),
-            ),
-          ]),
+              Padding(
+                padding: EdgeInsets.only(bottom: 16),
+                child: Text(
+                  "",
+                  style: AppTextStyles.body,
+                ),
+              ),
+            ],
+          ),
         ),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
@@ -60,9 +71,9 @@ class _HomeEnterpriseState extends State<HomeEnterprise> {
             },
           ),
         ),
-        if (_selectedIndex == 0)
-          FutureBuilder<List<Assistant>>(
-            future: AssistantProvider().assistants,
+        if (_selectedIndex == 2)
+          FutureBuilder<List<DocumentSnapshot>>(
+            future: enterpriseProvider.fetchAssistants(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator();
@@ -70,14 +81,15 @@ class _HomeEnterpriseState extends State<HomeEnterprise> {
               if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               }
-
               var assistants = snapshot.data;
               if (assistants == null || assistants.isEmpty) {
                 return const Text('No service providers available.');
               }
 
               return Wrap(
-                children: assistants.map((Assistant assistant) {
+                children: assistants.map((DocumentSnapshot doc) {
+                  var assistant =
+                      Assistant.fromJson(doc.data() as Map<String, dynamic>);
                   return AssistantCard(
                     serviceProvider: assistant,
                   );
@@ -85,26 +97,77 @@ class _HomeEnterpriseState extends State<HomeEnterprise> {
               );
             },
           ),
-        if (_selectedIndex == 2)
-          ListOfAssist(
-            enterpriseId: id,
-          ),
         if (_selectedIndex == 1)
-          ListOfClients(
-            enterpriseId: id,
+          FutureBuilder<List<DocumentSnapshot>>(
+              future: enterpriseProvider.fetchClients(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                }
+                if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                }
+                var clients = snapshot.data;
+                if (clients == null || clients.isEmpty) {
+                  return const Text('No Clients available.');
+                }
+                return Wrap(
+                  children: clients.map((DocumentSnapshot doc) {
+                    var client =
+                        Client.fromJson(doc.data() as Map<String, dynamic>);
+                    return Column(
+                      children: [
+                        const SizedBox(height: 10),
+                        GestureDetector(
+                          onTap: () {
+                            /* Provider.of<UserController>(context, listen: false)
+                        .userCurrent = user;
+                    Provider.of<UserController>(context, listen: false)
+                        .setusersCurrent(users);
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return DialogMakeAttendingListAssistants();
+                      },
+                    );*/
+                          },
+                          child: ListTile(
+                            leading: CircleAvatar(
+                              child: Text(client.firstName[0]),
+                            ),
+                            subtitle: Text(
+                                "${client.address.province}${client.address.city}"),
+                            title:
+                                Text("${client.firstName}${client.lastName}"),
+                          ),
+                        ),
+                      ],
+                    );
+                  }).toList(),
+                );
+              }),
+        if (_selectedIndex == 0)
+          FutureBuilder<List<Assistant>>(
+            future: Provider.of<AssistantProvider>(context, listen: false)
+                .fetchAssistants(),
+            builder: (context, assistantSnapshot) {
+              return handleSnapshot(context, assistantSnapshot,
+                  (data) => buildAssistantList(data, 'All'));
+            },
           ),
         if (_selectedIndex == 3)
-          ListOfInvitaions(
-            enterpriseId: id,
+          ListOfInvitations(
+            enterpriseId:
+                enterpriseProvider.selectedEnterprise?.enterpriseID ?? '',
           ),
       ],
     );
   }
 }
 
-class ListOfInvitaions extends StatelessWidget {
+class ListOfInvitations extends StatelessWidget {
   final String enterpriseId;
-  const ListOfInvitaions({super.key, required this.enterpriseId});
+  const ListOfInvitations({super.key, required this.enterpriseId});
 
   @override
   Widget build(BuildContext context) {
@@ -145,15 +208,14 @@ class InvitationCard extends StatelessWidget {
     return GestureDetector(
       onTap: () async {
         try {
-          if (subscription.role == "Assistant") {
+          if (subscription.isAssistant) {
             // Update the serviceProvider in the controller
-            await Provider.of<AssistantControllerProvider>(context,
-                    listen: false)
-                .fetchassistantById(subscription.id!);
+            await Provider.of<AssistantProvider>(context, listen: false)
+                .selectAssistant(subscription.id!);
             // Navigate to the profile detail screen with a custom widget
             Navigator.pushNamed(
               context,
-              RouteNameStrings.profileDetailScreen,
+              RouteNameStrings.assistantDetailScreen,
               arguments: const SizedBox(), // Pass your custom widget here
             );
           }
@@ -214,17 +276,17 @@ class InvitationCard extends StatelessWidget {
               ),
               SizedBox(height: 20),
               // Action Buttons
-              /* TextButton(
+              TextButton(
                 onPressed: () async {
-                  EnterpriseControllerProvider().addToEnterprise(
+                  EnterpriseProvider().addToEnterprise(
                       subscription.associationId,
                       subscription.userId,
-                      subscription.role);
+                      subscription.isAssistant);
                   SubscriptionController()
                       .updateInvitationStatus(subscription.id!, true);
                 },
                 child: Text('Accept'),
-              ),*/
+              ),
             ],
           ),
         ),
@@ -232,4 +294,3 @@ class InvitationCard extends StatelessWidget {
     );
   }
 }
-*/

@@ -1,6 +1,5 @@
 import 'package:assistantsapp/models/address.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'enum/gender.dart';
 import 'enum/role_enum.dart';
 
@@ -14,13 +13,10 @@ class Client {
   final String lastName;
   final Gender gender;
   final List<DocumentReference> appointments;
-
   final Address address;
   final DateTime birthday;
-
-  final String joinDate;
+  final DateTime joinDate;
   final bool isValidated;
-
   final String imageUrl;
 
   const Client({
@@ -48,8 +44,8 @@ class Client {
     return Client(
       id: json['id'] as String,
       email: json['email'] as String,
-      username: json['username'] as String,
-      phoneNumber: json['phoneNumber'] as String,
+      username: json["username"] ?? "",
+      phoneNumber: json["phoneNumber"],
       role: Role.values.byName(json['role'] as String),
       firstName: json['firstName'] as String,
       lastName: json['lastName'] as String,
@@ -57,8 +53,8 @@ class Client {
       address: Address.fromJson(json['address'] as Map<String, dynamic>),
       appointments:
           (json['appointments'] as List<dynamic>).cast<DocumentReference>(),
-      birthday: DateTime.parse(json['birthday'] as String),
-      joinDate: json['joinDate'] as String,
+      birthday: (json['birthday'] as Timestamp).toDate(),
+      joinDate: (json['joinDate'] as Timestamp).toDate(),
       isValidated: json['isValidated'] as bool,
       imageUrl: json['imageUrl'] as String,
     );
@@ -74,8 +70,8 @@ class Client {
         'lastName': lastName,
         'gender': gender.name,
         'address': address.toJson(),
-        'birthday': birthday.toIso8601String(),
-        'joinDate': joinDate,
+        'birthday': Timestamp.fromDate(birthday),
+        'joinDate': Timestamp.fromDate(joinDate),
         'isValidated': isValidated,
         'appointments': appointments,
         'imageUrl': imageUrl,

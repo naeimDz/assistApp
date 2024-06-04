@@ -33,25 +33,31 @@ class ConversationListScreen extends StatelessWidget {
               itemCount: conversations.length,
               itemBuilder: (context, index) {
                 Conversation conversation = conversations[index];
-                return ListTile(
-                  leading: CircleAvatar(
-                    child: Text(
-                        '${conversation.assistantDisplayName[0].toUpperCase()}${conversation.userDisplayName[0].toUpperCase()}'),
-                  ),
-                  title: Text(
-                      "${conversation.assistantDisplayName} __ ${conversation.userDisplayName}"),
-                  subtitle:
-                      Text("${conversation.lastMessage.substring(0, 40)}....."),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MessageScreen(
-                            conversationId: conversation.id!,
-                            displayName: conversation.assistantDisplayName),
+                return Column(
+                  children: [
+                    ListTile(
+                      minVerticalPadding: 3,
+                      leading: CircleAvatar(
+                        child: Text(
+                            '${conversation.assistantDisplayName[0].toUpperCase()}${conversation.userDisplayName[0].toUpperCase()}'),
                       ),
-                    );
-                  },
+                      title: Text(
+                          "${conversation.assistantDisplayName} __ ${conversation.userDisplayName}"),
+                      subtitle: Text(
+                          "${conversation.lastMessage.substring(0, 40)}....."),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MessageScreen(
+                                conversationId: conversation.id!,
+                                displayName: conversation.assistantDisplayName),
+                          ),
+                        );
+                      },
+                    ),
+                    Divider(),
+                  ],
                 );
               },
             );

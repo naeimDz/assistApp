@@ -10,10 +10,11 @@ import 'package:assistantsapp/models/enum/service_type.dart';
 import 'package:assistantsapp/utils/constants/app_strings.dart';
 import 'package:assistantsapp/utils/constants/sizedbox_const.dart';
 import 'package:assistantsapp/utils/constants/app_text_styles.dart';
-import 'package:assistantsapp/views/home/widgets/assistant_card.dart';
+
 import 'package:assistantsapp/views/sharedwidgets/segment_options.dart';
 
 import '../../../services/handle_snapshot.dart';
+import '../../sharedwidgets/build_list_assist.dart';
 import 'enterprise_card.dart';
 
 class HeaderHome extends StatefulWidget {
@@ -68,7 +69,7 @@ class _HeaderHomeState extends State<HeaderHome> {
                 .fetchAssistants(),
             builder: (context, assistantSnapshot) {
               return handleSnapshot(context, assistantSnapshot,
-                  (data) => _buildAssistantList(data, selectedServiceType));
+                  (data) => buildAssistantList(data, selectedServiceType));
             },
           ),
         if (selectedServiceType == 'Enterprise' || selectedServiceType == 'All')
@@ -80,22 +81,6 @@ class _HeaderHomeState extends State<HeaderHome> {
                   context, snapshot, (data) => _buildEnterpriseList(data));
             },
           ),
-      ],
-    );
-  }
-
-  Widget _buildAssistantList(
-      List<Assistant> listAssistant, String selectedServiceType) {
-    var filteredAssistants = listAssistant.where((assistant) {
-      if (selectedServiceType == 'All') return true;
-      return assistant.serviceType.name == selectedServiceType;
-    }).toList();
-
-    return Column(
-      children: [
-        ...filteredAssistants
-            .map((assistant) => AssistantCard(serviceProvider: assistant))
-            .toList(),
       ],
     );
   }

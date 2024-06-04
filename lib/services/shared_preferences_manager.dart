@@ -3,13 +3,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SharedPreferencesManager {
   static late SharedPreferences _prefs;
 
-  SharedPreferencesManager() {
-    init();
+  SharedPreferencesManager._internal(); // Private constructor for singleton pattern
+
+  factory SharedPreferencesManager() {
+    return _instance;
   }
+
+  static final SharedPreferencesManager _instance =
+      SharedPreferencesManager._internal();
 
   static Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
-    setDarkMode(false);
   }
 
   // Method to set user theme preference
@@ -37,7 +41,7 @@ class SharedPreferencesManager {
     await _prefs.setString('userRole', role);
   }
 
-  // Method to get user role
+  // Method to get user role (with default value)
   static String getUserRole() {
     return _prefs.getString('userRole') ?? 'user';
   }

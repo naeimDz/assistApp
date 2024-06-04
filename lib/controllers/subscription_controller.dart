@@ -24,17 +24,18 @@ class SubscriptionController {
   }
 
   Future<void> sendSubscription(
-      {required String senderId,
-      required String receiverId,
+      {required String userId,
+      required String associationId,
       required String userName,
-      String? role}) async {
-    final docRef = _firestore.collection('subscription').doc(senderId);
+      bool? isAssistant}) async {
+    final docRef = _firestore.collection('subscription').doc(userId);
     final newSubscription = Subscription(
+        isAssistant: isAssistant ?? false,
         id: docRef.id,
-        userId: senderId,
-        associationId: receiverId,
+        userId: userId,
+        associationId: associationId,
         userName: userName,
-        role: role);
+        isApproved: false);
     await docRef.set(newSubscription.tomap());
   }
 }

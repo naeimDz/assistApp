@@ -19,7 +19,7 @@ class Assistant {
   final Address? address;
 
   final String? phoneNumber;
-  final List<DocumentReference>? appointments;
+//  final List<DocumentReference>? appointments;
   final ServiceType serviceType;
   final Timestamp? joinDate;
   final String? servicePrice;
@@ -41,7 +41,7 @@ class Assistant {
 //    required this.birthday,
     this.address,
     this.phoneNumber,
-    this.appointments,
+    //   this.appointments,
     this.serviceType = ServiceType.childCare,
     this.joinDate,
     this.servicePrice,
@@ -65,8 +65,8 @@ class Assistant {
       lastName: json['lastName'],
       gender: Gender.values.byName(json['gender']),
       // birthday: Timestamp.fromDate(json['birthday']),
-      address: Address.fromJson(json['address'] as Map<String, dynamic>),
-      appointments: (json['appointments']),
+      address: Address.fromJson(json['address']),
+      //  appointments: (json['appointments']),
       phoneNumber: json['phoneNumber'],
       profileBio: json['profileBio'],
       serviceType: ServiceType.values.byName(json['serviceType']),
@@ -92,7 +92,7 @@ class Assistant {
         'profileBio': profileBio,
         'phoneNumber': phoneNumber,
         'serviceType': serviceType.name,
-        'appointments': appointments,
+        //     'appointments': appointments ?? [],
         //  'joinDate': joinDate?.toDate(),
         'servicePrice': servicePrice,
         'skillsList': skillsList,

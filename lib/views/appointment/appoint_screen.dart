@@ -1,12 +1,11 @@
 import 'package:assistantsapp/controllers/appointment_controller.dart';
 import 'package:assistantsapp/controllers/assistant/assistant_provider.dart';
-import 'package:assistantsapp/controllers/conversations/conversation_controller.dart';
-import 'package:assistantsapp/controllers/conversations/message_controller.dart';
+
 import 'package:assistantsapp/models/appointment.dart';
-import 'package:assistantsapp/models/conversations.dart';
-import 'package:assistantsapp/models/message.dart';
+
 import 'package:assistantsapp/services/firestore_service.dart';
 import 'package:assistantsapp/views/conversation/message_screen.dart';
+import 'package:assistantsapp/views/sharedwidgets/make_conversation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
@@ -18,14 +17,14 @@ class AppointScreen extends StatefulWidget {
   const AppointScreen({super.key});
 
   @override
-  _AppointScreenState createState() => _AppointScreenState();
+  AppointScreenState createState() => AppointScreenState();
 }
 
-class _AppointScreenState extends State<AppointScreen> {
+class AppointScreenState extends State<AppointScreen> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _priceController =
       TextEditingController(text: "1000");
-  Duration _durationHours = Duration(hours: 3.toInt()) as Duration;
+  Duration _durationHours = Duration(hours: 3.toInt());
   DateTime _selectedDate = DateTime.now();
 
   @override
@@ -38,7 +37,7 @@ class _AppointScreenState extends State<AppointScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           "Book Your Appointment",
           style: TextStyle(
             fontSize: 20,
@@ -104,7 +103,7 @@ class _AppointScreenState extends State<AppointScreen> {
     );
   }
 
-  Widget _buildDatePickertestButton() {
+  /*Widget _buildDatePickertestButton() {
     return InkWell(
       onTap: () {
         // Handle date picker interaction (show date picker)
@@ -132,7 +131,7 @@ class _AppointScreenState extends State<AppointScreen> {
     );
   }
 
-  /*Widget _buildAvailableSlots() {
+  Widget _buildAvailableSlots() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
       child: Column(
@@ -231,7 +230,7 @@ class _AppointScreenState extends State<AppointScreen> {
           TextFormField(
             keyboardType: TextInputType.number,
             controller: _priceController,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               hintText: "1000",
               border: OutlineInputBorder(),
             ),
@@ -264,15 +263,16 @@ class _AppointScreenState extends State<AppointScreen> {
     return GestureDetector(
       onTap: () async {
         var dis = makeAppointment();
-        DocumentReference<Object?> ref = await makeConversation();
-        print(ref);
-        print("///////////////******************//////////////////");
+        DocumentReference<Object?> ref =
+            await makeConversation(context, _descriptionController.text);
+
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Appointment booked successfully!'),
             backgroundColor: Colors.green,
           ),
         );
+
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -321,33 +321,6 @@ class _AppointScreenState extends State<AppointScreen> {
 
     AppointmentController().createAppointment(newAppointment);
     return assistant.lastName;
-  }
-
-  Future<DocumentReference<Object?>> makeConversation() async {
-    var assistant = Provider.of<AssistantProvider>(context, listen: false)
-        .selectedAssistant;
-    var currentUser = FirestoreService().auth.currentUser;
-    final textDescription = _descriptionController.text == ""
-        ? "I hope this message finds you well. I am writing to request an appointment with you "
-        : _descriptionController.text;
-    _descriptionController.clear();
-    var newConversation = Conversation(
-        assistantDisplayName: assistant!.username,
-        assistantId: assistant.id,
-        lastMessage: textDescription,
-        userDisplayName: currentUser!.displayName!,
-        userId: currentUser.uid);
-    var ref = await ConversationController().createOrCheckConversation(
-        newConversation, currentUser.uid, assistant.id);
-
-    MessageController().addMessage(
-        ref!.id,
-        Message(
-            senderUid: currentUser.uid,
-            content: textDescription,
-            timestamp: Timestamp.now()));
-
-    return ref;
   }
 
   Widget _buildChip(String label) {

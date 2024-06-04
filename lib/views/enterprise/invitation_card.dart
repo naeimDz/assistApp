@@ -1,8 +1,6 @@
 import 'package:assistantsapp/models/subscription.dart';
 import 'package:flutter/material.dart';
 
-import 'package:provider/provider.dart';
-
 class InvitationCard extends StatelessWidget {
   final Subscription invitation;
 
@@ -24,25 +22,25 @@ class InvitationCard extends StatelessWidget {
             // Sender Information
             Row(
               children: [
-                CircleAvatar(
+                const CircleAvatar(
                   radius: 25,
                   backgroundImage: NetworkImage(
                       'https://via.placeholder.com/150'), // Replace with actual sender's image URL
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'Sender: ${invitation.userId}', // Replace with actual sender's name
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
                       'Status: ${invitation.isApproved}',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 14,
                         color: Colors.grey,
                       ),
@@ -51,15 +49,15 @@ class InvitationCard extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             // Invitation Message or Details
-            Text(
+            const Text(
               'Invitation details go here. This could be a brief message or additional information about the invitation.',
               style: TextStyle(
                 fontSize: 16,
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             // Action Buttons
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -70,16 +68,16 @@ class InvitationCard extends StatelessWidget {
                             listen: false)
                         .acceptInvitation(invitation.id);*/
                   },
-                  child: Text('Accept'),
+                  child: const Text('Accept'),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 TextButton(
                   onPressed: () async {
                     /*await Provider.of<InvitationProvider>(context,
                             listen: false)
                         .denyInvitation(invitation.id);*/
                   },
-                  child: Text('Deny'),
+                  child: const Text('Deny'),
                 ),
               ],
             ),

@@ -17,8 +17,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await EasyLocalization.ensureInitialized();
-
-  SharedPreferencesManager();
+  SharedPreferencesManager.init();
   runApp(MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => BottomBarIndex()),

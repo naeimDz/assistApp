@@ -6,6 +6,8 @@ import 'package:assistantsapp/views/sharedwidgets/headline_with_row.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../services/shared_preferences_manager.dart';
+
 class SettingScreen extends StatelessWidget {
   const SettingScreen({super.key});
 
@@ -44,7 +46,7 @@ class SettingScreen extends StatelessWidget {
             headline: "Account",
             subtitle: "keep your information update",
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           ListTile(
             title: const Text('personal data'),
             leading: const Icon(Icons.data_object),
@@ -53,8 +55,8 @@ class SettingScreen extends StatelessWidget {
             },
           ),
           ListTile(
-            title: Text('Contact data'),
-            leading: Icon(Icons.contact_page),
+            title: const Text('Contact data'),
+            leading: const Icon(Icons.contact_page),
             onTap: () {
               Navigator.pushNamed(context, RouteNameStrings.editContactScreen);
             },
@@ -64,18 +66,38 @@ class SettingScreen extends StatelessWidget {
             title: const Text('im a assistant'),
             leading: const Icon(Icons.assistant),
             onTap: () {
-              Navigator.pushNamed(
-                  context, RouteNameStrings.editAssistantProfileView);
+              String userRole = SharedPreferencesManager.getUserRole();
+              if ("user" == userRole) {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text('Alert'),
+                      content: Text('you dont have access '),
+                      actions: <Widget>[
+                        TextButton(
+                          child: const Text('Close'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+              }
+              /* Navigator.pushNamed(
+                  context, RouteNameStrings.editAssistantProfileView);*/
             },
           ),
-          Divider(),
+          const Divider(),
           const HeadlineRow(
             headline: "Application settings",
             subtitle: "Notification Settings",
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           SwitchListTile(
-            title: Text('Push Notifications'),
+            title: const Text('Push Notifications'),
             value: true, // Replace with actual value
             onChanged: (value) {
               // Update push notification setting
@@ -93,14 +115,14 @@ class SettingScreen extends StatelessWidget {
             },
           ),
 
-          Divider(),
+          const Divider(),
           const HeadlineRow(
             headline: "Privacy",
             subtitle: "protect your account",
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           ListTile(
-            title: Text('delete your data'),
+            title: const Text('delete your data'),
             leading: const Icon(Icons.delete),
             onTap: () {
               // Navigate to edit profile screen
@@ -122,10 +144,10 @@ class SettingScreen extends StatelessWidget {
               Navigator.pushNamed(context, RouteNameStrings.termsConditions);
             },
           ),
-          Divider(),
+          const Divider(),
           ListTile(
-            title: Text('Logout'),
-            leading: Icon(Icons.exit_to_app),
+            title: const Text('Logout'),
+            leading: const Icon(Icons.exit_to_app),
             onTap: () {
               // Perform logout action
             },

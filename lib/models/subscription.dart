@@ -4,7 +4,7 @@ class Subscription {
   final String userName;
   final String associationId;
   final bool isApproved;
-  final String? role;
+  final bool isAssistant;
 
   Subscription(
       {this.id,
@@ -12,7 +12,7 @@ class Subscription {
       required this.userName,
       required this.associationId,
       this.isApproved = false,
-      this.role});
+      this.isAssistant = false});
 
   factory Subscription.fromFirestore(Map<String, dynamic> json) {
     return Subscription(
@@ -21,7 +21,7 @@ class Subscription {
       userName: json['userName'],
       associationId: json['associationId'],
       isApproved: json['isApproved'],
-      role: json['role'],
+      isAssistant: json['isAssistant'],
     );
   }
 
@@ -32,7 +32,7 @@ class Subscription {
       'associationId': associationId,
       'isApproved': isApproved,
       'userName': userName,
-      'role': role
+      'isAssistant': isAssistant
     };
   }
 }

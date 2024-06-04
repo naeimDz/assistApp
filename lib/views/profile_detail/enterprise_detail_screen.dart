@@ -1,7 +1,12 @@
 import 'package:assistantsapp/controllers/enterprise/enterprise_provider.dart';
+import 'package:assistantsapp/controllers/subscription_controller.dart';
 import 'package:assistantsapp/models/enterprise.dart';
+import 'package:assistantsapp/services/firestore_service.dart';
+import 'package:assistantsapp/services/shared_preferences_manager.dart';
 import 'package:assistantsapp/utils/constants/app_colors.dart';
+import 'package:assistantsapp/views/sharedwidgets/make_conversation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -34,9 +39,32 @@ class EnterpriseDetailScreen extends StatelessWidget {
               ),
             ),
             onPressed: () {
-              // Handle subscribe action
+              String userRole = SharedPreferencesManager.getUserRole();
+              var userData = FirestoreService().auth.currentUser;
+              if ("user" == userRole) {
+                SubscriptionController().sendSubscription(
+                    userId: userData!.uid,
+                    associationId: enterprise.enterpriseID,
+                    userName: userData.displayName!);
+              } else {
+                SubscriptionController().sendSubscription(
+                    userId: userData!.uid,
+                    associationId: enterprise.enterpriseID,
+                    userName: userData.displayName!,
+                    isAssistant: true);
+              }
+              makeConversation(context,
+                  "I hope this message finds you well. I am writing to request Subscribe ",
+                  enterpriseName: enterprise.enterpriseName,
+                  enterpriseid: enterprise.enterpriseID);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Subscribe sent successfully!'),
+                  backgroundColor: Colors.green,
+                ),
+              );
             },
-            child: Text(
+            child: const Text(
               'Subscribe Now',
               style: TextStyle(fontSize: 18),
             ),
@@ -53,9 +81,12 @@ class EnterpriseDetailScreen extends StatelessWidget {
           child: Column(
             children: [
               Container(
+                decoration: const BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius:
+                        BorderRadius.vertical(bottom: Radius.circular(80))),
                 width: double.infinity,
                 height: 200,
-                color: AppColors.primary,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -197,9 +228,7 @@ class EnterpriseDetailScreen extends StatelessWidget {
         return ListTile(
           leading: const Icon(Icons.document_scanner),
           title: Text('Document ${index + 1}'),
-          onTap: () {
-            // Handle document tap
-          },
+          onTap: () {},
         );
       },
     );

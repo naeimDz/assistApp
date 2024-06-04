@@ -40,17 +40,32 @@ class EnterpriseController {
   Future<void> deleteEnterprise(String id) async {
     await _db.deleteDocument(collectionName, id);
   }
-/*
-  Future<void> addToEnterprise(
-      String enterpriseId, String id, String? isAssistant) async {
-    DocumentReference enterpriseRef =await _db.getDocumentById(collectionName, enterpriseId);
 
+  Future<List<DocumentSnapshot>> getDocuments(
+      List<DocumentReference>? references) async {
+    if (references == null || references.isEmpty) {
+      return [];
+    }
+    List<DocumentSnapshot> documents = [];
+    for (DocumentReference ref in references) {
+      DocumentSnapshot doc = await ref.get();
+      documents.add(doc);
+    }
+
+    return documents;
+  }
+
+  Future<void> addToEnterprise(
+      String enterpriseId, String id, bool isAssistant) async {
+    DocumentSnapshot enterpriseSnapshot = (await _db.getDocumentById(
+        collectionName, enterpriseId)) as DocumentSnapshot<Object?>;
+    DocumentReference enterpriseRef = enterpriseSnapshot.reference;
     // Determine the correct collection reference
     DocumentReference userOrAssistantRef;
-    if (isAssistant == "Assistant") {
-      userOrAssistantRef = Database.dbInstance.collection('providers').doc(id);
+    if (isAssistant) {
+      userOrAssistantRef = _db.firestore.collection('providers').doc(id);
     } else {
-      userOrAssistantRef = Database.dbInstance.collection('users').doc(id);
+      userOrAssistantRef = _db.firestore.collection('users').doc(id);
     }
 
     await _db.firestore.runTransaction((transaction) async {
@@ -59,9 +74,9 @@ class EnterpriseController {
 
       if (enterpriseSnapshot.exists) {
         // Retrieve the correct list based on whether it's an assistant or not
-        List<dynamic> usersOrAssists = isAssistant == "Assistant"
-            ? List.from(enterpriseSnapshot.get('assists') ?? [])
-            : List.from(enterpriseSnapshot.get('users') ?? []);
+        List<dynamic> usersOrAssists = isAssistant
+            ? List.from(enterpriseSnapshot.get('assistants') ?? [])
+            : List.from(enterpriseSnapshot.get('clients') ?? []);
 
         // Add the new reference
         usersOrAssists.add(userOrAssistantRef);
@@ -70,10 +85,9 @@ class EnterpriseController {
         usersOrAssists = usersOrAssists.toSet().toList();
 
         // Update the Firestore document with the deduplicated list
-        transaction.update(enterpriseRef, {
-          isAssistant == "Assistant" ? 'assists' : 'clients': usersOrAssists
-        });
+        transaction.update(enterpriseRef,
+            {isAssistant ? 'assistants' : 'clients': usersOrAssists});
       }
     });
-  }*/
+  }
 }
