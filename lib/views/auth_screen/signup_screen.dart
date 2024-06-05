@@ -1,8 +1,8 @@
 import 'package:assistantsapp/controllers/enterprise/enterprise_provider.dart';
-import 'package:assistantsapp/models/client.dart';
+
 import 'package:assistantsapp/models/enterprise.dart';
 import 'package:assistantsapp/models/enum/role_enum.dart';
-import 'package:assistantsapp/providers/user_provider.dart';
+
 import 'package:assistantsapp/services/firestore_service.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -209,8 +209,7 @@ class _SignupScreenState extends State<SignupScreen> with SnackMixin {
       String email = _emailController.text.trim();
       String password = _passwordController.text.trim();
       String userName = _usernameController.text.trim();
-      final AuthenticationController authController =
-          AuthenticationController();
+      final AuthService authController = AuthService();
       var user =
           await authController.signUpWithEmailAndPassword(email, password);
       var dataUser = {

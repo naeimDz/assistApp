@@ -1,14 +1,34 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class AuthenticationController extends ChangeNotifier {
+import '../services/shared_preferences_manager.dart';
+
+class AuthService extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  late Map<String, dynamic> _currentUser;
+  Map<String, dynamic> get currentUser => _currentUser;
+
+  AuthService() {
+    _currentUser = {}; // Initialize with an empty map
+    initializeCurrentUser();
+  }
+  Future<void> initializeCurrentUser() async {
+    var role = SharedPreferencesManager.getUserRole();
+    final uid = _auth.currentUser?.uid;
+
+    if (uid != null) {
+      var doc =
+          await FirebaseFirestore.instance.collection(role).doc(uid).get();
+      _currentUser = doc.data() as Map<String, dynamic>;
+    } else {
+      _currentUser = {}; // Set to an empty map if user is not logged in
+    }
+    notifyListeners();
+  }
 
   // Stream to listen to authentication state changes
   Stream<User?> get authStateChanges => _auth.authStateChanges();
-
-  // User object representing the currently signed-in user
-  User? get currentUser => _auth.currentUser;
 
   // Function to sign up a new user with email and password
   Future<User> signUpWithEmailAndPassword(String email, String password) async {

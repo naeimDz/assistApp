@@ -25,7 +25,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => AssistantProvider()),
         ChangeNotifierProvider(create: (context) => ClientProvider()),
         ChangeNotifierProvider(create: (context) => EnterpriseProvider()),
-        ChangeNotifierProvider(create: (context) => AuthenticationController()),
+        ChangeNotifierProvider(create: (context) => AuthService()),
 
         // Add more providers if needed
       ],

@@ -69,7 +69,7 @@ class LoginScreenState extends State<LoginScreen> with SnackMixin {
                   if (_formKey.currentState!.validate()) {
                     String email = _emailController.text.trim();
                     String password = _passwordController.text.trim();
-                    await AuthenticationController().signin(email, password);
+                    await AuthService().signin(email, password);
 
                     if (mounted) {
                       DetermineUser().determineUserRole("email", email: email);

@@ -28,8 +28,7 @@ class HomeScreen extends StatelessWidget {
         ),
         leadingWidth: 100,
         actions: [
-          Consumer<AuthenticationController>(
-              builder: (context, authProvider, _) {
+          Consumer<AuthService>(builder: (context, authProvider, _) {
             return IconButton(
               icon: const Icon(Icons.exit_to_app_rounded),
               onPressed: () {

@@ -67,7 +67,7 @@ class SettingScreen extends StatelessWidget {
             leading: const Icon(Icons.assistant),
             onTap: () {
               String userRole = SharedPreferencesManager.getUserRole();
-              if ("user" == userRole) {
+              if ("clients" == userRole) {
                 showDialog(
                   context: context,
                   builder: (context) {
