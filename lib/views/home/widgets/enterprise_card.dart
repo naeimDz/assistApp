@@ -15,7 +15,7 @@ class EnterpriseCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Provider.of<EnterpriseProvider>(context, listen: false)
-            .selectEnterprise(enterprise.enterpriseID)
+            .selectEnterprise(enterprise.id)
             .then((_) {
           Navigator.pushNamed(context, RouteNameStrings.enterpriseDetailScreen);
         });

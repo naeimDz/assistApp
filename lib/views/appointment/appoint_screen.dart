@@ -1,10 +1,14 @@
 import 'package:assistantsapp/controllers/appointment_controller.dart';
 import 'package:assistantsapp/controllers/assistant/assistant_provider.dart';
+import 'package:assistantsapp/controllers/client/client_provider.dart';
 
 import 'package:assistantsapp/models/appointment.dart';
+import 'package:assistantsapp/models/enum/appointment_status.dart';
 
 import 'package:assistantsapp/services/firestore_service.dart';
+import 'package:assistantsapp/services/shared_preferences_manager.dart';
 import 'package:assistantsapp/views/conversation/message_screen.dart';
+import 'package:assistantsapp/views/sharedwidgets/dialog_alert_lisy_clients.dart';
 import 'package:assistantsapp/views/sharedwidgets/make_conversation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_picker_timeline/date_picker_widget.dart';
@@ -262,24 +266,30 @@ class AppointScreenState extends State<AppointScreen> {
   Widget _buildBookButton() {
     return GestureDetector(
       onTap: () async {
-        var dis = makeAppointment();
-        DocumentReference<Object?> ref =
-            await makeConversation(context, _descriptionController.text);
+        var role = SharedPreferencesManager.getUserRole();
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Appointment booked successfully!'),
-            backgroundColor: Colors.green,
-          ),
-        );
+        if (role == "Enterprise") {
+          showDialog(
+              context: context,
+              builder: (context) => const DialogMakeAttendingClients());
 
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => MessageScreen(
-                  conversationId: ref.id,
-                  displayName: dis!)), // Replace with your success screen
-        );
+          /* var dis = makeAppointmentByEnterprise();
+
+          EnterpriseProvider().addToEnterprise(
+              FirestoreService().auth.currentUser!.uid, dis!, "appointments");
+          Navigator.popAndPushNamed(context, RouteNameStrings.homeScreen);*/
+        } else {
+          var dis = makeAppointment();
+          DocumentReference<Object?> ref =
+              await makeConversation(context, _descriptionController.text);
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => MessageScreen(
+                    conversationId: ref.id,
+                    displayName: dis!)), // Replace with your success screen
+          );
+        }
       },
       child: Container(
         margin: const EdgeInsets.only(left: 17, right: 17, bottom: 17),
@@ -333,5 +343,29 @@ class AppointScreenState extends State<AppointScreen> {
       label: Text(label),
       backgroundColor: Colors.white,
     );
+  }
+
+  String? makeAppointmentByEnterprise() {
+    var assistant = Provider.of<AssistantProvider>(context, listen: false)
+        .selectedAssistant;
+    var client =
+        Provider.of<ClientProvider>(context, listen: false).selectedClient;
+    var newAppointment = Appointment(
+      assistantDisplayName: assistant?.lastName ?? assistant!.username,
+      assistantEmail: assistant!.email,
+      providerId: assistant.id,
+      clientEmail: client!.email,
+      clientDisplayName: client.username,
+      dateTime: _selectedDate,
+      duration: _durationHours,
+      price: double.parse(_priceController.text),
+      clientId: client.id,
+      enterpriseCreator: FirestoreService().auth.currentUser?.displayName,
+      status: AppointmentStatus.confirmed,
+    );
+
+    AppointmentController().createAppointment(newAppointment);
+
+    return assistant.lastName;
   }
 }

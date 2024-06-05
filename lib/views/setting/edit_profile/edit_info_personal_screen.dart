@@ -30,7 +30,7 @@ class _EditInfoScreenState extends State<EditInfoScreen> {
     final userStream = FirestoreService().getCurrentUserDataStream();
 
     if (userStream != null) {
-      userStream.listen((snapshot) {
+      userStream.then((snapshot) {
         if (snapshot.exists) {
           final userData = snapshot.data()!;
 

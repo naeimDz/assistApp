@@ -27,15 +27,15 @@ class AssistantCardSimple extends StatelessWidget {
             ListTile(
               leading: CircleAvatar(
                 radius: 25,
-                child: Text(assistant.firstName?[0] ?? ""),
+                child: Text(assistant.firstName[0]),
               ),
               title: Text(
-                assistant.firstName ?? "",
+                assistant.firstName,
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              subtitle: Text(assistant.serviceType.name ?? ""),
+              subtitle: Text(assistant.serviceType.name),
               /* trailing: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       mainAxisAlignment: MainAxisAlignment.center,

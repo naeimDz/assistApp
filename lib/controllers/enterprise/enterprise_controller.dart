@@ -27,13 +27,13 @@ class EnterpriseController {
   // Add a new enterprise
   Future<void> addEntrprise(Enterprise enterprise) async {
     await _db.createDocument(
-        collectionName, enterprise.enterpriseID, enterprise.toJson());
+        collectionName, enterprise.id, enterprise.toJson());
   }
 
   // Update an existing enterprise
   Future<void> updateEnterprise(Enterprise enterprise) async {
     await _db.updateDocument(
-        collectionName, enterprise.enterpriseID, enterprise.toJson());
+        collectionName, enterprise.id, enterprise.toJson());
   }
 
   // Delete a enterprise
@@ -56,16 +56,18 @@ class EnterpriseController {
   }
 
   Future<void> addToEnterprise(
-      String enterpriseId, String id, bool isAssistant) async {
+      String enterpriseId, String id, String fieldName) async {
     DocumentSnapshot enterpriseSnapshot = (await _db.getDocumentById(
         collectionName, enterpriseId)) as DocumentSnapshot<Object?>;
     DocumentReference enterpriseRef = enterpriseSnapshot.reference;
     // Determine the correct collection reference
     DocumentReference userOrAssistantRef;
-    if (isAssistant) {
+    if (fieldName == "assistants") {
       userOrAssistantRef = _db.firestore.collection('assistants').doc(id);
-    } else {
+    } else if (fieldName == "clients") {
       userOrAssistantRef = _db.firestore.collection('users').doc(id);
+    } else {
+      userOrAssistantRef = _db.firestore.collection('appointments').doc(id);
     }
 
     await _db.firestore.runTransaction((transaction) async {
@@ -74,9 +76,16 @@ class EnterpriseController {
 
       if (enterpriseSnapshot.exists) {
         // Retrieve the correct list based on whether it's an assistant or not
-        List<dynamic> usersOrAssists = isAssistant
-            ? List.from(enterpriseSnapshot.get('assistants') ?? [])
-            : List.from(enterpriseSnapshot.get('clients') ?? []);
+        List<dynamic> usersOrAssists;
+        if (fieldName == "assistants") {
+          usersOrAssists =
+              List.from(enterpriseSnapshot.get('assistants') ?? []);
+        } else if (fieldName == "clients") {
+          usersOrAssists = List.from(enterpriseSnapshot.get('clients') ?? []);
+        } else {
+          usersOrAssists =
+              List.from(enterpriseSnapshot.get('appointments') ?? []);
+        }
 
         // Add the new reference
         usersOrAssists.add(userOrAssistantRef);
@@ -85,8 +94,7 @@ class EnterpriseController {
         usersOrAssists = usersOrAssists.toSet().toList();
 
         // Update the Firestore document with the deduplicated list
-        transaction.update(enterpriseRef,
-            {isAssistant ? 'assistants' : 'clients': usersOrAssists});
+        transaction.update(enterpriseRef, {fieldName: usersOrAssists});
       }
     });
   }

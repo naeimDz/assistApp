@@ -238,7 +238,7 @@ class _SignupScreenState extends State<SignupScreen> with SnackMixin {
             break;
           case "Enterprise":
             Enterprise newData = Enterprise(
-                enterpriseID: user.uid,
+                id: user.uid,
                 enterpriseName: userName,
                 email: email,
                 role: Role.enterprise);

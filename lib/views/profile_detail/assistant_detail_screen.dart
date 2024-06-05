@@ -80,8 +80,8 @@ class AssistantDetailScreen extends StatelessWidget {
                   if (role != 'enterprise') {
                     var enterpriseId = FirestoreService().auth.currentUser!.uid;
 
-                    EnterpriseProvider()
-                        .addToEnterprise(enterpriseId, assistant!.id, true);
+                    EnterpriseProvider().addToEnterprise(
+                        enterpriseId, assistant!.id, "assistants");
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                       content: Text('Subscribe sent successfully! '),
                       backgroundColor: Colors.green,

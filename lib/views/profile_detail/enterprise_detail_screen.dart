@@ -44,19 +44,19 @@ class EnterpriseDetailScreen extends StatelessWidget {
               if ("user" == userRole) {
                 SubscriptionController().sendSubscription(
                     userId: userData!.uid,
-                    associationId: enterprise.enterpriseID,
+                    associationId: enterprise.id,
                     userName: userData.displayName!);
               } else {
                 SubscriptionController().sendSubscription(
                     userId: userData!.uid,
-                    associationId: enterprise.enterpriseID,
+                    associationId: enterprise.id,
                     userName: userData.displayName!,
                     isAssistant: true);
               }
               makeConversation(context,
                   "I hope this message finds you well. I am writing to request Subscribe ",
                   enterpriseName: enterprise.enterpriseName,
-                  enterpriseid: enterprise.enterpriseID);
+                  enterpriseid: enterprise.id);
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Subscribe sent successfully!'),
@@ -90,10 +90,10 @@ class EnterpriseDetailScreen extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    enterprise.logoUrl != ""
+                    enterprise.imageUrl != ""
                         ? CircleAvatar(
                             radius: 60,
-                            backgroundImage: NetworkImage(enterprise.logoUrl!),
+                            backgroundImage: NetworkImage(enterprise.imageUrl!),
                           )
                         : const CircleAvatar(
                             radius: 50,

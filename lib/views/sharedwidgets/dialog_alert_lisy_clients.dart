@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../controllers/enterprise/enterprise_provider.dart';
-import '../appointment/appoint_screen.dart';
+import '../../services/firestore_service.dart';
 
 class DialogMakeAttendingClients extends StatefulWidget {
   const DialogMakeAttendingClients({super.key});
@@ -19,11 +19,11 @@ class DialogMakeAttendingClients extends StatefulWidget {
 class _DialogMakeAttendingClientsState
     extends State<DialogMakeAttendingClients> {
   int selectedIndex = -1; // Initially no item is selected
-
+  var enterpriseID = FirestoreService().auth.currentUser!.uid;
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<DocumentSnapshot>>(
-      future: EnterpriseProvider().fetchClients(),
+      future: EnterpriseProvider().fetchClients(enterpriseID),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -32,7 +32,14 @@ class _DialogMakeAttendingClientsState
         }
         var data = snapshot.data;
         if (data == null || data.isEmpty) {
-          return const Center(child: Text('No appointments found'));
+          return AlertDialog(content: const Text('No Clients found'), actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text('Cancel'),
+            ),
+          ]);
         } else {
           return Wrap(
             children: data.map((DocumentSnapshot doc) {
@@ -75,13 +82,10 @@ class _DialogMakeAttendingClientsState
                       if (selectedIndex != -1) {
                         Provider.of<ClientProvider>(context, listen: false)
                             .selectClient(client.id);
-
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const AppointScreen(),
-                        ));
+                        Navigator.of(context).pop();
                       }
                     },
-                    child: const Text('make appointement'),
+                    child: const Text('chose'),
                   ),
                 ],
               );

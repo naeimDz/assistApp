@@ -3,7 +3,7 @@ import 'address.dart';
 import 'enum/role_enum.dart';
 
 class Enterprise {
-  final String enterpriseID;
+  final String id;
   final String enterpriseName;
   final String email;
   final String? phoneNumber;
@@ -22,10 +22,10 @@ class Enterprise {
   final Role role;
   final String? price;
   final String? description;
-  final String? logoUrl;
+  final String? imageUrl;
 
   const Enterprise({
-    required this.enterpriseID,
+    required this.id,
     required this.enterpriseName,
     required this.email,
     this.phoneNumber,
@@ -40,7 +40,7 @@ class Enterprise {
     required this.role,
     this.price,
     this.description,
-    this.logoUrl,
+    this.imageUrl,
   });
 
   factory Enterprise.fromJson(Map<String, dynamic> json) {
@@ -48,7 +48,7 @@ class Enterprise {
       throw FormatException('Enterprise data is null or empty');
     }
     return Enterprise(
-      enterpriseID: json['enterpriseID'] as String,
+      id: json['id'] as String,
       enterpriseName: json['enterpriseName'] as String,
       email: json['email'] as String,
       phoneNumber: json['phoneNumber'] as String?,
@@ -68,12 +68,12 @@ class Enterprise {
       role: Role.values.byName(json['role'] as String), // Handle invalid roles
       price: json['price'] as String?,
       description: json['description'] as String?,
-      logoUrl: json['logoUrl'] as String?,
+      imageUrl: json['imageUrl'] as String?,
     );
   }
 
   Map<String, dynamic> toJson() => {
-        'enterpriseID': enterpriseID,
+        'enterpriseID': id,
         'enterpriseName': enterpriseName,
         'email': email,
         'phoneNumber': phoneNumber ?? "",
@@ -88,6 +88,6 @@ class Enterprise {
         'role': role.name, // Use role.name for consistency
         'price': price ?? "",
         'description': description ?? "",
-        'logoUrl': logoUrl ?? "",
+        'logoUrl': imageUrl ?? "",
       };
 }

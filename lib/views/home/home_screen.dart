@@ -41,7 +41,7 @@ class HomeScreen extends StatelessWidget {
         ],
         centerTitle: true,
       ),
-      body: role == "enterprise"
+      body: role != "Enterprise"
           ? const PageRouter(
               widgetHome: HeaderHome(),
             )

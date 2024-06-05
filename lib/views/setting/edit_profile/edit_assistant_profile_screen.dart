@@ -34,7 +34,7 @@ class EditAssistantProfileViewState extends State<EditAssistantProfileView> {
 
     final userStream = FirestoreService().getCurrentUserDataStream();
     if (userStream != null) {
-      userStream.listen((snapshot) {
+      userStream.then((snapshot) {
         if (snapshot.exists) {
           final userData = snapshot.data()!;
           _firstNameController.text = userData['firstName'] as String;

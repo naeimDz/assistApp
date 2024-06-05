@@ -56,16 +56,14 @@ class EnterpriseProvider with ChangeNotifier {
     return [];
   }
 
-  Future<List<DocumentSnapshot>> fetchClients() async {
-    if (_selectedEnterprise != null) {
-      return await _enterpriseController
-          .getDocuments(_selectedEnterprise!.clients);
-    }
-    return [];
+  Future<List<DocumentSnapshot>> fetchClients(String id) async {
+    await selectEnterprise(id);
+    return await _enterpriseController
+        .getDocuments(_selectedEnterprise!.clients);
   }
 
   Future<void> addToEnterprise(
-      String enterpriseId, String id, bool isAssistant) async {
+      String enterpriseId, String id, String isAssistant) async {
     await _enterpriseController.addToEnterprise(enterpriseId, id, isAssistant);
   }
 }

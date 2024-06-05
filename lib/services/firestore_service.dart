@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:assistantsapp/models/enum/role_enum.dart';
 import 'package:assistantsapp/services/shared_preferences_manager.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,20 +15,22 @@ class FirestoreService {
   FirebaseFirestore get firestore => _firestore;
   FirebaseAuth get auth => _auth;
   // Stream to listen for changes in the current user's data (optional)
-  Stream<DocumentSnapshot<Map<String, dynamic>>>? getCurrentUserDataStream() {
+  Future<DocumentSnapshot<Map<String, dynamic>>>? getCurrentUserDataStream() {
     var role = SharedPreferencesManager.getUserRole();
+
     final uid = _auth.currentUser?.uid;
 
     if (uid == null) return null;
-    if (role == "user") {
+    if (role == Role.user.name) {
       return _firestore
           .collection('users')
           .doc(uid)
-          .snapshots(); // Replace 'users' with your actual collection name
-    } else if (role != "assistant") {
-      return _firestore.collection('providers').doc(uid).snapshots();
+          .snapshots()
+          .first; // Replace 'users' with your actual collection name
+    } else if (role == Role.assistant.name) {
+      return _firestore.collection('providers').doc(uid).snapshots().first;
     } else {
-      return _firestore.collection('enterprises').doc(uid).snapshots();
+      return _firestore.collection('enterprises').doc(uid).snapshots().first;
     }
   }
 

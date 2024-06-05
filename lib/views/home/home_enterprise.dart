@@ -28,12 +28,12 @@ class HomeEnterprise extends StatefulWidget {
 class _HomeEnterpriseState extends State<HomeEnterprise> {
   int _selectedIndex = 0; // Track the selected index
   var role = SharedPreferencesManager.getUserRole();
-  var EnterpriseID = FirestoreService().auth.currentUser!.uid;
+  var enterpriseID = FirestoreService().auth.currentUser!.uid;
   @override
   Widget build(BuildContext context) {
     final enterpriseProvider =
         Provider.of<EnterpriseProvider>(context, listen: false);
-    enterpriseProvider.selectEnterprise(EnterpriseID);
+    enterpriseProvider.selectEnterprise(enterpriseID);
 
     return ListView(
       children: [
@@ -101,7 +101,7 @@ class _HomeEnterpriseState extends State<HomeEnterprise> {
           ),
         if (_selectedIndex == 1)
           FutureBuilder<List<DocumentSnapshot>>(
-              future: enterpriseProvider.fetchClients(),
+              future: enterpriseProvider.fetchClients(enterpriseID),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const CircularProgressIndicator();
@@ -162,8 +162,7 @@ class _HomeEnterpriseState extends State<HomeEnterprise> {
           ),
         if (_selectedIndex == 3)
           ListOfInvitations(
-            enterpriseId:
-                enterpriseProvider.selectedEnterprise?.enterpriseID ?? '',
+            enterpriseId: enterpriseProvider.selectedEnterprise?.id ?? '',
           ),
       ],
     );
@@ -286,7 +285,7 @@ class InvitationCard extends StatelessWidget {
                   EnterpriseProvider().addToEnterprise(
                       subscription.associationId,
                       subscription.userId,
-                      subscription.isAssistant);
+                      subscription.isAssistant ? "assistants" : "clients");
                   SubscriptionController()
                       .updateInvitationStatus(subscription.id!, true);
                 },

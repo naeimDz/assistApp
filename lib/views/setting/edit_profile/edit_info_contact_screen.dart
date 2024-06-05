@@ -28,15 +28,15 @@ class _EditContactScreenState extends State<EditContactScreen> {
     final userStream = FirestoreService().getCurrentUserDataStream();
 
     if (userStream != null) {
-      userStream.listen((snapshot) {
+      userStream.then((snapshot) {
         if (snapshot.exists) {
-          final userData = snapshot.data()!;
-          print(userData['address']);
-          _provinceController.text = userData['firstName'] as String;
-          _cityController.text = userData['lastName'] as String;
-          _streetController.text = userData['lastName'] as String;
+          var userData = snapshot.data()!;
 
-          _phoneNumberController.text = userData['phoneNumber'] as String;
+          _provinceController.text = userData['address']?['province'] ?? "";
+          _cityController.text = userData['address']?['city'] ?? "";
+          _streetController.text = userData['address']?['street'] ?? "";
+
+          _phoneNumberController.text = userData['phoneNumber'] ?? "";
         }
       });
     }
@@ -49,6 +49,25 @@ class _EditContactScreenState extends State<EditContactScreen> {
     _phoneNumberController.dispose();
     _streetController.dispose();
     super.dispose();
+  }
+
+  void _updateData() {
+    if (_formKey.currentState!.validate()) {
+      // Update data in Firestore
+      var newData = {
+        'address': {
+          'province': _provinceController.text,
+          'city': _cityController.text,
+          'street': _streetController.text,
+        },
+        'phoneNumber': _phoneNumberController.text,
+      };
+
+      FirestoreService().updateDocument("enterprises", "", newData);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Data Updated Successfully')),
+      );
+    }
   }
 
   @override
