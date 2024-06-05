@@ -14,14 +14,14 @@ class Assistant {
   final String firstName;
   final String lastName;
   final Gender gender;
-  // final Timestamp birthday;
+  final DateTime birthday;
   final String? profileBio;
   final Address? address;
 
   final String? phoneNumber;
-//  final List<DocumentReference>? appointments;
+  final List<DocumentReference>? appointments;
   final ServiceType serviceType;
-  final Timestamp? joinDate;
+  final DateTime? joinDate;
   final String? servicePrice;
   final List<String>? skillsList;
   final bool isValidated;
@@ -38,10 +38,10 @@ class Assistant {
     required this.firstName,
     required this.lastName,
     this.gender = Gender.man,
-//    required this.birthday,
+    required this.birthday,
     this.address,
     this.phoneNumber,
-    //   this.appointments,
+    this.appointments,
     this.serviceType = ServiceType.childCare,
     this.joinDate,
     this.servicePrice,
@@ -64,13 +64,13 @@ class Assistant {
       firstName: json['firstName'],
       lastName: json['lastName'],
       gender: Gender.values.byName(json['gender']),
-      // birthday: Timestamp.fromDate(json['birthday']),
+      birthday: json['birthday'].toDate(),
       address: Address.fromJson(json['address']),
-      //  appointments: (json['appointments']),
+      appointments: (json['appointments']),
       phoneNumber: json['phoneNumber'],
       profileBio: json['profileBio'],
       serviceType: ServiceType.values.byName(json['serviceType']),
-      //   joinDate: Timestamp.fromDate(json['joinDate']),
+      joinDate: json['joinDate'].toDate(),
       servicePrice: json['servicePrice'],
       skillsList: (json['skillsList'] as List<dynamic>).cast<String>(),
       isValidated: json['isValidated'] as bool,
@@ -87,13 +87,14 @@ class Assistant {
         'firstName': firstName,
         'lastName': lastName,
         'gender': gender.name,
-        //   'birthday': birthday.toDate(), // Use toIso8601String for serialization
+        'birthday': Timestamp.fromDate(
+            birthday), // Use toIso8601String for serialization
         'address': address?.toJson(),
         'profileBio': profileBio,
         'phoneNumber': phoneNumber,
         'serviceType': serviceType.name,
-        //     'appointments': appointments ?? [],
-        //  'joinDate': joinDate?.toDate(),
+        'appointments': appointments ?? [],
+        'joinDate': joinDate != null ? Timestamp.fromDate(joinDate!) : null,
         'servicePrice': servicePrice,
         'skillsList': skillsList,
         'isValidated': isValidated,

@@ -75,14 +75,14 @@ class AssistantCard extends StatelessWidget {
                 children: [
                   Text(
                     "•  ${serviceProvider.address.toString()} ",
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: AppColors.greyedTextColor,
                       fontSize: 14,
                     ),
                   ),
                   Text(
-                    "• Joined ${DateFormat.yMMMd().format(serviceProvider.joinDate?.toDate() ?? DateTime.now())}",
-                    style: TextStyle(
+                    "• Joined ${DateFormat.yMMMd().format(serviceProvider.joinDate!)}",
+                    style: const TextStyle(
                       color: AppColors.greyedTextColor,
                       fontSize: 14,
                     ),

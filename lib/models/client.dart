@@ -14,8 +14,8 @@ class Client {
   final Gender gender;
   final List<DocumentReference> appointments;
   final Address address;
-  final DateTime birthday;
-  final DateTime joinDate;
+  final DateTime? birthday;
+  final DateTime? joinDate;
   final bool isValidated;
   final String imageUrl;
 
@@ -30,8 +30,8 @@ class Client {
     required this.gender,
     required this.address,
     required this.appointments,
-    required this.birthday,
-    required this.joinDate,
+    this.birthday,
+    this.joinDate,
     required this.isValidated,
     required this.imageUrl,
   });
@@ -53,8 +53,8 @@ class Client {
       address: Address.fromJson(json['address'] as Map<String, dynamic>),
       appointments:
           (json['appointments'] as List<dynamic>).cast<DocumentReference>(),
-      birthday: (json['birthday'] as Timestamp).toDate(),
-      joinDate: (json['joinDate'] as Timestamp).toDate(),
+      birthday: json['birthday'].toDate(),
+      joinDate: json['joinDate'].toDate(),
       isValidated: json['isValidated'] as bool,
       imageUrl: json['imageUrl'] as String,
     );
@@ -70,8 +70,8 @@ class Client {
         'lastName': lastName,
         'gender': gender.name,
         'address': address.toJson(),
-        'birthday': Timestamp.fromDate(birthday),
-        'joinDate': Timestamp.fromDate(joinDate),
+        'birthday': joinDate != null ? Timestamp.fromDate(birthday!) : null,
+        'joinDate': joinDate != null ? Timestamp.fromDate(joinDate!) : null,
         'isValidated': isValidated,
         'appointments': appointments,
         'imageUrl': imageUrl,

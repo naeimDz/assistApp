@@ -8,9 +8,8 @@ class Enterprise {
   final String email;
   final String? phoneNumber;
   final Address? address;
-  final DateTime?
-      birthday; // Consider using a specific type for birthday (e.g., DateTime)
-
+  final DateTime? birthday;
+  final DateTime? joinDate;
   // Use explicit types and avoid dynamic for clarity and safety
   final List<DocumentReference>? appointments;
   final List<DocumentReference>? subscriptions; // Required, hence non-nullable
@@ -31,6 +30,7 @@ class Enterprise {
     this.phoneNumber,
     this.address,
     this.birthday,
+    this.joinDate,
     this.appointments,
     this.subscriptions,
     this.assistants,
@@ -53,9 +53,8 @@ class Enterprise {
       email: json['email'] as String,
       phoneNumber: json['phoneNumber'] as String?,
       address: Address.fromJson(json['address'] as Map<String, dynamic>?),
-      birthday: json['birthday'] != null
-          ? DateTime.parse(json['birthday'] as String)
-          : null,
+      birthday: json['birthday'].toDate(),
+      joinDate: json['joinDate'].toDate(),
       appointments:
           (json['appointments'] as List<dynamic>?)?.cast<DocumentReference>(),
       subscriptions:
@@ -78,7 +77,8 @@ class Enterprise {
         'email': email,
         'phoneNumber': phoneNumber ?? "",
         'address': address?.toJson() ?? Address().toJson(),
-        'birthday': birthday?.toIso8601String(),
+        'birthday': joinDate != null ? Timestamp.fromDate(birthday!) : null,
+        'joinDate': joinDate != null ? Timestamp.fromDate(joinDate!) : null,
         'appointments': appointments ?? [],
         'subscriptions': subscriptions ?? [],
         'assistants': assistants ?? [],
