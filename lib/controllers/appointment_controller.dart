@@ -34,9 +34,9 @@ class AppointmentController {
       {String? fieldId}) {
     var query = _firestoreService.query(collectionName);
     // Filter by role (optional)
-    if (role == 'user') {
+    if (role == 'clients') {
       query = query.where('clientId', isEqualTo: fieldId);
-    } else if (role == 'assistant') {
+    } else if (role == 'assistants') {
       query = query.where('providerId', isEqualTo: fieldId);
     }
     query = query.orderBy('dateTime', descending: false);

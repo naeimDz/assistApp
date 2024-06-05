@@ -9,7 +9,7 @@ class DetermineUser {
 
     // Query the 'user' collection
     QuerySnapshot userQuery = await FirebaseFirestore.instance
-        .collection('users')
+        .collection('clients')
         .where(field, isEqualTo: email ?? id)
         .get();
     if (userQuery.docs.isNotEmpty) {
@@ -19,7 +19,7 @@ class DetermineUser {
 
     // Query the 'assist' collection
     QuerySnapshot assistQuery = await FirebaseFirestore.instance
-        .collection('providers')
+        .collection('assistants')
         .where(field, isEqualTo: email ?? id)
         .get();
     if (assistQuery.docs.isNotEmpty) {

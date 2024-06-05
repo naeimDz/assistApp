@@ -65,7 +65,7 @@ class EnterpriseController {
     if (fieldName == "assistants") {
       userOrAssistantRef = _db.firestore.collection('assistants').doc(id);
     } else if (fieldName == "clients") {
-      userOrAssistantRef = _db.firestore.collection('users').doc(id);
+      userOrAssistantRef = _db.firestore.collection('clients').doc(id);
     } else {
       userOrAssistantRef = _db.firestore.collection('appointments').doc(id);
     }

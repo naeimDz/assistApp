@@ -1,7 +1,7 @@
 import 'package:assistantsapp/models/enum/gender.dart';
+import 'package:assistantsapp/services/shared_preferences_manager.dart';
 import 'package:flutter/material.dart';
 
-import '../../../services/date_utils.dart';
 import '../../../services/firestore_service.dart';
 
 class EditInfoScreen extends StatefulWidget {
@@ -16,7 +16,7 @@ class _EditInfoScreenState extends State<EditInfoScreen> {
   late TextEditingController _firstNameController;
   late TextEditingController _lastNameController;
   late TextEditingController _birthdayController;
-  Gender? _selectedGender;
+  String? _selectedGender;
   @override
   void initState() {
     super.initState();
@@ -35,13 +35,12 @@ class _EditInfoScreenState extends State<EditInfoScreen> {
           final userData = snapshot.data()!;
 
           // Convert Timestamp to DateTime
-          final birthday = userData['birthday'].toDate();
 
           _firstNameController.text = userData['firstName'] as String;
           _lastNameController.text = userData['lastName'] as String;
-          _selectedGender = Gender.values.byName(userData['gender'] as String);
+          _selectedGender = userData['gender'] as String;
           // Use Utils class for formatting (replace 'dd MMM yyyy' with your desired format)
-          _birthdayController.text = Utils.fullDayFormat(birthday);
+          _birthdayController.text = userData['birthday'];
         }
       });
     }
@@ -96,7 +95,7 @@ class _EditInfoScreenState extends State<EditInfoScreen> {
                 },
               ),
               const SizedBox(height: 16),
-              DropdownButtonFormField<Gender>(
+              DropdownButtonFormField<String>(
                 decoration: const InputDecoration(
                   labelText: "Gender",
                   border: OutlineInputBorder(),
@@ -104,7 +103,7 @@ class _EditInfoScreenState extends State<EditInfoScreen> {
                 value: _selectedGender,
                 items: Gender.values
                     .map((gender) => DropdownMenuItem(
-                          value: gender,
+                          value: gender.name,
                           child: Text(gender.name),
                         ))
                     .toList(),
@@ -153,9 +152,19 @@ class _EditInfoScreenState extends State<EditInfoScreen> {
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
+                    String role = SharedPreferencesManager.getUserRole();
+                    String id = FirestoreService().auth.currentUser!.uid;
+                    var data = {
+                      "firstName": _firstNameController.text,
+                      "lastName": _lastNameController.text,
+                      "gender": _selectedGender,
+                      "birthday": _birthdayController.text
+                    };
                     // Process data
+
+                    FirestoreService().updateDocument(role, id, data);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Processing Data')),
+                      const SnackBar(content: Text('update !')),
                     );
                   }
                 },

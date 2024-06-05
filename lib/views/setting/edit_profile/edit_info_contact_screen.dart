@@ -1,6 +1,8 @@
 import 'package:assistantsapp/services/firestore_service.dart';
 import 'package:flutter/material.dart';
 
+import '../../../services/shared_preferences_manager.dart';
+
 class EditContactScreen extends StatefulWidget {
   const EditContactScreen({super.key});
 
@@ -84,7 +86,7 @@ class _EditContactScreenState extends State<EditContactScreen> {
             children: [
               Text(
                 'Address Information',
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.headlineMedium,
               ),
               const SizedBox(height: 16),
               TextFormField(
@@ -121,17 +123,11 @@ class _EditContactScreenState extends State<EditContactScreen> {
                   labelText: 'Street',
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your street';
-                  }
-                  return null;
-                },
               ),
               const SizedBox(height: 32),
               Text(
                 'Phone Number',
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.headlineMedium,
               ),
               const SizedBox(height: 16),
               TextFormField(
@@ -155,8 +151,22 @@ class _EditContactScreenState extends State<EditContactScreen> {
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     // Process data
+                    String role = SharedPreferencesManager.getUserRole();
+                    String id = FirestoreService().auth.currentUser!.uid;
+                    var data = {
+                      'address': {
+                        'city': _cityController.text,
+                        'street': _streetController.text,
+                        'province': _provinceController.text,
+                      },
+                      'phoneNumber': _phoneNumberController.text
+                    };
+                    // Process data
+
+                    FirestoreService().updateDocument(role, id, data);
+
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Processing Data')),
+                      const SnackBar(content: Text('your data updated')),
                     );
                   }
                 },

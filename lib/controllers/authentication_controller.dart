@@ -14,10 +14,10 @@ class AuthService extends ChangeNotifier {
     initializeCurrentUser();
   }
   Future<void> initializeCurrentUser() async {
-    var role = SharedPreferencesManager.getUserRole();
     final uid = _auth.currentUser?.uid;
 
     if (uid != null) {
+      var role = SharedPreferencesManager.getUserRole();
       var doc =
           await FirebaseFirestore.instance.collection(role).doc(uid).get();
       _currentUser = doc.data() as Map<String, dynamic>;
@@ -40,6 +40,8 @@ class AuthService extends ChangeNotifier {
 
       if (credential.user != null) {
         final user = credential.user!;
+
+        initializeCurrentUser();
         notifyListeners();
         return user;
       } else {

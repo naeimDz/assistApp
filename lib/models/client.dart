@@ -1,6 +1,7 @@
 import 'package:assistantsapp/models/address.dart';
+import 'package:assistantsapp/services/string_to_date.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'enum/gender.dart';
+
 import 'enum/role_enum.dart';
 
 class Client {
@@ -11,7 +12,7 @@ class Client {
   final String? phoneNumber;
   final String? firstName;
   final String? lastName;
-  final Gender? gender;
+  final String? gender;
   final List<DocumentReference>? appointments;
   final Address? address;
   final DateTime? birthday;
@@ -50,11 +51,11 @@ class Client {
       role: Role.values.byName(json['role'] as String),
       firstName: json['firstName'],
       lastName: json['lastName'],
-      gender: Gender.values.byName(json['gender'] as String),
+      gender: json['gender'],
       address: Address.fromJson(json['address']),
       appointments: json['appointments'],
-      birthday: json['birthday'].toDate(),
-      joinDate: json['joinDate'].toDate(),
+      birthday: stringToDate(json['birthday']),
+      joinDate: json['joinDate']?.toDate(),
       isValidated: json['isValidated'],
       imageUrl: json['imageUrl'],
     );
@@ -68,7 +69,7 @@ class Client {
         'role': role.name,
         'firstName': firstName ?? "",
         'lastName': lastName ?? "",
-        'gender': gender?.name ?? Gender.man,
+        'gender': gender ?? "",
         'address': address?.toJson() ?? Address().toJson(),
         'birthday': joinDate != null ? Timestamp.fromDate(birthday!) : null,
         'joinDate': joinDate != null ? Timestamp.fromDate(joinDate!) : null,

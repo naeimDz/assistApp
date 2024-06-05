@@ -31,11 +31,13 @@ class SettingScreen extends StatelessWidget {
                     bottom: 0,
                     right: 0,
                     child: IconButton(
-                      icon: const Icon(Icons.edit),
-                      onPressed: () =>
+                        icon: const Icon(Icons.edit),
+                        onPressed: () {
                           //  FirestoreService().updateUserPhoto(imageFile);
-                          print("Edit Picture"), // Implement image picking
-                    ),
+
+                          print("Edit Picture");
+                        } // Implement image picking
+                        ),
                   ),
                 ],
               ),
@@ -67,6 +69,7 @@ class SettingScreen extends StatelessWidget {
             leading: const Icon(Icons.assistant),
             onTap: () {
               String userRole = SharedPreferencesManager.getUserRole();
+
               if ("clients" == userRole) {
                 showDialog(
                   context: context,
@@ -85,9 +88,10 @@ class SettingScreen extends StatelessWidget {
                     );
                   },
                 );
+              } else {
+                Navigator.pushNamed(
+                    context, RouteNameStrings.editAssistantProfileView);
               }
-              /* Navigator.pushNamed(
-                  context, RouteNameStrings.editAssistantProfileView);*/
             },
           ),
           const Divider(),

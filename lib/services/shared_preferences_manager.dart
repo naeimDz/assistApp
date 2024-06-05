@@ -43,6 +43,6 @@ class SharedPreferencesManager {
 
   // Method to get user role (with default value)
   static String getUserRole() {
-    return _prefs.getString('userRole') ?? 'user';
+    return _prefs.getString('userRole') ?? 'users';
   }
 }
