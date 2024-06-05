@@ -138,10 +138,10 @@ class _HomeEnterpriseState extends State<HomeEnterprise> {
                           },
                           child: ListTile(
                             leading: CircleAvatar(
-                              child: Text(client.firstName[0]),
+                              child: Text(client.userName[0]),
                             ),
                             subtitle: Text(
-                                "${client.address.province}${client.address.city}"),
+                                "${client.address?.province}${client.address?.city}"),
                             title:
                                 Text("${client.firstName}${client.lastName}"),
                           ),

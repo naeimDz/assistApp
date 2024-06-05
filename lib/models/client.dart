@@ -6,34 +6,35 @@ import 'enum/role_enum.dart';
 class Client {
   final String id;
   final String email;
-  final String username;
-  final String phoneNumber;
+  final String userName;
   final Role role;
-  final String firstName;
-  final String lastName;
-  final Gender gender;
-  final List<DocumentReference> appointments;
-  final Address address;
+  final String? phoneNumber;
+  final String? firstName;
+  final String? lastName;
+  final Gender? gender;
+  final List<DocumentReference>? appointments;
+  final Address? address;
   final DateTime? birthday;
   final DateTime? joinDate;
-  final bool isValidated;
-  final String imageUrl;
+  final bool? isValidated;
+  final String? imageUrl;
 
   const Client({
     required this.id,
     required this.email,
-    required this.username,
-    required this.phoneNumber,
+    required this.userName,
     required this.role,
-    required this.firstName,
-    required this.lastName,
-    required this.gender,
-    required this.address,
-    required this.appointments,
+    this.phoneNumber,
+    this.firstName,
+    this.lastName,
+    this.gender,
+    this.address,
+    this.appointments,
     this.birthday,
     this.joinDate,
-    required this.isValidated,
-    required this.imageUrl,
+    this.isValidated = false,
+    this.imageUrl =
+        "gs://appstartup-383e8.appspot.com/user_profile_images/avatar-place.png",
   });
 
   factory Client.fromJson(Map<String, dynamic> json) {
@@ -44,36 +45,35 @@ class Client {
     return Client(
       id: json['id'] as String,
       email: json['email'] as String,
-      username: json["username"] ?? "",
+      userName: json["userName"],
       phoneNumber: json["phoneNumber"],
       role: Role.values.byName(json['role'] as String),
-      firstName: json['firstName'] as String,
-      lastName: json['lastName'] as String,
+      firstName: json['firstName'],
+      lastName: json['lastName'],
       gender: Gender.values.byName(json['gender'] as String),
-      address: Address.fromJson(json['address'] as Map<String, dynamic>),
-      appointments:
-          (json['appointments'] as List<dynamic>).cast<DocumentReference>(),
+      address: Address.fromJson(json['address']),
+      appointments: json['appointments'],
       birthday: json['birthday'].toDate(),
       joinDate: json['joinDate'].toDate(),
-      isValidated: json['isValidated'] as bool,
-      imageUrl: json['imageUrl'] as String,
+      isValidated: json['isValidated'],
+      imageUrl: json['imageUrl'],
     );
   }
 
   Map<String, dynamic> toJson() => {
         'id': id,
         'email': email,
-        'username': username,
-        'phoneNumber': phoneNumber,
+        'userName': userName,
+        'phoneNumber': phoneNumber ?? "",
         'role': role.name,
-        'firstName': firstName,
-        'lastName': lastName,
-        'gender': gender.name,
-        'address': address.toJson(),
+        'firstName': firstName ?? "",
+        'lastName': lastName ?? "",
+        'gender': gender?.name ?? Gender.man,
+        'address': address?.toJson() ?? Address().toJson(),
         'birthday': joinDate != null ? Timestamp.fromDate(birthday!) : null,
         'joinDate': joinDate != null ? Timestamp.fromDate(joinDate!) : null,
-        'isValidated': isValidated,
-        'appointments': appointments,
+        'isValidated': isValidated ?? false,
+        'appointments': appointments ?? [],
         'imageUrl': imageUrl,
       };
 }

@@ -1,6 +1,4 @@
 import 'dart:io';
-
-import 'package:assistantsapp/models/enum/role_enum.dart';
 import 'package:assistantsapp/services/shared_preferences_manager.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -21,17 +19,12 @@ class FirestoreService {
     final uid = _auth.currentUser?.uid;
 
     if (uid == null) return null;
-    if (role == Role.user.name) {
-      return _firestore
-          .collection('users')
-          .doc(uid)
-          .snapshots()
-          .first; // Replace 'users' with your actual collection name
-    } else if (role == Role.assistant.name) {
-      return _firestore.collection('providers').doc(uid).snapshots().first;
-    } else {
-      return _firestore.collection('enterprises').doc(uid).snapshots().first;
-    }
+
+    return _firestore
+        .collection(role)
+        .doc(uid)
+        .snapshots()
+        .first; // Replace 'users' with your actual collection name
   }
 
   // Function to fetch all documents  from a specific collection

@@ -20,7 +20,7 @@ Future<DocumentReference<Object?>> makeConversation(
       : text;
 
   var newConversation = Conversation(
-      assistantDisplayName: enterpriseName ?? assistant!.username,
+      assistantDisplayName: enterpriseName ?? assistant!.userName,
       assistantId: enterpriseid ?? assistant!.id,
       lastMessage: textDescription,
       userDisplayName: currentUser!.displayName!,

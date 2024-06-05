@@ -1,1 +1,1 @@
-enum Role { user, assistant, enterprise }
+enum Role { clients, assistants, enterprises }

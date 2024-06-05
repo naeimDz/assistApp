@@ -7,7 +7,7 @@ import 'enum/service_type.dart';
 
 class Assistant {
   final String id;
-  final String username;
+  final String userName;
   final String email;
   final Role role;
 
@@ -31,7 +31,7 @@ class Assistant {
 
   const Assistant({
     required this.id,
-    required this.username,
+    required this.userName,
     required this.email,
     this.profileBio,
     required this.role,
@@ -48,7 +48,8 @@ class Assistant {
     this.skillsList,
     this.isValidated = false,
     this.associatedToEnterprise = false,
-    this.imageUrl,
+    this.imageUrl =
+        "gs://appstartup-383e8.appspot.com/user_profile_images/avatar-place.png",
   });
 
   factory Assistant.fromJson(Map<String, dynamic> json) {
@@ -58,7 +59,7 @@ class Assistant {
 
     return Assistant(
       id: json['id'],
-      username: json['username'],
+      userName: json['userName'],
       email: json['email'],
       role: Role.values.byName(json['role']),
       firstName: json['firstName'],
@@ -81,7 +82,7 @@ class Assistant {
 
   Map<String, dynamic> toJson() => {
         'id': id,
-        'username': username,
+        'userName': userName,
         'email': email,
         'role': role.name,
         'firstName': firstName,

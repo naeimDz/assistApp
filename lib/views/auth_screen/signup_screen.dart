@@ -1,6 +1,8 @@
 import 'package:assistantsapp/controllers/enterprise/enterprise_provider.dart';
+import 'package:assistantsapp/models/client.dart';
 import 'package:assistantsapp/models/enterprise.dart';
 import 'package:assistantsapp/models/enum/role_enum.dart';
+import 'package:assistantsapp/providers/user_provider.dart';
 import 'package:assistantsapp/services/firestore_service.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -173,15 +175,15 @@ class _SignupScreenState extends State<SignupScreen> with SnackMixin {
                       },
                       items: const [
                         DropdownMenuItem(
-                          value: 'User',
-                          child: Text('User'),
+                          value: 'clients',
+                          child: Text('Client'),
                         ),
                         DropdownMenuItem(
-                          value: 'Assistant',
+                          value: 'assistants',
                           child: Text('Assistant'),
                         ),
                         DropdownMenuItem(
-                          value: 'Enterprise',
+                          value: 'enterprises',
                           child: Text('Enterprise'),
                         ),
                       ],
@@ -212,37 +214,40 @@ class _SignupScreenState extends State<SignupScreen> with SnackMixin {
       var user =
           await authController.signUpWithEmailAndPassword(email, password);
       var dataUser = {
+        "id": user.uid,
         "email": email,
         "role": _selectedType,
-        "firstName": userName,
+        "userName": userName,
         "joinDate": DateTime.now()
       };
+
       if (mounted) {
         showSuccess(context, AppStrings.loginSuccessMessage.tr());
         FirestoreService firestoreService = FirestoreService();
 
         SharedPreferencesManager.setUserRole(_selectedType!);
         switch (_selectedType) {
-          case "User":
+          case "clients":
             await firestoreService.createDocument(
-                "usersTest", user.uid, dataUser);
-
+                "clients", user.uid, dataUser);
             Navigator.pushReplacementNamed(
                 context, RouteNameStrings.homeScreen);
             break;
-          case "Assistant":
+          case "assistants":
             await firestoreService.createDocument(
                 "assistants", user.uid, dataUser);
             Navigator.pushReplacementNamed(
                 context, RouteNameStrings.assistantDetailScreen);
             break;
-          case "Enterprise":
-            Enterprise newData = Enterprise(
-                id: user.uid,
-                enterpriseName: userName,
-                email: email,
-                role: Role.enterprise);
-            EnterpriseProvider().addEnterprise(newData);
+          case "enterprises":
+            Enterprise newEnterprise = Enterprise(
+              id: user.uid,
+              enterpriseName: userName,
+              email: email,
+              role: Role.enterprises,
+              joinDate: DateTime.now(),
+            );
+            EnterpriseProvider().addEnterprise(newEnterprise);
             /*await firestoreService.createDocument(
                 "enterprises", user.uid, dataUser);*/
             Navigator.pushReplacementNamed(

@@ -16,7 +16,7 @@ class AssistantDetailScreen extends StatelessWidget {
     final assistant = Provider.of<AssistantProvider>(context).selectedAssistant;
     return Scaffold(
       appBar: AppBar(
-        title: Text(assistant?.username ?? ""),
+        title: Text(assistant?.userName ?? ""),
       ),
       body: SingleChildScrollView(
         // Wrap body with SingleChildScrollView

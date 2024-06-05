@@ -318,7 +318,7 @@ class AppointScreenState extends State<AppointScreen> {
         .selectedAssistant;
     var currentUser = FirestoreService().auth.currentUser;
     var newAppointment = Appointment(
-      assistantDisplayName: assistant?.lastName ?? assistant!.username,
+      assistantDisplayName: assistant?.lastName ?? assistant!.userName,
       assistantEmail: assistant!.email,
       providerId: assistant.id,
       clientEmail: currentUser!.email!,
@@ -351,11 +351,11 @@ class AppointScreenState extends State<AppointScreen> {
     var client =
         Provider.of<ClientProvider>(context, listen: false).selectedClient;
     var newAppointment = Appointment(
-      assistantDisplayName: assistant?.lastName ?? assistant!.username,
+      assistantDisplayName: assistant?.lastName ?? assistant!.userName,
       assistantEmail: assistant!.email,
       providerId: assistant.id,
       clientEmail: client!.email,
-      clientDisplayName: client.username,
+      clientDisplayName: client.userName,
       dateTime: _selectedDate,
       duration: _durationHours,
       price: double.parse(_priceController.text),

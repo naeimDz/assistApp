@@ -38,7 +38,7 @@ class Enterprise {
     this.firstNameOwner,
     this.lastNameOwner,
     required this.role,
-    this.price,
+    this.price = "1000",
     this.description,
     this.imageUrl,
   });
@@ -88,6 +88,6 @@ class Enterprise {
         'role': role.name, // Use role.name for consistency
         'price': price ?? "",
         'description': description ?? "",
-        'logoUrl': imageUrl ?? "",
+        'imageUrl': imageUrl ?? "",
       };
 }
