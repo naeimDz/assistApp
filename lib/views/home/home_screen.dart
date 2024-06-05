@@ -1,5 +1,6 @@
 //import 'package:assistantsapp/controllers/authentication_controller.dart';
 import 'package:assistantsapp/controllers/authentication_controller.dart';
+import 'package:assistantsapp/models/enum/role_enum.dart';
 import 'package:assistantsapp/services/shared_preferences_manager.dart';
 import 'package:assistantsapp/utils/routes/route_name_strings.dart';
 import 'package:assistantsapp/views/appointment/appointment_screen.dart';
@@ -40,7 +41,7 @@ class HomeScreen extends StatelessWidget {
         ],
         centerTitle: true,
       ),
-      body: role != "Enterprise"
+      body: role != Role.enterprises.name
           ? const PageRouter(
               widgetHome: HeaderHome(),
             )

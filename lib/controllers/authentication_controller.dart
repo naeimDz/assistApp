@@ -11,15 +11,17 @@ class AuthService extends ChangeNotifier {
 
   AuthService() {
     _currentUser = {}; // Initialize with an empty map
-    initializeCurrentUser();
+    //   initializeCurrentUser();
   }
   Future<void> initializeCurrentUser() async {
     final uid = _auth.currentUser?.uid;
 
     if (uid != null) {
       var role = SharedPreferencesManager.getUserRole();
+
       var doc =
           await FirebaseFirestore.instance.collection(role).doc(uid).get();
+
       _currentUser = doc.data() as Map<String, dynamic>;
     } else {
       _currentUser = {}; // Set to an empty map if user is not logged in
@@ -41,7 +43,6 @@ class AuthService extends ChangeNotifier {
       if (credential.user != null) {
         final user = credential.user!;
 
-        initializeCurrentUser();
         notifyListeners();
         return user;
       } else {

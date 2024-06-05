@@ -26,7 +26,7 @@ class EnterpriseProvider with ChangeNotifier {
 
   Future<void> addEnterprise(Enterprise enterprise) async {
     await _enterpriseController.addEntrprise(enterprise);
-    await fetchEnterprises();
+    notifyListeners();
   }
 
   Future<void> updateEnterprise(Enterprise enterprise) async {

@@ -1,6 +1,7 @@
 import 'package:assistantsapp/models/enum/role_enum.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../services/string_to_date.dart';
 import 'address.dart';
 import 'enum/gender.dart';
 import 'enum/service_type.dart';
@@ -65,7 +66,7 @@ class Assistant {
       firstName: json['firstName'],
       lastName: json['lastName'],
       gender: Gender.values.byName(json['gender']),
-      birthday: json['birthday'].toDate(),
+      birthday: stringToDate(json['birthday'])!,
       address: Address.fromJson(json['address']),
       appointments: (json['appointments']),
       phoneNumber: json['phoneNumber'],
@@ -88,8 +89,8 @@ class Assistant {
         'firstName': firstName,
         'lastName': lastName,
         'gender': gender.name,
-        'birthday': Timestamp.fromDate(
-            birthday), // Use toIso8601String for serialization
+        'birthday':
+            birthday.toIso8601String(), // Use toIso8601String for serialization
         'address': address?.toJson(),
         'profileBio': profileBio,
         'phoneNumber': phoneNumber,

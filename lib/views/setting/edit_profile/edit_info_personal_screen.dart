@@ -112,12 +112,6 @@ class _EditInfoScreenState extends State<EditInfoScreen> {
                     _selectedGender = value;
                   });
                 },
-                validator: (value) {
-                  if (value == null) {
-                    return 'Please select your gender';
-                  }
-                  return null;
-                },
               ),
               const SizedBox(height: 16),
               TextFormField(

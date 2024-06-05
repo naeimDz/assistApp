@@ -2,6 +2,7 @@ import 'package:assistantsapp/models/address.dart';
 import 'package:assistantsapp/services/string_to_date.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'enum/gender.dart';
 import 'enum/role_enum.dart';
 
 class Client {
@@ -12,7 +13,7 @@ class Client {
   final String? phoneNumber;
   final String? firstName;
   final String? lastName;
-  final String? gender;
+  final Gender? gender;
   final List<DocumentReference>? appointments;
   final Address? address;
   final DateTime? birthday;
@@ -71,7 +72,7 @@ class Client {
         'lastName': lastName ?? "",
         'gender': gender ?? "",
         'address': address?.toJson() ?? Address().toJson(),
-        'birthday': joinDate != null ? Timestamp.fromDate(birthday!) : null,
+        'birthday': birthday?.toIso8601String(),
         'joinDate': joinDate != null ? Timestamp.fromDate(joinDate!) : null,
         'isValidated': isValidated ?? false,
         'appointments': appointments ?? [],

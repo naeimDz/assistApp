@@ -1,6 +1,3 @@
-import 'package:assistantsapp/controllers/enterprise/enterprise_provider.dart';
-
-import 'package:assistantsapp/models/enterprise.dart';
 import 'package:assistantsapp/models/enum/role_enum.dart';
 
 import 'package:assistantsapp/services/firestore_service.dart';
@@ -220,8 +217,14 @@ class _SignupScreenState extends State<SignupScreen> with SnackMixin {
         "joinDate": DateTime.now()
       };
 
+      var newEnterprise = {
+        "id": user.uid,
+        "enterpriseName": userName,
+        "email": email,
+        "role": _selectedType,
+        "joinDate": DateTime.now(),
+      };
       if (mounted) {
-        showSuccess(context, AppStrings.loginSuccessMessage.tr());
         FirestoreService firestoreService = FirestoreService();
 
         SharedPreferencesManager.setUserRole(_selectedType!);
@@ -239,18 +242,12 @@ class _SignupScreenState extends State<SignupScreen> with SnackMixin {
                 context, RouteNameStrings.assistantDetailScreen);
             break;
           case "enterprises":
-            Enterprise newEnterprise = Enterprise(
-              id: user.uid,
-              enterpriseName: userName,
-              email: email,
-              role: Role.enterprises,
-              joinDate: DateTime.now(),
-            );
-            EnterpriseProvider().addEnterprise(newEnterprise);
-            /*await firestoreService.createDocument(
-                "enterprises", user.uid, dataUser);*/
-            Navigator.pushReplacementNamed(
-                context, RouteNameStrings.homeScreen);
+            await firestoreService.createDocument(
+                "enterprises", user.uid, newEnterprise);
+
+            Navigator.pushReplacementNamed(context, RouteNameStrings.homeScreen,
+                arguments: Role.enterprises.name);
+            showSuccess(context, AppStrings.loginSuccessMessage.tr());
             break;
         }
       } else {

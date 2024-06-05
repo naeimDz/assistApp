@@ -1,3 +1,4 @@
+import 'package:assistantsapp/controllers/authentication_controller.dart';
 import 'package:assistantsapp/providers/dark_mode.dart';
 import 'package:assistantsapp/services/firestore_service.dart';
 import 'package:assistantsapp/utils/routes/route_name_strings.dart';
@@ -13,7 +14,8 @@ class SettingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var fir = FirestoreService().auth.currentUser?.photoURL;
+    AuthService().initializeCurrentUser();
+    var fir = AuthService().currentUser;
     var name = FirestoreService().auth.currentUser?.displayName;
     return SingleChildScrollView(
       child: Column(
@@ -26,7 +28,7 @@ class SettingScreen extends StatelessWidget {
               Stack(
                 alignment: Alignment.center,
                 children: [
-                  circleAvatar(fir, name, radius: 80),
+                  circleAvatar(fir["imageUrl"], name, radius: 80),
                   Positioned(
                     bottom: 0,
                     right: 0,
@@ -34,7 +36,7 @@ class SettingScreen extends StatelessWidget {
                         icon: const Icon(Icons.edit),
                         onPressed: () {
                           //  FirestoreService().updateUserPhoto(imageFile);
-
+                          print(fir);
                           print("Edit Picture");
                         } // Implement image picking
                         ),

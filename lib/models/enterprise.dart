@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../services/string_to_date.dart';
 import 'address.dart';
 import 'enum/role_enum.dart';
 
@@ -38,7 +39,7 @@ class Enterprise {
     this.firstNameOwner,
     this.lastNameOwner,
     required this.role,
-    this.price = "1000",
+    this.price,
     this.description,
     this.imageUrl,
   });
@@ -51,43 +52,40 @@ class Enterprise {
       id: json['id'] as String,
       enterpriseName: json['enterpriseName'] as String,
       email: json['email'] as String,
-      phoneNumber: json['phoneNumber'] as String?,
-      address: Address.fromJson(json['address'] as Map<String, dynamic>?),
-      birthday: json['birthday'].toDate(),
+      phoneNumber: json['phoneNumber'],
+      address: Address.fromJson(json['address']),
+      birthday: stringToDate(json['birthday']),
       joinDate: json['joinDate'].toDate(),
-      appointments:
-          (json['appointments'] as List<dynamic>?)?.cast<DocumentReference>(),
-      subscriptions:
-          (json['subscriptions'] as List<dynamic>?)?.cast<DocumentReference>(),
-      assistants:
-          (json['assistants'] as List<dynamic>?)?.cast<DocumentReference>(),
-      clients: (json['clients'] as List<dynamic>?)?.cast<DocumentReference>(),
-      firstNameOwner: json['firstNameOwner'] as String?,
-      lastNameOwner: json['lastNameOwner'] as String?,
-      role: Role.values.byName(json['role'] as String), // Handle invalid roles
-      price: json['price'] as String?,
-      description: json['description'] as String?,
-      imageUrl: json['imageUrl'] as String?,
+      appointments: json['appointments'],
+      subscriptions: json['subscriptions'],
+      assistants: json['assistants'],
+      clients: json['clients'],
+      firstNameOwner: json['firstNameOwner'],
+      lastNameOwner: json['lastNameOwner'],
+      role: Role.values.byName(json['role']), // Handle invalid roles
+      price: json['price'],
+      description: json['description'],
+      imageUrl: json['imageUrl'],
     );
   }
 
   Map<String, dynamic> toJson() => {
-        'enterpriseID': id,
+        'id': id,
         'enterpriseName': enterpriseName,
         'email': email,
-        'phoneNumber': phoneNumber ?? "",
-        'address': address?.toJson() ?? Address().toJson(),
-        'birthday': joinDate != null ? Timestamp.fromDate(birthday!) : null,
+        'phoneNumber': phoneNumber,
+        'address': address,
+        'birthday': birthday,
         'joinDate': joinDate != null ? Timestamp.fromDate(joinDate!) : null,
-        'appointments': appointments ?? [],
-        'subscriptions': subscriptions ?? [],
-        'assistants': assistants ?? [],
-        'clients': clients ?? [],
-        'firstNameOwner': firstNameOwner ?? "",
-        'lastNameOwner': lastNameOwner ?? "",
+        'appointments': appointments,
+        'subscriptions': subscriptions,
+        'assistants': assistants,
+        'clients': clients,
+        'firstNameOwner': firstNameOwner,
+        'lastNameOwner': lastNameOwner,
         'role': role.name, // Use role.name for consistency
-        'price': price ?? "",
-        'description': description ?? "",
-        'imageUrl': imageUrl ?? "",
+        'price': price,
+        'description': description,
+        'imageUrl': imageUrl,
       };
 }
