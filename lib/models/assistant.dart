@@ -1,6 +1,5 @@
 import 'package:assistantsapp/models/enum/role_enum.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import '../services/string_to_date.dart';
 import 'address.dart';
 import 'enum/gender.dart';
@@ -11,39 +10,36 @@ class Assistant {
   final String userName;
   final String email;
   final Role role;
-
   final String firstName;
   final String lastName;
-  final Gender gender;
+  final Gender? gender;
   final DateTime birthday;
   final String? profileBio;
   final Address? address;
-
   final String? phoneNumber;
   final List<DocumentReference>? appointments;
   final ServiceType serviceType;
   final DateTime? joinDate;
   final String? servicePrice;
   final List<String>? skillsList;
-  final bool isValidated;
-  final bool associatedToEnterprise;
-
+  final bool? isValidated;
+  final bool? associatedToEnterprise;
   final String? imageUrl;
 
   const Assistant({
     required this.id,
     required this.userName,
     required this.email,
-    this.profileBio,
     required this.role,
     required this.firstName,
     required this.lastName,
-    this.gender = Gender.man,
+    this.gender,
     required this.birthday,
+    this.profileBio,
     this.address,
     this.phoneNumber,
     this.appointments,
-    this.serviceType = ServiceType.childCare,
+    required this.serviceType,
     this.joinDate,
     this.servicePrice,
     this.skillsList,
@@ -55,29 +51,42 @@ class Assistant {
 
   factory Assistant.fromJson(Map<String, dynamic> json) {
     if (json.isEmpty) {
-      throw FormatException('Assistant data is null or empty');
+      throw const FormatException('Assistant data is null or empty');
+    }
+
+    DateTime? parseDate(dynamic value) {
+      if (value is String) return stringToDate(value);
+      if (value is Timestamp) return value.toDate();
+      return null;
+    }
+
+    List<DocumentReference> parseDocumentReferences(List<dynamic>? list) {
+      return list?.map((e) => e as DocumentReference).toList() ?? [];
     }
 
     return Assistant(
-      id: json['id'],
-      userName: json['userName'],
-      email: json['email'],
-      role: Role.values.byName(json['role']),
-      firstName: json['firstName'],
-      lastName: json['lastName'],
-      gender: Gender.values.byName(json['gender']),
-      birthday: stringToDate(json['birthday'])!,
-      address: Address.fromJson(json['address']),
-      appointments: (json['appointments']),
-      phoneNumber: json['phoneNumber'],
+      id: json['id'] ?? "",
+      userName: json['userName'] ?? "",
+      email: json['email'] ?? "",
+      role: Role.values.byName(json['role'] ?? ""),
+      firstName: json['firstName'] ?? "",
+      lastName: json['lastName'] ?? "",
+      gender:
+          json['gender'] != null ? Gender.values.byName(json['gender']) : null,
+      birthday: parseDate(json['birthday'])!,
       profileBio: json['profileBio'],
-      serviceType: ServiceType.values.byName(json['serviceType']),
-      joinDate: json['joinDate'].toDate(),
+      address:
+          json['address'] != null ? Address.fromJson(json['address']) : null,
+      phoneNumber: json['phoneNumber'],
+      appointments: parseDocumentReferences(json['appointments']),
+      serviceType: ServiceType.values.byName(json['serviceType'] ?? ""),
+      joinDate: parseDate(json['joinDate']),
       servicePrice: json['servicePrice'],
-      skillsList: (json['skillsList'] as List<dynamic>).cast<String>(),
-      isValidated: json['isValidated'] as bool,
-      associatedToEnterprise: json['associatedToEnterprise'] as bool,
-      imageUrl: json['imageUrl'],
+      skillsList: json['skillsList']?.cast<String>(),
+      isValidated: json['isValidated'] ?? false,
+      associatedToEnterprise: json['associatedToEnterprise'] ?? false,
+      imageUrl: json['imageUrl'] ??
+          "gs://appstartup-383e8.appspot.com/user_profile_images/avatar-place.png",
     );
   }
 
@@ -88,14 +97,13 @@ class Assistant {
         'role': role.name,
         'firstName': firstName,
         'lastName': lastName,
-        'gender': gender.name,
-        'birthday':
-            birthday.toIso8601String(), // Use toIso8601String for serialization
-        'address': address?.toJson(),
+        'gender': gender?.name,
+        'birthday': birthday.toIso8601String(),
         'profileBio': profileBio,
+        'address': address?.toJson(),
         'phoneNumber': phoneNumber,
+        'appointments': appointments,
         'serviceType': serviceType.name,
-        'appointments': appointments ?? [],
         'joinDate': joinDate != null ? Timestamp.fromDate(joinDate!) : null,
         'servicePrice': servicePrice,
         'skillsList': skillsList,

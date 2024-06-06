@@ -1,3 +1,5 @@
+import 'package:assistantsapp/models/enum/role_enum.dart';
+
 import '../models/appointment.dart';
 import '../services/firestore_service.dart';
 
@@ -34,9 +36,9 @@ class AppointmentController {
       {String? fieldId}) {
     var query = _firestoreService.query(collectionName);
     // Filter by role (optional)
-    if (role == 'clients') {
+    if (role == Role.clients.name) {
       query = query.where('clientId', isEqualTo: fieldId);
-    } else if (role == 'assistants') {
+    } else if (role == Role.assistants.name) {
       query = query.where('providerId', isEqualTo: fieldId);
     }
     query = query.orderBy('dateTime', descending: false);

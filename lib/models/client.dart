@@ -1,9 +1,10 @@
 import 'package:assistantsapp/models/address.dart';
 import 'package:assistantsapp/services/string_to_date.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'enum/gender.dart';
 import 'enum/role_enum.dart';
+
+// Assuming you have an enum for Gender
 
 class Client {
   final String id;
@@ -41,24 +42,37 @@ class Client {
 
   factory Client.fromJson(Map<String, dynamic> json) {
     if (json.isEmpty) {
-      throw FormatException('Client data is null or empty');
+      throw const FormatException('Client data is null or empty');
+    }
+
+    DateTime? parseDate(dynamic value) {
+      if (value is String) return stringToDate(value);
+      if (value is Timestamp) return value.toDate();
+      return null;
+    }
+
+    List<DocumentReference> parseDocumentReferences(List<dynamic>? list) {
+      return list?.map((e) => e as DocumentReference).toList() ?? [];
     }
 
     return Client(
-      id: json['id'] as String,
-      email: json['email'] as String,
-      userName: json["userName"],
-      phoneNumber: json["phoneNumber"],
-      role: Role.values.byName(json['role'] as String),
+      id: json['id'] ?? "",
+      email: json['email'] ?? "",
+      userName: json['userName'] ?? "",
+      phoneNumber: json['phoneNumber'],
+      role: Role.values.byName(json['role'] ?? ""),
       firstName: json['firstName'],
       lastName: json['lastName'],
-      gender: json['gender'],
-      address: Address.fromJson(json['address']),
-      appointments: json['appointments'],
-      birthday: stringToDate(json['birthday']),
-      joinDate: json['joinDate']?.toDate(),
+      gender:
+          json['gender'] != null ? Gender.values.byName(json['gender']) : null,
+      address:
+          json['address'] != null ? Address.fromJson(json['address']) : null,
+      appointments: parseDocumentReferences(json['appointments']),
+      birthday: parseDate(json['birthday']),
+      joinDate: parseDate(json['joinDate']),
       isValidated: json['isValidated'],
-      imageUrl: json['imageUrl'],
+      imageUrl: json['imageUrl'] ??
+          "gs://appstartup-383e8.appspot.com/user_profile_images/avatar-place.png",
     );
   }
 
@@ -66,16 +80,16 @@ class Client {
         'id': id,
         'email': email,
         'userName': userName,
-        'phoneNumber': phoneNumber ?? "",
+        'phoneNumber': phoneNumber,
         'role': role.name,
-        'firstName': firstName ?? "",
-        'lastName': lastName ?? "",
-        'gender': gender ?? "",
-        'address': address?.toJson() ?? Address().toJson(),
+        'firstName': firstName,
+        'lastName': lastName,
+        'gender': gender?.name,
+        'address': address?.toJson(),
         'birthday': birthday?.toIso8601String(),
         'joinDate': joinDate != null ? Timestamp.fromDate(joinDate!) : null,
-        'isValidated': isValidated ?? false,
-        'appointments': appointments ?? [],
+        'isValidated': isValidated,
+        'appointments': appointments,
         'imageUrl': imageUrl,
       };
 }

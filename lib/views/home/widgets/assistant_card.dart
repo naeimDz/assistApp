@@ -93,7 +93,7 @@ class AssistantCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  if (serviceProvider.isValidated)
+                  if (serviceProvider.isValidated!)
                     IconButton(
                       icon:
                           const Icon(Icons.verified_sharp, color: Colors.green),

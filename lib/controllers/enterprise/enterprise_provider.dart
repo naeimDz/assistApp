@@ -21,6 +21,7 @@ class EnterpriseProvider with ChangeNotifier {
 
   Future<void> selectEnterprise(String id) async {
     _selectedEnterprise = await _enterpriseController.getEnterpriseById(id);
+
     notifyListeners();
   }
 
@@ -49,7 +50,10 @@ class EnterpriseProvider with ChangeNotifier {
 
   Future<List<DocumentSnapshot>> fetchAssistants(
       {Enterprise? selectedEnterprise}) async {
-    if (_selectedEnterprise != null) {
+    if (selectedEnterprise != null) {
+      return await _enterpriseController
+          .getDocuments(selectedEnterprise.assistants);
+    } else if (_selectedEnterprise != null) {
       return await _enterpriseController
           .getDocuments(_selectedEnterprise!.assistants);
     }

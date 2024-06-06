@@ -77,6 +77,7 @@ class EnterpriseController {
       if (enterpriseSnapshot.exists) {
         // Retrieve the correct list based on whether it's an assistant or not
         List<dynamic> usersOrAssists;
+
         if (fieldName == "assistants") {
           usersOrAssists =
               List.from(enterpriseSnapshot.get('assistants') ?? []);

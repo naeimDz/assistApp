@@ -4,6 +4,7 @@ import 'package:assistantsapp/controllers/client/client_provider.dart';
 
 import 'package:assistantsapp/models/appointment.dart';
 import 'package:assistantsapp/models/enum/appointment_status.dart';
+import 'package:assistantsapp/models/enum/role_enum.dart';
 
 import 'package:assistantsapp/services/firestore_service.dart';
 import 'package:assistantsapp/services/shared_preferences_manager.dart';
@@ -268,7 +269,7 @@ class AppointScreenState extends State<AppointScreen> {
       onTap: () async {
         var role = SharedPreferencesManager.getUserRole();
 
-        if (role == "Enterprise") {
+        if (role == Role.enterprises.name) {
           showDialog(
               context: context,
               builder: (context) => const DialogMakeAttendingClients());
@@ -318,6 +319,7 @@ class AppointScreenState extends State<AppointScreen> {
         .selectedAssistant;
     var currentUser = FirestoreService().auth.currentUser;
     var newAppointment = Appointment(
+      status: AppointmentStatus.pending,
       assistantDisplayName: assistant?.lastName ?? assistant!.userName,
       assistantEmail: assistant!.email,
       providerId: assistant.id,
@@ -327,6 +329,7 @@ class AppointScreenState extends State<AppointScreen> {
       duration: _durationHours,
       price: double.parse(_priceController.text),
       clientId: currentUser.uid,
+      creationDate: DateTime.now(),
     );
 
     AppointmentController().createAppointment(newAppointment);
@@ -350,7 +353,8 @@ class AppointScreenState extends State<AppointScreen> {
         .selectedAssistant;
     var client =
         Provider.of<ClientProvider>(context, listen: false).selectedClient;
-    var newAppointment = Appointment(
+    var newAppointmentByEnterprise = Appointment(
+      creationDate: DateTime.now(),
       assistantDisplayName: assistant?.lastName ?? assistant!.userName,
       assistantEmail: assistant!.email,
       providerId: assistant.id,
@@ -364,7 +368,7 @@ class AppointScreenState extends State<AppointScreen> {
       status: AppointmentStatus.confirmed,
     );
 
-    AppointmentController().createAppointment(newAppointment);
+    AppointmentController().createAppointment(newAppointmentByEnterprise);
 
     return assistant.lastName;
   }

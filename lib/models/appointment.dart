@@ -1,3 +1,4 @@
+import '../services/string_to_date.dart';
 import 'enum/appointment_status.dart';
 import 'enum/recurrence_pattern.dart';
 
@@ -5,17 +6,18 @@ class Appointment {
   final String? appointmentID;
   final String assistantDisplayName;
   final String assistantEmail;
-  final String cancellationReason;
+  final String? cancellationReason;
   final String clientEmail;
   final String clientDisplayName;
   final String clientId;
-  final DateTime dateTime;
-  final Duration duration;
+  final DateTime? dateTime;
+  final DateTime? creationDate;
+  final Duration? duration;
   final Duration? durationReply;
-  final bool isRecurring;
-  final double price;
-  final String providerId;
-  final RecurrencePattern recurrencePattern;
+  final bool? isRecurring;
+  final double? price;
+  final String? providerId;
+  final RecurrencePattern? recurrencePattern;
   final AppointmentStatus status;
   final bool? allDay;
   final String? enterpriseCreator;
@@ -31,13 +33,14 @@ class Appointment {
     required this.dateTime,
     required this.duration,
     required this.price,
+    required this.creationDate,
     this.durationReply,
-    this.isRecurring = false,
-    this.cancellationReason = "",
-    this.recurrencePattern = RecurrencePattern.none,
-    this.status = AppointmentStatus.pending,
-    this.allDay = false,
-    this.enterpriseCreator = "",
+    this.isRecurring,
+    this.cancellationReason,
+    this.recurrencePattern,
+    required this.status,
+    this.allDay,
+    this.enterpriseCreator,
   });
 
   factory Appointment.fromJson(Map<String, dynamic> json, String id) {
@@ -50,7 +53,8 @@ class Appointment {
         clientEmail: json['clientEmail'] as String,
         clientDisplayName: json['clientDisplayName'] as String,
         clientId: json['clientId'] as String,
-        dateTime: DateTime.parse(json['dateTime'] as String),
+        dateTime: stringToDate(json['birthday']),
+        creationDate: stringToDate(json['birthday']),
         duration: Duration(seconds: json['duration'] as int),
         durationReply: json['durationReply'] != null
             ? Duration(seconds: json['durationReply'] as int)
@@ -80,13 +84,13 @@ class Appointment {
         'clientEmail': clientEmail,
         'clientDisplayName': clientDisplayName,
         'clientId': clientId,
-        'dateTime': dateTime.toIso8601String(),
-        'duration': duration.inSeconds,
-        'durationReply': durationReply?.inSeconds,
+        'dateTime': dateTime?.toIso8601String(),
+        'duration': duration?.inHours,
+        'durationReply': durationReply?.inMinutes,
         'isRecurring': isRecurring,
         'price': price,
         'providerId': providerId,
-        'recurrencePattern': recurrencePattern.name,
+        'recurrencePattern': recurrencePattern?.name,
         'status': status.name,
         'allDay': allDay,
         'enterpriseCreator': enterpriseCreator

@@ -11,12 +11,10 @@ class Enterprise {
   final Address? address;
   final DateTime? birthday;
   final DateTime? joinDate;
-  // Use explicit types and avoid dynamic for clarity and safety
   final List<DocumentReference>? appointments;
-  final List<DocumentReference>? subscriptions; // Required, hence non-nullable
+  final List<DocumentReference>? subscriptions;
   final List<DocumentReference>? assistants;
   final List<DocumentReference>? clients;
-
   final String? firstNameOwner;
   final String? lastNameOwner;
   final Role role;
@@ -46,23 +44,35 @@ class Enterprise {
 
   factory Enterprise.fromJson(Map<String, dynamic> json) {
     if (json.isEmpty) {
-      throw FormatException('Enterprise data is null or empty');
+      throw const FormatException('Enterprise data is null or empty');
     }
+
+    DateTime? parseDate(dynamic value) {
+      if (value is String) return stringToDate(value);
+      if (value is Timestamp) return value.toDate();
+      return null;
+    }
+
+    List<DocumentReference> parseDocumentReferences(List<dynamic>? list) {
+      return list?.map((e) => e as DocumentReference).toList() ?? [];
+    }
+
     return Enterprise(
-      id: json['id'] as String,
-      enterpriseName: json['enterpriseName'] as String,
-      email: json['email'] as String,
+      id: json['id'] ?? "",
+      enterpriseName: json['enterpriseName'] ?? "",
+      email: json['email'] ?? "",
       phoneNumber: json['phoneNumber'],
-      address: Address.fromJson(json['address']),
-      birthday: stringToDate(json['birthday']),
-      joinDate: json['joinDate'].toDate(),
-      appointments: json['appointments'],
-      subscriptions: json['subscriptions'],
-      assistants: json['assistants'],
-      clients: json['clients'],
+      address:
+          json['address'] != null ? Address.fromJson(json['address']) : null,
+      birthday: parseDate(json['birthday']),
+      joinDate: parseDate(json['joinDate']),
+      appointments: parseDocumentReferences(json['appointments']),
+      subscriptions: parseDocumentReferences(json['subscriptions']),
+      assistants: parseDocumentReferences(json['assistants']),
+      clients: parseDocumentReferences(json['clients']),
       firstNameOwner: json['firstNameOwner'],
       lastNameOwner: json['lastNameOwner'],
-      role: Role.values.byName(json['role']), // Handle invalid roles
+      role: Role.values.byName(json['role']),
       price: json['price'],
       description: json['description'],
       imageUrl: json['imageUrl'],
@@ -74,8 +84,8 @@ class Enterprise {
         'enterpriseName': enterpriseName,
         'email': email,
         'phoneNumber': phoneNumber,
-        'address': address,
-        'birthday': birthday,
+        'address': address?.toJson(),
+        'birthday': birthday != null ? Timestamp.fromDate(birthday!) : null,
         'joinDate': joinDate != null ? Timestamp.fromDate(joinDate!) : null,
         'appointments': appointments,
         'subscriptions': subscriptions,
@@ -83,7 +93,7 @@ class Enterprise {
         'clients': clients,
         'firstNameOwner': firstNameOwner,
         'lastNameOwner': lastNameOwner,
-        'role': role.name, // Use role.name for consistency
+        'role': role.name,
         'price': price,
         'description': description,
         'imageUrl': imageUrl,

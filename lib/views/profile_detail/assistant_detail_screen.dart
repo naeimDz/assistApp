@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../controllers/enterprise/enterprise_provider.dart';
+import '../../models/enum/role_enum.dart';
 import '../../services/firestore_service.dart';
 
 class AssistantDetailScreen extends StatelessWidget {
@@ -77,7 +78,7 @@ class AssistantDetailScreen extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {
                   var role = SharedPreferencesManager.getUserRole();
-                  if (role != 'enterprise') {
+                  if (role == Role.enterprises.name) {
                     var enterpriseId = FirestoreService().auth.currentUser!.uid;
 
                     EnterpriseProvider().addToEnterprise(

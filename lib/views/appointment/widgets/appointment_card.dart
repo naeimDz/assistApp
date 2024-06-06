@@ -62,7 +62,7 @@ class _AppointmentCardState extends State<AppointmentCard> {
                       ],
                     ),
                     trailing: Text(
-                      "${widget.appointment.price.round()}DZD",
+                      "${widget.appointment.price?.round()}DZD",
                       style: const TextStyle(color: Colors.black54),
                     ),
                   ),
@@ -85,7 +85,7 @@ class _AppointmentCardState extends State<AppointmentCard> {
                             width: 5,
                           ),
                           Text(
-                            Utils.apiDayFormat(widget.appointment.dateTime),
+                            Utils.apiDayFormat(widget.appointment.dateTime!),
                             style: const TextStyle(color: Colors.black54),
                           ),
                         ],
@@ -99,7 +99,7 @@ class _AppointmentCardState extends State<AppointmentCard> {
                             width: 5,
                           ),
                           Text(
-                            "${widget.appointment.duration.inHours.toString()} hours",
+                            "${widget.appointment.duration?.inHours.toString()} hours",
                             style: const TextStyle(color: Colors.black54),
                           )
                         ],
