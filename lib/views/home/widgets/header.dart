@@ -1,3 +1,4 @@
+import 'package:assistantsapp/models/enum/role_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -14,6 +15,7 @@ import 'package:assistantsapp/utils/constants/app_text_styles.dart';
 import 'package:assistantsapp/views/sharedwidgets/segment_options.dart';
 
 import '../../../services/handle_snapshot.dart';
+import '../../../services/shared_preferences_manager.dart';
 import '../../sharedwidgets/build_list_assist.dart';
 import 'enterprise_card.dart';
 
@@ -31,6 +33,7 @@ class _HeaderHomeState extends State<HeaderHome> {
 
   @override
   Widget build(BuildContext context) {
+    var role = SharedPreferencesManager.getUserRole();
     return ListView(
       physics: const BouncingScrollPhysics(),
       children: [
@@ -63,15 +66,16 @@ class _HeaderHomeState extends State<HeaderHome> {
           ),
         ),
         AppSizedBox.h15,
-        if (selectedServiceType != 'Enterprise')
-          FutureBuilder<List<Assistant>>(
-            future: Provider.of<AssistantProvider>(context, listen: false)
-                .fetchAssistants(),
-            builder: (context, assistantSnapshot) {
-              return handleSnapshot(context, assistantSnapshot,
-                  (data) => buildAssistantList(data, selectedServiceType));
-            },
-          ),
+        if (role == Role.clients.name)
+          if (selectedServiceType != 'Enterprise')
+            FutureBuilder<List<Assistant>>(
+              future: Provider.of<AssistantProvider>(context, listen: false)
+                  .fetchAssistants(),
+              builder: (context, assistantSnapshot) {
+                return handleSnapshot(context, assistantSnapshot,
+                    (data) => buildAssistantList(data, selectedServiceType));
+              },
+            ),
         if (selectedServiceType == 'Enterprise' || selectedServiceType == 'All')
           FutureBuilder<List<Enterprise>>(
             future: Provider.of<EnterpriseProvider>(context, listen: false)

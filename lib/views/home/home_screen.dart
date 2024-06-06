@@ -20,6 +20,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var role = SharedPreferencesManager.getUserRole();
+
     return Scaffold(
       appBar: AppBar(
         leading: const Icon(

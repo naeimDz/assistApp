@@ -47,7 +47,7 @@ class EnterpriseDetailScreen extends StatelessWidget {
                   await SubscriptionController().sendSubscription(
                       userId: userData.uid,
                       associationId: enterprise.id,
-                      userName: userData.displayName ?? '');
+                      userName: userData.displayName ?? 'Missed Name');
                 } else {
                   await SubscriptionController().sendSubscription(
                       userId: userData.uid,
