@@ -39,31 +39,40 @@ class EnterpriseDetailScreen extends StatelessWidget {
             ),
           ),
           onPressed: () async {
-            String userRole = SharedPreferencesManager.getUserRole();
-            var userData = FirestoreService().auth.currentUser;
-            if (userData != null) {
-              if (Role.clients.name == userRole) {
-                SubscriptionController().sendSubscription(
-                    userId: userData.uid,
-                    associationId: enterprise.id,
-                    userName: userData.displayName ?? '');
-              } else {
-                SubscriptionController().sendSubscription(
-                    userId: userData.uid,
-                    associationId: enterprise.id,
-                    userName: userData.displayName ?? '',
-                    isAssistant: true);
+            try {
+              String userRole = SharedPreferencesManager.getUserRole();
+              var userData = FirestoreService().auth.currentUser;
+              if (userData != null) {
+                if (Role.clients.name == userRole) {
+                  await SubscriptionController().sendSubscription(
+                      userId: userData.uid,
+                      associationId: enterprise.id,
+                      userName: userData.displayName ?? '');
+                } else {
+                  await SubscriptionController().sendSubscription(
+                      userId: userData.uid,
+                      associationId: enterprise.id,
+                      userName: userData.displayName ?? '',
+                      isAssistant: true);
+                }
+                await makeConversation(
+                  context,
+                  "I hope this message finds you well. I am writing to request a subscription.",
+                  enterpriseName: enterprise.enterpriseName,
+                  enterpriseid: enterprise.id,
+                );
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Subscribe sent successfully!'),
+                    backgroundColor: Colors.green,
+                  ),
+                );
               }
-              makeConversation(
-                context,
-                "I hope this message finds you well. I am writing to request Subscribe ",
-                enterpriseName: enterprise.enterpriseName,
-                enterpriseid: enterprise.id,
-              );
+            } catch (e) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Subscribe sent successfully!'),
-                  backgroundColor: Colors.green,
+                SnackBar(
+                  content: Text('Error: $e'),
+                  backgroundColor: Colors.red,
                 ),
               );
             }
@@ -204,7 +213,7 @@ class EnterpriseDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDocumentList(List<DocumentReference>? documents) {
+  Widget buildDocumentList(List<DocumentReference>? documents) {
     if (documents == null || documents.isEmpty) {
       return const Text(
         'No items available.',

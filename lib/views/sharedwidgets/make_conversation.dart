@@ -12,28 +12,33 @@ import '../../services/firestore_service.dart';
 Future<DocumentReference<Object?>> makeConversation(
     BuildContext context, String text,
     {String? enterpriseid, String? enterpriseName}) async {
-  var assistant =
-      Provider.of<AssistantProvider>(context, listen: false).selectedAssistant;
-  var currentUser = FirestoreService().auth.currentUser;
-  final textDescription = text == ""
-      ? "I hope this message finds you well. I am writing to request an appointment with you "
-      : text;
+  try {
+    var assistant = Provider.of<AssistantProvider>(context, listen: false)
+        .selectedAssistant;
+    var currentUser = FirestoreService().auth.currentUser;
+    final textDescription = text == ""
+        ? "I hope this message finds you well. I am writing to request an appointment with you "
+        : text;
 
-  var newConversation = Conversation(
-      assistantDisplayName: enterpriseName ?? assistant!.userName,
-      assistantId: enterpriseid ?? assistant!.id,
-      lastMessage: textDescription,
-      userDisplayName: currentUser!.displayName!,
-      userId: currentUser.uid);
-  var ref = await ConversationController().createOrCheckConversation(
-      newConversation, currentUser.uid, enterpriseid ?? assistant!.id);
+    var newConversation = Conversation(
+        assistantDisplayName: enterpriseName ?? assistant!.userName,
+        assistantId: enterpriseid ?? assistant!.id,
+        lastMessage: textDescription,
+        userDisplayName: currentUser!.displayName ?? "missesName",
+        userId: currentUser.uid);
 
-  MessageController().addMessage(
-      ref!.id,
-      Message(
-          senderUid: currentUser.uid,
-          content: textDescription,
-          timestamp: Timestamp.now()));
+    var ref = await ConversationController().createOrCheckConversation(
+        newConversation, currentUser.uid, enterpriseid ?? assistant!.id);
+    MessageController().addMessage(
+        ref!.id,
+        Message(
+            senderUid: currentUser.uid,
+            content: textDescription,
+            timestamp: Timestamp.now()));
 
-  return ref;
+    return ref;
+  } catch (e) {
+    print('Error: $e');
+    rethrow;
+  }
 }
