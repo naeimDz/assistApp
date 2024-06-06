@@ -1,8 +1,6 @@
 //import 'package:assistantsapp/controllers/authentication_controller.dart';
-import 'package:assistantsapp/controllers/authentication_controller.dart';
 import 'package:assistantsapp/models/enum/role_enum.dart';
 import 'package:assistantsapp/services/shared_preferences_manager.dart';
-import 'package:assistantsapp/utils/routes/route_name_strings.dart';
 import 'package:assistantsapp/views/appointment/appointment_screen.dart';
 import 'package:assistantsapp/views/conversation/conversation_screen.dart';
 import 'package:assistantsapp/views/home/home_enterprise.dart';
@@ -19,27 +17,20 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var role = SharedPreferencesManager.getUserRole();
-
+    final role = SharedPreferencesManager.getUserRole();
     return Scaffold(
       appBar: AppBar(
-        leading: const Icon(
-          Icons.logo_dev,
-          size: 50,
-          color: Colors.pink,
+        leading: SizedBox(
+          child: Image.asset(
+            'assets/images/logo.png', // Replace with your image asset path
+            fit: BoxFit.cover,
+            color: const Color.fromARGB(255, 217, 173, 96),
+            width: 25,
+            height: 25,
+            // Adjust as needed (cover, contain, etc.)
+          ),
         ),
-        leadingWidth: 100,
-        actions: [
-          Consumer<AuthService>(builder: (context, authProvider, _) {
-            return IconButton(
-              icon: const Icon(Icons.exit_to_app_rounded),
-              onPressed: () {
-                authProvider.signout();
-                Navigator.pushReplacementNamed(context, RouteNameStrings.logIn);
-              },
-            );
-          }),
-        ],
+        leadingWidth: 50,
         centerTitle: true,
       ),
       body: role != Role.enterprises.name

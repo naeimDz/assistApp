@@ -5,8 +5,8 @@ class Utils {
   static final DateFormat _monthFormat = DateFormat('MMMM');
   static final DateFormat _dayFormat = DateFormat('dd');
   static final DateFormat _firstDayFormat = DateFormat('MMM dd');
-  static final DateFormat _fullDayFormat = DateFormat('EEE MMM dd, yyyy');
-  static final DateFormat _apiDayFormat = DateFormat('yyyy-MM-dd');
+  static final DateFormat _fullDayFormat = DateFormat('EEEEEE dd MMM, yyyy');
+  static final DateFormat _apiDayFormat = DateFormat('dd-MM-yyyy');
 
   static String formatYear(DateTime d) => _yearFormat.format(d);
 

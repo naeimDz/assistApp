@@ -34,7 +34,8 @@ class _HomeEnterpriseState extends State<HomeEnterprise> {
     final enterpriseProvider =
         Provider.of<EnterpriseProvider>(context, listen: false);
     enterpriseProvider.selectEnterprise(enterpriseID);
-
+    Provider.of<AssistantProvider>(context, listen: false).nullAssistant(null);
+    Provider.of<ClientProvider>(context, listen: false).nullClient(null);
     return ListView(
       children: [
         const Padding(
@@ -126,15 +127,6 @@ class _HomeEnterpriseState extends State<HomeEnterprise> {
                                 .selectClient(client.id);
                             Navigator.pushNamed(
                                 context, RouteNameStrings.appointScreen);
-                            /*
-                    Provider.of<UserController>(context, listen: false)
-                        .setusersCurrent(users);
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return DialogMakeAttendingListAssistants();
-                      },
-                    );*/
                           },
                           child: ListTile(
                             leading: CircleAvatar(

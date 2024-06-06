@@ -82,41 +82,23 @@ class ConversationController {
     }
   }
 
-  Stream<List<Conversation>> getConversationsStream(String role) {
-    if (role == "user") {
-      return _firestoreService.firestore
-          .collection(collectionName)
-          .where('userId', isEqualTo: FirestoreService().auth.currentUser?.uid)
-          .snapshots()
-          .asyncMap((snapshot) async {
-        List<Conversation> conversations = [];
-        for (var doc in snapshot.docs) {
-          Conversation conversation =
-              Conversation.fromJson(doc.data(), id: doc.id);
+  Stream<List<Conversation>> getConversationsStream(String role) async* {
+    final uid = FirestoreService().auth.currentUser?.uid;
+    var query1 = _firestoreService.firestore
+        .collection(collectionName)
+        .where('userId', isEqualTo: uid)
+        .snapshots();
+    var query2 = _firestoreService.firestore
+        .collection(collectionName)
+        .where('assistantId', isEqualTo: uid)
+        .snapshots();
 
-          conversations.add(conversation);
-        }
-        return conversations;
-      }).handleError((error) {
-        print('Error getting conversations stream: $error');
-      });
-    } else {
-      return _firestoreService.firestore
-          .collection(collectionName)
-          .where('assistantId',
-              isEqualTo: FirestoreService().auth.currentUser?.uid)
-          .snapshots()
-          .asyncMap((snapshot) async {
-        List<Conversation> conversations = [];
-        for (var doc in snapshot.docs) {
-          Conversation conversation = Conversation.fromJson(doc.data());
+    await for (var snapshot1 in query1) {
+      var snapshot2 = await query2.first;
 
-          conversations.add(conversation);
-        }
-        return conversations;
-      }).handleError((error) {
-        print('Error getting conversations stream: $error');
-      });
+      yield [...snapshot1.docs, ...snapshot2.docs]
+          .map((doc) => Conversation.fromJson(doc.data(), id: doc.id))
+          .toList();
     }
   }
 }

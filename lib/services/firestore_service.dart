@@ -3,6 +3,7 @@ import 'package:assistantsapp/services/shared_preferences_manager.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
 
 class FirestoreService {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -59,15 +60,23 @@ class FirestoreService {
     await _firestore.collection(collectionPath).doc(documentId).delete();
   }
 
-  Future<void> updateUserPhoto(File imageFile) async {
+  Future<void> updateUserPhoto() async {
+    var role = SharedPreferencesManager.getUserRole();
     try {
       // Get the current user
       final user = _auth.currentUser;
-
       if (user == null) {
         throw Exception('No user signed in.');
       }
+// Get image selection from user
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
 
+      if (image == null) {
+        return; // User canceled or failed to pick an image
+      }
+
+      // Get the selected image file
+      final imageFile = File(image.path);
       // Get the file name using null-safe operator
       final fileName =
           imageFile.path.split('/').last; // Assuming path separator is '/'
@@ -84,7 +93,9 @@ class FirestoreService {
 
       // Update the user's photo URL
       await user.updatePhotoURL(downloadURL);
-
+// Update user's photo URL in Firestore
+      final userRef = FirebaseFirestore.instance.collection(role).doc(user.uid);
+      await userRef.update({'imageUrl': downloadURL});
       print('User photo updated successfully.');
     } catch (e) {
       print('Error updating user photo: $e');

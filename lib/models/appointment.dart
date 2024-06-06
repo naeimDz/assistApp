@@ -1,4 +1,3 @@
-import '../services/string_to_date.dart';
 import 'enum/appointment_status.dart';
 import 'enum/recurrence_pattern.dart';
 
@@ -35,38 +34,48 @@ class Appointment {
     required this.price,
     required this.creationDate,
     this.durationReply,
-    this.isRecurring,
-    this.cancellationReason,
-    this.recurrencePattern,
-    required this.status,
-    this.allDay,
+    this.isRecurring = false,
+    this.cancellationReason = "",
+    this.recurrencePattern = RecurrencePattern.none,
+    this.status = AppointmentStatus.pending,
+    this.allDay = false,
     this.enterpriseCreator,
   });
 
   factory Appointment.fromJson(Map<String, dynamic> json, String id) {
+    DateTime? stringToDate(String? dateString) {
+      if (dateString == null || dateString.isEmpty) {
+        return null;
+      }
+      try {
+        return DateTime.parse(dateString);
+      } catch (e) {
+        print('Error parsing date: $e');
+        return null;
+      }
+    }
+
     try {
       return Appointment(
         appointmentID: id,
-        assistantDisplayName: json['assistantDisplayName'] as String,
-        assistantEmail: json['assistantEmail'] as String,
-        cancellationReason: json['cancellationReason'] as String,
-        clientEmail: json['clientEmail'] as String,
-        clientDisplayName: json['clientDisplayName'] as String,
-        clientId: json['clientId'] as String,
-        dateTime: stringToDate(json['birthday']),
-        creationDate: stringToDate(json['birthday']),
-        duration: Duration(seconds: json['duration'] as int),
-        durationReply: json['durationReply'] != null
-            ? Duration(seconds: json['durationReply'] as int)
-            : null,
-        isRecurring: json['isRecurring'] as bool,
-        price: json['price'] as double,
-        providerId: json['providerId'] as String,
-        recurrencePattern: RecurrencePattern.values
-            .firstWhere((element) => element.name == json['recurrencePattern']),
-        status: AppointmentStatus.values
-            .firstWhere((e) => e.toString() == json['status']),
-        allDay: json['allDay'] as bool,
+        assistantDisplayName: json['assistantDisplayName'] as String? ?? "",
+        recurrencePattern: RecurrencePattern.values.firstWhere(
+            (element) => element.name == (json['recurrencePattern'] ?? ""),
+            orElse: () => RecurrencePattern.none),
+        assistantEmail: json['assistantEmail'] as String? ?? "",
+        cancellationReason: json['cancellationReason'] as String? ?? "",
+        status: AppointmentStatus.values.firstWhere(
+            (e) => e.name == (json['status'] ?? ""),
+            orElse: () => AppointmentStatus.pending),
+        clientEmail: json['clientEmail'] as String? ?? "",
+        clientDisplayName: json['clientDisplayName'] as String? ?? "",
+        clientId: json['clientId'] as String? ?? "",
+        creationDate: stringToDate(json['creationDate']),
+        duration: Duration(seconds: json['duration'] as int? ?? 0),
+        dateTime: stringToDate(json['dateTime']),
+        isRecurring: json['isRecurring'] as bool? ?? false,
+        price: (json['price'] as num?)?.toDouble() ?? 0.0,
+        providerId: json['providerId'] as String? ?? "",
       );
     } on FormatException catch (e) {
       print("Error parsing appointment data: $e");
@@ -76,7 +85,6 @@ class Appointment {
       throw Exception("Error creating Appointment");
     }
   }
-
   Map<String, dynamic> toJson() => {
         'assistantDisplayName': assistantDisplayName,
         'assistantEmail': assistantEmail,
@@ -85,6 +93,7 @@ class Appointment {
         'clientDisplayName': clientDisplayName,
         'clientId': clientId,
         'dateTime': dateTime?.toIso8601String(),
+        'creationDate': creationDate?.toIso8601String(),
         'duration': duration?.inHours,
         'durationReply': durationReply?.inMinutes,
         'isRecurring': isRecurring,

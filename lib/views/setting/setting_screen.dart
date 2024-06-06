@@ -1,3 +1,4 @@
+import 'package:assistantsapp/controllers/authentication_controller.dart';
 import 'package:assistantsapp/providers/dark_mode.dart';
 import 'package:assistantsapp/services/firestore_service.dart';
 import 'package:assistantsapp/utils/routes/route_name_strings.dart';
@@ -26,8 +27,7 @@ class SettingScreen extends StatelessWidget {
                 alignment: Alignment.center,
                 children: [
                   circleAvatar(
-                      "appstartup-383e8.appspot.com/user_profile_images/avatar-place.png",
-                      name,
+                      FirestoreService().auth.currentUser?.photoURL, name,
                       radius: 80),
                   Positioned(
                     bottom: 0,
@@ -35,7 +35,7 @@ class SettingScreen extends StatelessWidget {
                     child: IconButton(
                         icon: const Icon(Icons.edit),
                         onPressed: () {
-                          //  FirestoreService().updateUserPhoto(imageFile);
+                          FirestoreService().updateUserPhoto();
 
                           print("Edit Picture");
                         } // Implement image picking
@@ -102,12 +102,9 @@ class SettingScreen extends StatelessWidget {
             subtitle: "Notification Settings",
           ),
           const SizedBox(height: 10),
-          SwitchListTile(
-            title: const Text('Push Notifications'),
-            value: true, // Replace with actual value
-            onChanged: (value) {
-              // Update push notification setting
-            },
+          const ListTile(
+            title: Text('Shared applications'),
+            leading: Icon(Icons.share_rounded),
           ),
           Consumer<ThemeNotifier>(
             builder: (context, themeNotifier, child) {
@@ -128,10 +125,51 @@ class SettingScreen extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           ListTile(
-            title: const Text('delete your data'),
-            leading: const Icon(Icons.delete),
-            onTap: () {
-              // Navigate to edit profile screen
+            title: const Text('Delete your data'),
+            leading: const Icon(Icons.delete,
+                color: Colors.red), // Emphasize warning
+            onTap: () async {
+              // Prompt user for confirmation
+              final confirmed = await showDialog<bool>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Warning: This action is permanent'),
+                  content: const Text(
+                      'Are you sure you want to delete your data? This cannot be undone.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, false), // Cancel
+                      child: const Text('Cancel'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, true), // Confirm
+                      child: Text(
+                        'Delete',
+                        style:
+                            TextStyle(color: Colors.red), // Emphasize warning
+                      ),
+                    ),
+                  ],
+                ),
+              );
+
+              if (confirmed ?? false) {
+                // Use null-safe operator for default value
+                try {
+                  await AuthService().deleteAccount();
+                  // Handle successful deletion (e.g., navigate to login screen)
+                  Navigator.of(context).pushReplacementNamed(
+                      RouteNameStrings.signUp); // Replace with your login route
+                  print('User data deleted successfully.');
+                } catch (e) {
+                  // Handle deletion error (e.g., show a snackbar)
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Error deleting your data: $e'),
+                    ),
+                  );
+                }
+              }
             },
           ),
           ListTile(
@@ -155,7 +193,7 @@ class SettingScreen extends StatelessWidget {
             title: const Text('Logout'),
             leading: const Icon(Icons.exit_to_app),
             onTap: () {
-              // Perform logout action
+              Navigator.pushReplacementNamed(context, RouteNameStrings.logIn);
             },
           ),
         ],

@@ -18,7 +18,7 @@ class Routes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case RouteNameStrings.homeScreen:
-        return _buildRoute(const HomeScreen());
+        return _buildRoute(HomeScreen());
       case RouteNameStrings.logIn:
         return _buildRoute(const LoginScreen());
       case RouteNameStrings.signUp:
@@ -43,7 +43,7 @@ class Routes {
         return _buildRoute(const TermsConditions());
 
       default:
-        return _buildRoute(const HomeScreen());
+        return _buildRoute(HomeScreen());
     }
   }
 

@@ -27,52 +27,57 @@ class AppointmentScreenState extends State<AppointmentScreen> {
     super.initState();
   }
 
+  Widget _buildStatusFilter() {
+    return DropdownButton<AppointmentStatus>(
+      value: _selectedStatus,
+      hint: Text('Select status'),
+      onChanged: (status) {
+        setState(() {
+          _selectedStatus = status!;
+        });
+      },
+      items: AppointmentStatus.values.map((status) {
+        return DropdownMenuItem<AppointmentStatus>(
+          value: status,
+          child: Text(status.toString().split('.').last),
+        );
+      }).toList(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Appointments'),
-        actions: [
-          DropdownButton<AppointmentStatus>(
-            value: _selectedStatus,
-            items: AppointmentStatus.values.map((status) {
-              return DropdownMenuItem<AppointmentStatus>(
-                value: status,
-                child: Text(status.name.toUpperCase()),
-              );
-            }).toList(),
-            onChanged: (newStatus) =>
-                setState(() => _selectedStatus = newStatus!),
-          ),
-        ],
+        actions: [_buildStatusFilter()],
       ),
-      body: SharedPreferencesManager.getUserRole() != 'Enterprise'
+      body: SharedPreferencesManager.getUserRole() != 'enterprises'
           ? StreamBuilder<List<Appointment?>>(
               stream: _appointmentController.getAppointmentsStreamByField(role,
                   fieldId: id),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(child: Text('No appointments found'));
+                  return const Center(child: Text('No appointments found'));
                 } else {
-                  final List<Appointment?>? filteredAppointments =
+                  List<Appointment?>? appointments =
                       filterAppointments(snapshot.data, _selectedStatus.name);
 
                   return ListView.builder(
-                    itemCount: filteredAppointments?.length,
+                    itemCount: appointments!.length,
                     itemBuilder: (context, index) {
-                      return AppointmentCard(
-                          appointment: filteredAppointments![index]!);
+                      return AppointmentCard(appointment: appointments[index]!);
                     },
                   );
                 }
               },
             )
           : FutureBuilder<List<DocumentSnapshot>>(
-              future: EnterpriseProvider().fetchAppointments(),
+              future: EnterpriseProvider().fetchAppointments(id),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());

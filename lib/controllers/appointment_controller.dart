@@ -1,4 +1,5 @@
 import 'package:assistantsapp/models/enum/role_enum.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/appointment.dart';
 import '../services/firestore_service.dart';
@@ -12,6 +13,14 @@ class AppointmentController {
         .collection(collectionName)
         .doc()
         .set(appointment.toJson());
+  }
+
+  DocumentReference<Map<String, dynamic>> createAppointmen(
+      {Appointment? appointment}) {
+    final docRef = _firestoreService.firestore.collection(collectionName).doc();
+
+    docRef.set(appointment!.toJson());
+    return docRef;
   }
 
   Future<Appointment?> getAppointmentById(String appointmentId) async {
@@ -35,6 +44,7 @@ class AppointmentController {
   Stream<List<Appointment?>> getAppointmentsStreamByField(String role,
       {String? fieldId}) {
     var query = _firestoreService.query(collectionName);
+
     // Filter by role (optional)
     if (role == Role.clients.name) {
       query = query.where('clientId', isEqualTo: fieldId);

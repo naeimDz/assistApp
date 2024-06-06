@@ -45,8 +45,7 @@ class Assistant {
     this.skillsList,
     this.isValidated = false,
     this.associatedToEnterprise = false,
-    this.imageUrl =
-        "gs://appstartup-383e8.appspot.com/user_profile_images/avatar-place.png",
+    this.imageUrl = "https://randomuser.me/api/portraits/med/women/17.jpg",
   });
 
   factory Assistant.fromJson(Map<String, dynamic> json) {
@@ -86,7 +85,7 @@ class Assistant {
       isValidated: json['isValidated'] ?? false,
       associatedToEnterprise: json['associatedToEnterprise'] ?? false,
       imageUrl: json['imageUrl'] ??
-          "gs://appstartup-383e8.appspot.com/user_profile_images/avatar-place.png",
+          "https://randomuser.me/api/portraits/med/women/17.jpg",
     );
   }
 

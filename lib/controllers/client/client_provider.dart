@@ -20,6 +20,11 @@ class ClientProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> nullClient(Client? client) async {
+    _selectedClient = client;
+    notifyListeners();
+  }
+
   Future<void> addClient(Client client) async {
     await _clientController.addClient(client);
     await fetchClients();

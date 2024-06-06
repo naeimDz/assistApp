@@ -36,8 +36,7 @@ class Client {
     this.birthday,
     this.joinDate,
     this.isValidated = false,
-    this.imageUrl =
-        "gs://appstartup-383e8.appspot.com/user_profile_images/avatar-place.png",
+    this.imageUrl = "https://randomuser.me/api/portraits/med/women/17.jpg",
   });
 
   factory Client.fromJson(Map<String, dynamic> json) {
@@ -72,7 +71,7 @@ class Client {
       joinDate: parseDate(json['joinDate']),
       isValidated: json['isValidated'],
       imageUrl: json['imageUrl'] ??
-          "gs://appstartup-383e8.appspot.com/user_profile_images/avatar-place.png",
+          "https://randomuser.me/api/portraits/med/women/17.jpg",
     );
   }
 

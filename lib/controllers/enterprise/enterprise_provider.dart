@@ -40,12 +40,11 @@ class EnterpriseProvider with ChangeNotifier {
     await fetchEnterprises();
   }
 
-  Future<List<DocumentSnapshot>> fetchAppointments() async {
-    if (_selectedEnterprise != null) {
-      return await _enterpriseController
-          .getDocuments(_selectedEnterprise!.appointments);
-    }
-    return [];
+  Future<List<DocumentSnapshot>> fetchAppointments(id) async {
+    await selectEnterprise(id);
+
+    return await _enterpriseController
+        .getDocuments(_selectedEnterprise!.assistants);
   }
 
   Future<List<DocumentSnapshot>> fetchAssistants(
@@ -58,6 +57,12 @@ class EnterpriseProvider with ChangeNotifier {
           .getDocuments(_selectedEnterprise!.assistants);
     }
     return [];
+  }
+
+  Future<List<DocumentSnapshot>> fetchaAsists(String id) async {
+    await selectEnterprise(id);
+    return await _enterpriseController
+        .getDocuments(_selectedEnterprise!.assistants);
   }
 
   Future<List<DocumentSnapshot>> fetchClients(String id) async {

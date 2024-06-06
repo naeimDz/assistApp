@@ -10,12 +10,6 @@ class ConversationListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          centerTitle: false,
-          title: const Text(
-            'Conversations',
-            style: TextStyle(fontSize: 22),
-          )),
       body: StreamBuilder<List<Conversation>>(
         stream: ConversationController()
             .getConversationsStream(SharedPreferencesManager.getUserRole()),
@@ -33,6 +27,9 @@ class ConversationListScreen extends StatelessWidget {
               itemCount: conversations.length,
               itemBuilder: (context, index) {
                 Conversation conversation = conversations[index];
+                String lastMessagePreview = conversation.lastMessage.length > 40
+                    ? '${conversation.lastMessage.substring(0, 40)}.....'
+                    : conversation.lastMessage;
                 return Column(
                   children: [
                     ListTile(
@@ -43,8 +40,7 @@ class ConversationListScreen extends StatelessWidget {
                       ),
                       title: Text(
                           "${conversation.assistantDisplayName} __ ${conversation.userDisplayName}"),
-                      subtitle: Text(
-                          "${conversation.lastMessage.substring(0, 40)}....."),
+                      subtitle: Text(lastMessagePreview),
                       onTap: () {
                         Navigator.push(
                           context,
