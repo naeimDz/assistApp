@@ -1,6 +1,7 @@
 import 'package:assistantsapp/controllers/authentication_controller.dart';
 import 'package:assistantsapp/controllers/enterprise/enterprise_provider.dart';
 import 'package:assistantsapp/providers/dark_mode.dart';
+
 import 'package:assistantsapp/services/shared_preferences_manager.dart';
 import 'package:assistantsapp/utils/routes/route_name_strings.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -9,6 +10,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'controllers/assistant/assistant_provider.dart';
 import 'controllers/client/client_provider.dart';
+
 import 'providers/bottom_bar_index.dart';
 import 'utils/routes/routing.dart';
 import 'package:provider/provider.dart';
@@ -18,6 +20,7 @@ void main() async {
   await Firebase.initializeApp();
   await EasyLocalization.ensureInitialized();
   SharedPreferencesManager.init();
+
   runApp(MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => BottomBarIndex()),

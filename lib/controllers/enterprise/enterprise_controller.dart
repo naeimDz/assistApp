@@ -49,6 +49,7 @@ class EnterpriseController {
     List<DocumentSnapshot> documents = [];
     for (DocumentReference ref in references) {
       DocumentSnapshot doc = await ref.get();
+
       documents.add(doc);
     }
 

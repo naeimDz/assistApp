@@ -106,10 +106,10 @@ class _DialogMakeAttendingClientsState
                       assistantDisplayName:
                           assistant?.lastName ?? assistant!.userName,
                       assistantEmail: assistant!.email,
-                      providerId: assistant.id,
+                      assistantId: assistant.id,
                       clientEmail: clientSelected.email,
                       clientDisplayName: clientSelected.userName,
-                      dateTime: widget.selectedDate,
+                      dateTime: widget.selectedDate!,
                       duration: widget.durationHours,
                       price: double.parse(widget.priceController),
                       clientId: clientSelected.id,
@@ -118,11 +118,11 @@ class _DialogMakeAttendingClientsState
                               FirestoreService().auth.currentUser!.email,
                       status: AppointmentStatus.confirmed,
                     );
-                    print(newAppointmentByEnterprise);
+
                     try {
-                      var res = AppointmentController().createAppointmen(
+                      var res = AppointmentController().createAppointme(
                           appointment: newAppointmentByEnterprise);
-                      print(res);
+
                       EnterpriseProvider().addToEnterprise(
                           enterpriseID, res.id, "appointments");
                       Navigator.popAndPushNamed(

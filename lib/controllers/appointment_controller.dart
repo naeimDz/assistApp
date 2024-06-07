@@ -8,14 +8,7 @@ class AppointmentController {
   final FirestoreService _firestoreService = FirestoreService();
   final String collectionName = 'appointments';
 
-  Future<void> createAppointment(Appointment appointment) async {
-    await _firestoreService.firestore
-        .collection(collectionName)
-        .doc()
-        .set(appointment.toJson());
-  }
-
-  DocumentReference<Map<String, dynamic>> createAppointmen(
+  DocumentReference<Map<String, dynamic>> createAppointme(
       {Appointment? appointment}) {
     final docRef = _firestoreService.firestore.collection(collectionName).doc();
 

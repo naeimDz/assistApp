@@ -72,7 +72,8 @@ class LoginScreenState extends State<LoginScreen> with SnackMixin {
                     await AuthService().signin(email, password);
 
                     if (mounted) {
-                      DetermineUser().determineUserRole("email", email: email);
+                      await DetermineUser()
+                          .determineUserRole("email", email: email);
 
                       showSuccess(context, AppStrings.loginSuccessMessage.tr());
                       Navigator.pushReplacementNamed(

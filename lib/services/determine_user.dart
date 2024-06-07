@@ -5,7 +5,7 @@ class DetermineUser {
 // Inside your login function
   Future<String> determineUserRole(String field,
       {String? email, String? id}) async {
-    String role = 'user'; // Default role
+    String role = 'clients'; // Default role
 
     // Query the 'user' collection
     QuerySnapshot userQuery = await FirebaseFirestore.instance

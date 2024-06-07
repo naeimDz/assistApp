@@ -45,7 +45,8 @@ class Assistant {
     this.skillsList,
     this.isValidated = false,
     this.associatedToEnterprise = false,
-    this.imageUrl = "https://randomuser.me/api/portraits/med/women/17.jpg",
+    this.imageUrl =
+        "https://firebasestorage.googleapis.com/v0/b/appstartup-383e8.appspot.com/o/user_profile_images%2Favatar-place.png?alt=media&token=4b44d3bd-7612-44a1-86f1-990f5409c3e8",
   });
 
   factory Assistant.fromJson(Map<String, dynamic> json) {

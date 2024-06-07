@@ -10,6 +10,7 @@ import '../../../services/shared_preferences_manager.dart';
 
 class AppointmentCard extends StatelessWidget {
   final Appointment appointment;
+
   const AppointmentCard({super.key, required this.appointment});
 
   @override
@@ -26,16 +27,18 @@ class AppointmentCard extends StatelessWidget {
                 radius: 45,
                 child: Center(
                   child: Text(
-                    "${appointment.duration?.inHours.toString()}  H",
+                    "${appointment.duration?.inHours.toString() ?? '0'} H",
                     style: const TextStyle(color: Colors.black54),
                   ),
                 ),
               ),
-              title: Text(appointment.assistantDisplayName),
+              title:
+                  Text(appointment.assistantDisplayName ?? 'Unknown Assistant'),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("scheduled with ${appointment.clientDisplayName}"),
+                  Text(
+                      "scheduled with ${appointment.clientDisplayName ?? 'Unknown Client'}"),
                   Text(
                     appointment.enterpriseCreator != null
                         ? "${appointment.enterpriseCreator}"
@@ -66,7 +69,9 @@ class AppointmentCard extends StatelessWidget {
                 ),
                 const Spacer(),
                 Text(
-                  Utils.fullDayFormat(appointment.dateTime!),
+                  appointment.dateTime != null
+                      ? Utils.fullDayFormat(appointment.dateTime!)
+                      : 'No Date',
                   style: const TextStyle(color: Colors.black54),
                 ),
               ],
@@ -75,7 +80,7 @@ class AppointmentCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("${appointment.price?.round()}  DZD",
+                Text("${appointment.price?.round() ?? 0} DZD",
                     style: const TextStyle(
                         fontSize: 16, fontWeight: FontWeight.bold)),
                 Row(
@@ -101,7 +106,7 @@ class AppointmentCard extends StatelessWidget {
                         children: [
                           Icon(Icons.update, color: Colors.blue),
                           SizedBox(width: 5),
-                          Text('update Status',
+                          Text('Update Status',
                               style: TextStyle(color: Colors.blue)),
                         ],
                       ),
@@ -127,9 +132,6 @@ class AppointmentCard extends StatelessWidget {
         return Colors.black;
       case "completed":
         return Colors.blue;
-      /*case AppointmentStatus.rescheduled:
-        return Colors.purple;*/
-
       default:
         return Colors.grey;
     }
@@ -188,7 +190,7 @@ class AppointmentCard extends StatelessWidget {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Reschedule Appointment'),
-          content: const Text('Select a new status  for the appointment.'),
+          content: const Text('Select a new status for the appointment.'),
           actions: [
             TextButton(
               onPressed: () {
@@ -196,7 +198,7 @@ class AppointmentCard extends StatelessWidget {
 
                 Navigator.of(context).pop();
               },
-              child: const Text('confirme'),
+              child: const Text('Confirm'),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(),

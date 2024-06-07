@@ -279,7 +279,7 @@ class AppointScreenState extends State<AppointScreen> {
       status: AppointmentStatus.pending,
       assistantDisplayName: assistant?.lastName ?? assistant!.userName,
       assistantEmail: assistant!.email,
-      providerId: assistant.id,
+      assistantId: assistant.id,
       clientEmail: currentUser!.email!,
       clientDisplayName: currentUser.displayName!,
       dateTime: _selectedDate,
@@ -289,7 +289,7 @@ class AppointScreenState extends State<AppointScreen> {
       creationDate: DateTime.now(),
     );
 
-    AppointmentController().createAppointment(newAppointment);
+    AppointmentController().createAppointme(appointment: newAppointment);
     return assistant.lastName;
   }
 }

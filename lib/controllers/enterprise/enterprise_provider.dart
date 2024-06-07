@@ -40,8 +40,12 @@ class EnterpriseProvider with ChangeNotifier {
     await fetchEnterprises();
   }
 
-  Future<List<DocumentSnapshot>> fetchAppointments(id) async {
+  Future<List<DocumentSnapshot>> fetchAppointments(String id) async {
     await selectEnterprise(id);
+
+    if (_selectedEnterprise == null) {
+      throw Exception("Selected enterprise is null");
+    }
 
     return await _enterpriseController
         .getDocuments(_selectedEnterprise!.assistants);

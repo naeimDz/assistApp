@@ -10,6 +10,9 @@ class ConversationListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Conversation"),
+      ),
       body: StreamBuilder<List<Conversation>>(
         stream: ConversationController()
             .getConversationsStream(SharedPreferencesManager.getUserRole()),

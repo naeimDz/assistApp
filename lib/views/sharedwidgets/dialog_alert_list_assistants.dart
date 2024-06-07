@@ -14,12 +14,12 @@ import '../../services/firestore_service.dart';
 import '../../utils/routes/route_name_strings.dart';
 
 class DialogMakeAttendingAssistants extends StatefulWidget {
-  final DateTime? selectedDate;
+  final DateTime selectedDate;
   final String priceController;
   final Duration durationHours;
   const DialogMakeAttendingAssistants(
       {super.key,
-      this.selectedDate,
+      required this.selectedDate,
       required this.priceController,
       required this.durationHours});
 
@@ -108,7 +108,7 @@ class _DialogMakeAttendingAssistantsState
                       creationDate: DateTime.now(),
                       assistantDisplayName: assistant.lastName,
                       assistantEmail: assistant.email,
-                      providerId: assistant.id,
+                      assistantId: assistant.id,
                       clientEmail: clientSelected!.email,
                       clientDisplayName: clientSelected.userName,
                       dateTime: widget.selectedDate,
@@ -122,7 +122,7 @@ class _DialogMakeAttendingAssistantsState
                     );
 
                     try {
-                      var res = AppointmentController().createAppointmen(
+                      var res = AppointmentController().createAppointme(
                           appointment: newAppointmentByEnterprise);
                       print(res);
                       EnterpriseProvider().addToEnterprise(

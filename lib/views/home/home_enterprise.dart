@@ -29,13 +29,22 @@ class _HomeEnterpriseState extends State<HomeEnterprise> {
   int _selectedIndex = 0; // Track the selected index
   var role = SharedPreferencesManager.getUserRole();
   var enterpriseID = FirestoreService().auth.currentUser!.uid;
+
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     final enterpriseProvider =
         Provider.of<EnterpriseProvider>(context, listen: false);
     enterpriseProvider.selectEnterprise(enterpriseID);
-    Provider.of<AssistantProvider>(context, listen: false).nullAssistant(null);
-    Provider.of<ClientProvider>(context, listen: false).nullClient(null);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<AssistantProvider>(context, listen: false)
+          .nullAssistant(null);
+      Provider.of<ClientProvider>(context, listen: false).nullClient(null);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return ListView(
       children: [
         const Padding(
@@ -75,7 +84,8 @@ class _HomeEnterpriseState extends State<HomeEnterprise> {
         ),
         if (_selectedIndex == 2)
           FutureBuilder<List<DocumentSnapshot>>(
-            future: enterpriseProvider.fetchAssistants(),
+            future: Provider.of<EnterpriseProvider>(context, listen: false)
+                .fetchAssistants(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator();
@@ -102,47 +112,48 @@ class _HomeEnterpriseState extends State<HomeEnterprise> {
           ),
         if (_selectedIndex == 1)
           FutureBuilder<List<DocumentSnapshot>>(
-              future: enterpriseProvider.fetchClients(enterpriseID),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
-                }
-                if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                }
-                var clients = snapshot.data;
-                if (clients == null || clients.isEmpty) {
-                  return const Text('No Clients available.');
-                }
-                return Wrap(
-                  children: clients.map((DocumentSnapshot doc) {
-                    var client =
-                        Client.fromJson(doc.data() as Map<String, dynamic>);
-                    return Column(
-                      children: [
-                        const SizedBox(height: 10),
-                        GestureDetector(
-                          onTap: () {
-                            Provider.of<ClientProvider>(context, listen: false)
-                                .selectClient(client.id);
-                            Navigator.pushNamed(
-                                context, RouteNameStrings.appointScreen);
-                          },
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              child: Text(client.userName[0]),
-                            ),
-                            subtitle: Text(
-                                "${client.address?.province}${client.address?.city}"),
-                            title:
-                                Text("${client.firstName}${client.lastName}"),
+            future: Provider.of<EnterpriseProvider>(context, listen: false)
+                .fetchClients(enterpriseID),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              }
+              if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              }
+              var clients = snapshot.data;
+              if (clients == null || clients.isEmpty) {
+                return const Text('No Clients available.');
+              }
+              return Wrap(
+                children: clients.map((DocumentSnapshot doc) {
+                  var client =
+                      Client.fromJson(doc.data() as Map<String, dynamic>);
+                  return Column(
+                    children: [
+                      const SizedBox(height: 10),
+                      GestureDetector(
+                        onTap: () {
+                          Provider.of<ClientProvider>(context, listen: false)
+                              .selectClient(client.id);
+                          Navigator.pushNamed(
+                              context, RouteNameStrings.appointScreen);
+                        },
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            child: Text(client.userName[0]),
                           ),
+                          subtitle: Text(
+                              "${client.address?.province ?? "missed address"}${client.address?.city}"),
+                          title: Text("${client.firstName}${client.lastName}"),
                         ),
-                      ],
-                    );
-                  }).toList(),
-                );
-              }),
+                      ),
+                    ],
+                  );
+                }).toList(),
+              );
+            },
+          ),
         if (_selectedIndex == 0)
           FutureBuilder<List<Assistant>>(
             future: Provider.of<AssistantProvider>(context, listen: false)
@@ -154,7 +165,11 @@ class _HomeEnterpriseState extends State<HomeEnterprise> {
           ),
         if (_selectedIndex == 3)
           ListOfInvitations(
-            enterpriseId: enterpriseProvider.selectedEnterprise?.id ?? '',
+            enterpriseId:
+                Provider.of<EnterpriseProvider>(context, listen: false)
+                        .selectedEnterprise
+                        ?.id ??
+                    '',
           ),
       ],
     );
@@ -236,9 +251,9 @@ class InvitationCard extends StatelessWidget {
                 children: [
                   /* const CircleAvatar(
                     backgroundImage: serviceProvider.imageUrl != null
-                          ? NetworkImage(serviceProvider.imageUrl!)
-                          :  AssetImage("assets/images/profile.png")
-                              as ImageProvider, // Replace with actual sender's image URL
+                      ? NetworkImage(serviceProvider.imageUrl!)
+                      :  AssetImage("assets/images/profile.png")
+                          as ImageProvider, // Replace with actual sender's image URL
                   ),*/
                   SizedBox(width: 10),
                   Column(
