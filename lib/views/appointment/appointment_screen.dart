@@ -99,10 +99,11 @@ class AppointmentScreenState extends State<AppointmentScreen> {
                 if (snapshot.data == null || snapshot.data!.isEmpty) {
                   return const Center(child: Text('No appointments found'));
                 }
-                List<Appointment?> appointments = snapshot.data!
-                    .map((doc) => Appointment.fromJson(
-                        doc.data() as Map<String, dynamic>, doc.id))
-                    .toList();
+
+                List<Appointment?> appointments = snapshot.data!.map((doc) {
+                  return Appointment.fromJson(
+                      doc.data() as Map<String, dynamic>, doc.id);
+                }).toList();
                 List<Appointment?>? filteredAppointments =
                     filterAppointments(appointments, _selectedStatus.name);
                 return _buildAppointmentsList(filteredAppointments);

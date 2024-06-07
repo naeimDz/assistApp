@@ -156,8 +156,11 @@ class SettingScreen extends StatelessWidget {
               if (confirmed ?? false) {
                 // Use null-safe operator for default value
                 try {
-                  await AuthService().deleteAccount();
-                  // Handle successful deletion (e.g., navigate to login screen)
+                  FirestoreService().deleteDocument(
+                      SharedPreferencesManager.getUserRole(),
+                      FirestoreService().auth.currentUser!.uid);
+                  await AuthService()
+                      .deleteAccount(); // Handle successful deletion (e.g., navigate to login screen)
                   Navigator.of(context).pushReplacementNamed(
                       RouteNameStrings.signUp); // Replace with your login route
                   print('User data deleted successfully.');

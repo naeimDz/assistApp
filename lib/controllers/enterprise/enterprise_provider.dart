@@ -48,7 +48,7 @@ class EnterpriseProvider with ChangeNotifier {
     }
 
     return await _enterpriseController
-        .getDocuments(_selectedEnterprise!.assistants);
+        .getDocuments(_selectedEnterprise!.appointments);
   }
 
   Future<List<DocumentSnapshot>> fetchAssistants(

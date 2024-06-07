@@ -93,123 +93,27 @@ class EnterpriseDetailScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Container(
-              decoration: const BoxDecoration(
-                color: AppColors.primary,
-                borderRadius:
-                    BorderRadius.vertical(bottom: Radius.circular(80)),
-              ),
-              width: double.infinity,
-              height: 200,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  enterprise.imageUrl != null && enterprise.imageUrl!.isNotEmpty
-                      ? CircleAvatar(
-                          radius: 60,
-                          backgroundImage: NetworkImage(enterprise.imageUrl!),
-                        )
-                      : const CircleAvatar(
-                          radius: 50,
-                          child: Icon(
-                            Icons.business,
-                            size: 50,
-                            color: AppColors.secondary,
-                          ),
-                        ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 17),
-                    child: _buildInfoRow(Icons.email, enterprise.email),
-                  ),
-                  if (enterprise.phoneNumber != null &&
-                      enterprise.phoneNumber!.isNotEmpty)
-                    _buildInfoRow(Icons.phone, enterprise.phoneNumber!),
-                ],
-              ),
-            ),
+            _buildEnterpriseHeader(enterprise),
             const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 17.3),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Location',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  _buildSectionTitle('Location'),
                   const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      const CircleAvatar(
-                        radius: 30,
-                        child: Icon(
-                          Icons.location_on,
-                          color: AppColors.secondary,
-                          size: 40,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            enterprise.address?.province ?? 'N/A',
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                          Text(
-                            enterprise.address?.city ?? 'N/A',
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                  _buildLocationInfo(enterprise),
                   const SizedBox(height: 20),
-                  const Text(
-                    'Assistants',
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  _buildSectionTitle('Assistants'),
                   const SizedBox(height: 10),
-                  // _buildDocumentList(enterprise.assistants),
+                  buildAssistantList(enterprise.assistants),
                   const SizedBox(height: 20),
-                  /*  const Text(
-                    'Appointments',
-                    style: TextStyle(
-                        fontSize: 20.0, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 10),
-                  _buildDocumentList(enterprise.appointments),*/
                 ],
               ),
             ),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildInfoRow(IconData icon, String info) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(icon, color: AppColors.secondary),
-        const SizedBox(width: 10),
-        Center(
-          child: Text(
-            info,
-            style: const TextStyle(fontSize: 16.0, color: Colors.white),
-          ),
-        ),
-      ],
     );
   }
 
@@ -230,6 +134,150 @@ class EnterpriseDetailScreen extends StatelessWidget {
           title: Text('Document ${index + 1}'),
           onTap: () {},
         );
+      },
+    );
+  }
+
+  Widget _buildEnterpriseHeader(Enterprise enterprise) {
+    return Container(
+      decoration: const BoxDecoration(
+        color: AppColors.primary,
+        borderRadius: BorderRadius.vertical(bottom: Radius.circular(80)),
+      ),
+      width: double.infinity,
+      height: 200,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          enterprise.imageUrl != null && enterprise.imageUrl!.isNotEmpty
+              ? CircleAvatar(
+                  radius: 60,
+                  backgroundImage: NetworkImage(enterprise.imageUrl!),
+                )
+              : const CircleAvatar(
+                  radius: 50,
+                  child: Icon(
+                    Icons.business,
+                    size: 50,
+                    color: AppColors.secondary,
+                  ),
+                ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 17),
+            child: _buildInfoRow(Icons.email, enterprise.email),
+          ),
+          if (enterprise.phoneNumber != null &&
+              enterprise.phoneNumber!.isNotEmpty)
+            _buildInfoRow(Icons.phone, enterprise.phoneNumber!),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(IconData icon, String info) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(icon, color: AppColors.secondary),
+        const SizedBox(width: 10),
+        Center(
+          child: Text(
+            info,
+            style: const TextStyle(fontSize: 16.0, color: Colors.white),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLocationInfo(Enterprise enterprise) {
+    return Row(
+      children: [
+        const CircleAvatar(
+          radius: 30,
+          child: Icon(
+            Icons.location_on,
+            color: AppColors.secondary,
+            size: 40,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              enterprise.address?.province ?? 'N/A',
+              style: const TextStyle(fontSize: 16),
+            ),
+            Text(
+              enterprise.address?.city ?? 'N/A',
+              style: const TextStyle(
+                fontSize: 14,
+                color: Colors.grey,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Text(
+      title,
+      style: const TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+
+  Widget buildAssistantList(List<DocumentReference<Object?>>? assistantRefs) {
+    if (assistantRefs == null || assistantRefs.isEmpty) {
+      return const Center(child: Text('No Assistants Available'));
+    }
+
+    return FutureBuilder<List<DocumentSnapshot>>(
+      future: Future.wait(assistantRefs.map((ref) => ref.get()).toList()),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return const Center(child: Text('Error loading assistants'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text('No Assistants Available'));
+        } else {
+          final assistants = snapshot.data!;
+          return ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: assistants.length,
+            itemBuilder: (context, index) {
+              final assistantData =
+                  assistants[index].data() as Map<String, dynamic>;
+              final userName = assistantData['userName'] ?? 'Unknown';
+              final imageUrl = assistantData['imageUrl'] ?? '';
+              final serviceType =
+                  assistantData['serviceType'] ?? 'Service Type';
+
+              return Card(
+                elevation: 4,
+                margin: const EdgeInsets.symmetric(vertical: 10),
+                child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundImage: NetworkImage(imageUrl),
+                    radius: 30,
+                  ),
+                  title: Text(userName),
+                  subtitle: Text(serviceType),
+                  onTap: () {
+                    // Navigate to assistant details
+                  },
+                ),
+              );
+            },
+          );
+        }
       },
     );
   }

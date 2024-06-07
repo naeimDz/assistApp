@@ -1,8 +1,6 @@
-import 'package:assistantsapp/models/appointment.dart';
-
 import 'package:flutter/material.dart';
-
 import '../../../controllers/appointment_controller.dart';
+import '../../../models/appointment.dart';
 import '../../../models/enum/appointment_status.dart';
 import '../../../models/enum/role_enum.dart';
 import '../../../services/date_utils.dart';
@@ -32,22 +30,26 @@ class AppointmentCard extends StatelessWidget {
                   ),
                 ),
               ),
-              title:
-                  Text(appointment.assistantDisplayName ?? 'Unknown Assistant'),
+              title: Text(
+                appointment.assistantDisplayName ?? 'Unknown Assistant',
+                style: TextStyle(color: Colors.black87),
+              ),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                      "scheduled with ${appointment.clientDisplayName ?? 'Unknown Client'}"),
-                  Text(
-                    appointment.enterpriseCreator != null
-                        ? "${appointment.enterpriseCreator}"
-                        : "",
-                    style: const TextStyle(color: Colors.purple),
+                    "Scheduled with ${appointment.clientDisplayName ?? 'Unknown Client'}",
+                    style: const TextStyle(color: Colors.black38),
                   ),
+                  if (appointment.enterpriseCreator != null)
+                    Text(
+                      "by: ${appointment.enterpriseCreator} #Enterprise",
+                      style: const TextStyle(color: Colors.purple),
+                    ),
                 ],
               ),
             ),
+            const SizedBox(height: 10),
             Row(
               children: [
                 Row(
@@ -55,12 +57,11 @@ class AppointmentCard extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(5),
                       decoration: BoxDecoration(
-                          color: getStatusColor(appointment.status.name),
-                          shape: BoxShape.circle),
+                        color: getStatusColor(appointment.status.name),
+                        shape: BoxShape.circle,
+                      ),
                     ),
-                    const SizedBox(
-                      width: 5,
-                    ),
+                    const SizedBox(width: 5),
                     Text(
                       appointment.status.name,
                       style: const TextStyle(color: Colors.black54),
@@ -77,44 +78,51 @@ class AppointmentCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("${appointment.price?.round() ?? 0} DZD",
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold)),
-                Row(
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        showCancellationDialog(context);
-                      },
-                      child: const Row(
-                        children: [
-                          Icon(Icons.cancel, color: Colors.red),
-                          SizedBox(width: 5),
-                          Text('Cancel', style: TextStyle(color: Colors.red)),
-                        ],
-                      ),
-                    ),
-                    const VerticalDivider(),
-                    TextButton(
-                      onPressed: () {
-                        showReschedulingDialog(context);
-                      },
-                      child: const Row(
-                        children: [
-                          Icon(Icons.update, color: Colors.blue),
-                          SizedBox(width: 5),
-                          Text('Update Status',
-                              style: TextStyle(color: Colors.blue)),
-                        ],
-                      ),
-                    ),
-                  ],
-                )
-              ],
-            ),
+            if (appointment.status != AppointmentStatus.cancelledByClient &&
+                appointment.status != AppointmentStatus.cancelledByProvider)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text("${appointment.price?.round() ?? 0} DZD",
+                      style: const TextStyle(
+                          color: Colors.grey,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold)),
+                  Row(
+                    children: [
+                      if (appointment.status == AppointmentStatus.pending)
+                        TextButton(
+                          onPressed: () {
+                            showCancellationDialog(context);
+                          },
+                          child: const Row(
+                            children: [
+                              Icon(Icons.cancel, color: Colors.red),
+                              SizedBox(width: 5),
+                              Text('Cancel',
+                                  style: TextStyle(color: Colors.red)),
+                            ],
+                          ),
+                        ),
+                      const VerticalDivider(),
+                      if (appointment.status != AppointmentStatus.completed)
+                        TextButton(
+                          onPressed: () {
+                            showReschedulingDialog(context);
+                          },
+                          child: const Row(
+                            children: [
+                              Icon(Icons.update, color: Colors.blue),
+                              SizedBox(width: 5),
+                              Text('Update Status',
+                                  style: TextStyle(color: Colors.blue)),
+                            ],
+                          ),
+                        ),
+                    ],
+                  )
+                ],
+              ),
           ],
         ),
       ),
@@ -147,7 +155,7 @@ class AppointmentCard extends StatelessWidget {
           title: const Text("Cancel Appointment"),
           content: TextField(
             controller: _noteController,
-            maxLines: 17,
+            maxLines: 5,
             minLines: 3,
             decoration:
                 const InputDecoration(hintText: "Reason for cancellation"),
@@ -185,21 +193,43 @@ class AppointmentCard extends StatelessWidget {
   }
 
   void showReschedulingDialog(BuildContext context) {
+    List<AppointmentStatus> statusList = [
+      AppointmentStatus.confirmed,
+      AppointmentStatus.pending,
+      AppointmentStatus.completed
+    ];
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Reschedule Appointment'),
-          content: const Text('Select a new status for the appointment.'),
+          title: const Text('Update Appointment Status'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Select a new status for the appointment:',
+                style: const TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 20),
+              DropdownButton<AppointmentStatus>(
+                value: appointment.status,
+                onChanged: (AppointmentStatus? newStatus) {
+                  if (newStatus != null) {
+                    AppointmentController().updateAppointment(
+                        appointment.appointmentID!, {'status': newStatus.name});
+                    Navigator.of(context).pop();
+                  }
+                },
+                items: statusList.map((AppointmentStatus status) {
+                  return DropdownMenuItem<AppointmentStatus>(
+                    value: status,
+                    child: Text(status.name),
+                  );
+                }).toList(),
+              ),
+            ],
+          ),
           actions: [
-            TextButton(
-              onPressed: () {
-                // Perform rescheduling logic here
-
-                Navigator.of(context).pop();
-              },
-              child: const Text('Confirm'),
-            ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
               child: const Text('Cancel'),

@@ -79,7 +79,6 @@ class Appointment {
   }
 
   Map<String, dynamic> toJson() => {
-        'appointmentID': appointmentID,
         'assistantDisplayName': assistantDisplayName,
         'assistantEmail': assistantEmail,
         'cancellationReason': cancellationReason,
