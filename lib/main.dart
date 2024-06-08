@@ -20,7 +20,6 @@ void main() async {
   await Firebase.initializeApp();
   await EasyLocalization.ensureInitialized();
   SharedPreferencesManager.init();
-
   runApp(MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => BottomBarIndex()),

@@ -4,12 +4,15 @@ import 'package:flutter/material.dart';
 import '../utils/themes/theme_constants.dart';
 
 class ThemeNotifier extends ChangeNotifier {
-  ThemeData _currentTheme = AppTheme.lightTheme;
-  bool _isDarkMode = SharedPreferencesManager.getDarkMode();
+  late ThemeData _currentTheme;
+  late bool _isDarkMode;
 
   ThemeData get currentTheme => _currentTheme;
   bool get isDarkMode => _isDarkMode;
-
+  ThemeNotifier() {
+    _isDarkMode = SharedPreferencesManager.getDarkMode();
+    _currentTheme = _isDarkMode ? AppTheme.darkTheme : AppTheme.lightTheme;
+  }
   void toggleTheme() {
     if (_isDarkMode) {
       _currentTheme = AppTheme.lightTheme;

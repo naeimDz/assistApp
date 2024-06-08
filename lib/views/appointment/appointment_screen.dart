@@ -83,8 +83,10 @@ class AppointmentScreenState extends State<AppointmentScreen> {
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 }
+
                 List<Appointment?>? filteredAppointments =
                     filterAppointments(snapshot.data, _selectedStatus.name);
+
                 return _buildAppointmentsList(filteredAppointments);
               },
             )
