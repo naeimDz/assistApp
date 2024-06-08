@@ -117,27 +117,6 @@ class EnterpriseDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget buildDocumentList(List<DocumentReference>? documents) {
-    if (documents == null || documents.isEmpty) {
-      return const Text(
-        'No items available.',
-        style: TextStyle(color: Colors.grey),
-      );
-    }
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: documents.length,
-      itemBuilder: (context, index) {
-        return ListTile(
-          leading: const Icon(Icons.document_scanner),
-          title: Text('Document ${index + 1}'),
-          onTap: () {},
-        );
-      },
-    );
-  }
-
   Widget _buildEnterpriseHeader(Enterprise enterprise) {
     return Container(
       decoration: const BoxDecoration(

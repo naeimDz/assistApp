@@ -1,5 +1,6 @@
 import 'package:assistantsapp/models/enum/service_type.dart';
 import 'package:assistantsapp/utils/routes/route_name_strings.dart';
+import 'package:assistantsapp/views/sharedwidgets/tags_input.dart';
 import 'package:flutter/material.dart';
 import '../../../models/enum/gender.dart';
 import '../../../services/firestore_service.dart';
@@ -16,11 +17,14 @@ class EditAssistantProfileView extends StatefulWidget {
 class EditAssistantProfileViewState extends State<EditAssistantProfileView> {
   late TextEditingController _firstNameController;
   late TextEditingController _lastNameController;
-  String? _selectedGender;
-  String? _selectedService;
+  String _selectedGender = Gender.man.name;
+
+  late List<String> _tags;
   late TextEditingController _birthdayController;
   late TextEditingController _phoneNumberController;
-
+  final TextEditingController _skillsController =
+      TextEditingController(text: "");
+  late String? selectedService = ServiceType.childCare.name;
   // bool _hasChanges = false; // Flag to track changes
 
   final _formKey = GlobalKey<FormState>(); // For form validation
@@ -32,7 +36,7 @@ class EditAssistantProfileViewState extends State<EditAssistantProfileView> {
     _lastNameController = TextEditingController();
     _birthdayController = TextEditingController();
     _phoneNumberController = TextEditingController();
-
+    _tags = [];
     // ... other initializations
 
     final userStream = FirestoreService().getCurrentUserDataStream();
@@ -46,6 +50,11 @@ class EditAssistantProfileViewState extends State<EditAssistantProfileView> {
           _birthdayController.text = userData['birthday'] ?? "";
           _phoneNumberController.text =
               userData['phoneNumber'] as String? ?? "";
+          selectedService = userData['serviceType'] as String;
+          List<dynamic> listDtataofSkills = userData['skillsList'];
+          for (var element in listDtataofSkills) {
+            _tags.add(element.toString());
+          }
         }
       });
     }
@@ -122,7 +131,7 @@ class EditAssistantProfileViewState extends State<EditAssistantProfileView> {
                         .toList(),
                     onChanged: (value) {
                       setState(() {
-                        _selectedGender = value;
+                        _selectedGender = value!;
                       });
                     },
                   ),
@@ -167,7 +176,7 @@ class EditAssistantProfileViewState extends State<EditAssistantProfileView> {
                       }
                       return null;
                     },
-                    value: _selectedService,
+                    value: selectedService,
                     items: ServiceType.values
                         .map((type) => DropdownMenuItem(
                               value: type.name,
@@ -176,7 +185,7 @@ class EditAssistantProfileViewState extends State<EditAssistantProfileView> {
                         .toList(),
                     onChanged: (value) {
                       setState(() {
-                        _selectedService = value;
+                        selectedService = value;
                       });
                     },
                   ),
@@ -199,7 +208,12 @@ class EditAssistantProfileViewState extends State<EditAssistantProfileView> {
                     },
                   ),
                   const SizedBox(height: 32),
+                  TagsInput(
+                    textController: _skillsController,
+                    tags: _tags,
+                  ),
                   ElevatedButton(
+                    onLongPress: () => print(_tags.toString()),
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         String role = SharedPreferencesManager.getUserRole();
@@ -209,7 +223,9 @@ class EditAssistantProfileViewState extends State<EditAssistantProfileView> {
                           "lastName": _lastNameController.text,
                           "gender": _selectedGender,
                           "birthday": _birthdayController.text,
-                          "serviceType": _selectedService
+                          "serviceType": selectedService,
+                          "skillsList": _tags,
+                          "phoneNumber": _phoneNumberController.text
                         };
                         // Process data
 

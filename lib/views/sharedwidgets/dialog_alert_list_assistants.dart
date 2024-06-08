@@ -131,10 +131,6 @@ class _DialogMakeAttendingAssistantsState
                         context,
                         RouteNameStrings.homeScreen,
                       );
-                      Provider.of<ClientProvider>(context, listen: false)
-                          .nullClient(null);
-                      Provider.of<AssistantProvider>(context, listen: false)
-                          .nullAssistant(null);
                     } on Exception catch (e) {
                       // Handle exception here
                       print("Error creating appointment: $e");

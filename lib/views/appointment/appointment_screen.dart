@@ -69,6 +69,7 @@ class AppointmentScreenState extends State<AppointmentScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('Appointments'),
         actions: [_buildStatusFilter()],
       ),

@@ -27,7 +27,7 @@ class AssistantProvider with ChangeNotifier {
 
   Future<void> nullAssistant(Assistant? assistant) async {
     _selectedAssistant = assistant;
-    notifyListeners();
+    //notifyListeners();
   }
 
   Future<void> addAssistant(Assistant assistant) async {

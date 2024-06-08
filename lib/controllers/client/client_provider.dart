@@ -22,7 +22,7 @@ class ClientProvider with ChangeNotifier {
 
   Future<void> nullClient(Client? client) async {
     _selectedClient = client;
-    notifyListeners();
+    //notifyListeners();
   }
 
   Future<void> addClient(Client client) async {

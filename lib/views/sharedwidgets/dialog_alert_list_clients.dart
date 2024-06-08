@@ -1,4 +1,3 @@
-import 'package:assistantsapp/controllers/client/client_provider.dart';
 import 'package:assistantsapp/models/client.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -129,10 +128,6 @@ class _DialogMakeAttendingClientsState
                         context,
                         RouteNameStrings.homeScreen,
                       );
-                      Provider.of<ClientProvider>(context, listen: false)
-                          .nullClient(null);
-                      Provider.of<AssistantProvider>(context, listen: false)
-                          .nullAssistant(null);
                     } on Exception catch (e) {
                       // Handle exception here
                       print("Error creating appointment: $e");

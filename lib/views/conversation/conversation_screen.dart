@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../controllers/conversations/conversation_controller.dart';
 import '../../models/conversations.dart';
-import '../../services/shared_preferences_manager.dart';
 import 'message_screen.dart';
 
 class ConversationListScreen extends StatelessWidget {
@@ -11,11 +10,11 @@ class ConversationListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text("Conversation"),
       ),
       body: StreamBuilder<List<Conversation>>(
-        stream: ConversationController()
-            .getConversationsStream(SharedPreferencesManager.getUserRole()),
+        stream: ConversationController().getConversationsStream(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());

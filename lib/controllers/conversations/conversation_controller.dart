@@ -82,7 +82,7 @@ class ConversationController {
     }
   }
 
-  Stream<List<Conversation>> getConversationsStream(String role) async* {
+  Stream<List<Conversation>> getConversationsStream() async* {
     final uid = FirestoreService().auth.currentUser?.uid;
     var query1 = _firestoreService.firestore
         .collection(collectionName)

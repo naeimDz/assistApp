@@ -36,15 +36,12 @@ class _HomeEnterpriseState extends State<HomeEnterprise> {
     final enterpriseProvider =
         Provider.of<EnterpriseProvider>(context, listen: false);
     enterpriseProvider.selectEnterprise(enterpriseID);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<AssistantProvider>(context, listen: false)
-          .nullAssistant(null);
-      Provider.of<ClientProvider>(context, listen: false).nullClient(null);
-    });
   }
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<AssistantProvider>(context, listen: false).nullAssistant(null);
+    Provider.of<ClientProvider>(context, listen: false).nullClient(null);
     return ListView(
       children: [
         const Padding(
