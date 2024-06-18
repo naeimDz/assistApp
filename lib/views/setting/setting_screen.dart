@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../services/shared_preferences_manager.dart';
+import '../sharedwidgets/test_ad.dart';
 
 class SettingScreen extends StatelessWidget {
   const SettingScreen({super.key});
@@ -115,6 +116,7 @@ class SettingScreen extends StatelessWidget {
               },
             ),
           const Divider(),
+          BuildTestAd(),
           const HeadlineRow(
             headline: "Application settings",
             subtitle: "Notification Settings",

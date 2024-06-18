@@ -1,4 +1,5 @@
 import 'package:assistantsapp/utils/routes/route_name_strings.dart';
+import 'package:assistantsapp/views/sharedwidgets/test_ad.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../models/assistant.dart';
@@ -17,6 +18,9 @@ Widget buildAssistantList(
             serviceProvider: assistant,
             nextScreen: RouteNameStrings.assistantDetailScreen,
           )),
+      // Insert ad after every 3rd assistant (adjust as needed)
+      if (filteredAssistants.length % 3 == 0 && filteredAssistants.isNotEmpty)
+        BuildTestAd(),
     ],
   );
 }

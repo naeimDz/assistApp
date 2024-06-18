@@ -2,6 +2,7 @@ import 'package:assistantsapp/controllers/assistant/assistant_provider.dart';
 import 'package:assistantsapp/services/shared_preferences_manager.dart';
 import 'package:assistantsapp/utils/routes/route_name_strings.dart';
 import 'package:assistantsapp/views/sharedwidgets/circle_avatar.dart';
+import 'package:assistantsapp/views/sharedwidgets/test_ad.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -74,6 +75,8 @@ class AssistantDetailScreen extends StatelessWidget {
               leading: const Icon(Icons.location_on),
               title: Text(assistant?.address.toString() ?? ""),
             ),
+            BuildTestAd(),
+            const SizedBox(height: 8),
             Center(
               child: ElevatedButton(
                 onPressed: () {

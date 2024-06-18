@@ -6,6 +6,7 @@ import 'package:assistantsapp/services/firestore_service.dart';
 import 'package:assistantsapp/services/shared_preferences_manager.dart';
 import 'package:assistantsapp/utils/constants/app_colors.dart';
 import 'package:assistantsapp/views/sharedwidgets/make_conversation.dart';
+import 'package:assistantsapp/views/sharedwidgets/test_ad.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -103,7 +104,7 @@ class EnterpriseDetailScreen extends StatelessWidget {
                   _buildSectionTitle('Location'),
                   const SizedBox(height: 8),
                   _buildLocationInfo(enterprise),
-                  const SizedBox(height: 20),
+                  BuildTestAd(),
                   _buildSectionTitle('Assistants'),
                   const SizedBox(height: 10),
                   buildAssistantList(enterprise.assistants),

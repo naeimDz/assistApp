@@ -16,6 +16,7 @@ import '../../services/handle_snapshot.dart';
 import '../../utils/routes/route_name_strings.dart';
 import '../sharedwidgets/build_list_assist.dart';
 import '../sharedwidgets/segment_options.dart';
+import '../sharedwidgets/test_ad.dart';
 import 'widgets/assistant_card.dart';
 
 class HomeEnterprise extends StatefulWidget {
@@ -79,6 +80,7 @@ class _HomeEnterpriseState extends State<HomeEnterprise> {
             },
           ),
         ),
+        BuildTestAd(),
         if (_selectedIndex == 2)
           FutureBuilder<List<DocumentSnapshot>>(
             future: Provider.of<EnterpriseProvider>(context, listen: false)

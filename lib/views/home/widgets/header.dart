@@ -1,4 +1,5 @@
 import 'package:assistantsapp/models/enum/role_enum.dart';
+import 'package:assistantsapp/views/sharedwidgets/test_ad.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -65,6 +66,7 @@ class _HeaderHomeState extends State<HeaderHome> {
             ],
           ),
         ),
+        BuildTestAd(),
         AppSizedBox.h15,
         if (role == Role.clients.name)
           if (selectedServiceType != 'Enterprise')
