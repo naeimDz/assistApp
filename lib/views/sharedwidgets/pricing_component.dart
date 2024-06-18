@@ -10,7 +10,8 @@ class PricingComponent extends StatefulWidget {
 
 class PricingComponentState extends State<PricingComponent> {
   double _pageViews = 1.0;
-  double _price = 16.0;
+  double _priceSubscription = 1600.0;
+  double _price = 1600.0;
   bool _yearlyBilling = false;
   int _numberAssistants = 1;
 
@@ -44,7 +45,7 @@ class PricingComponentState extends State<PricingComponent> {
   void _updatePrice(double pageViews) {
     setState(() {
       _pageViews = pageViews;
-      _price = (_pageViews / 1) * 16;
+      _price = (_pageViews / 1) * _priceSubscription;
       if (_yearlyBilling) {
         _price *= 0.75; // Apply 25% discount
       }
@@ -83,7 +84,7 @@ class PricingComponentState extends State<PricingComponent> {
             ),
             const SizedBox(height: 20),
             Text(
-              '\$${_price.toStringAsFixed(2)} / month',
+              '\DZD ${_price.toStringAsFixed(2)} / month',
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
