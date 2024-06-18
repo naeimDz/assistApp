@@ -24,6 +24,5 @@ class BuildTestAd extends StatelessWidget {
         ),
       ),
     );
-    ;
   }
 }
