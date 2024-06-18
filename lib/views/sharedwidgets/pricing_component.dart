@@ -1,14 +1,45 @@
 import 'package:flutter/material.dart';
+import '../../services/firestore_service.dart';
 
 class PricingComponent extends StatefulWidget {
+  const PricingComponent({super.key});
+
   @override
-  _PricingComponentState createState() => _PricingComponentState();
+  PricingComponentState createState() => PricingComponentState();
 }
 
-class _PricingComponentState extends State<PricingComponent> {
-  double _pageViews = 1;
+class PricingComponentState extends State<PricingComponent> {
+  double _pageViews = 1.0;
   double _price = 16.0;
   bool _yearlyBilling = false;
+  int _numberAssistants = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    final userStream = FirestoreService().getCurrentUserDataStream();
+    if (userStream != null) {
+      final snapshot = await userStream;
+      if (snapshot.exists) {
+        final userData = snapshot.data()!;
+        setState(() {
+          List<String> assistants =
+              userData['assistants']?.cast<String>() ?? [];
+          _numberAssistants = assistants.length;
+          if (_numberAssistants != 0) {
+            _pageViews = _numberAssistants.toDouble();
+            _updatePrice(_pageViews);
+          } else {
+            _updatePrice(1);
+          }
+        });
+      }
+    }
+  }
 
   void _updatePrice(double pageViews) {
     setState(() {
@@ -23,10 +54,7 @@ class _PricingComponentState extends State<PricingComponent> {
   void _toggleBillingMode() {
     setState(() {
       _yearlyBilling = !_yearlyBilling;
-      _price = (_pageViews / 1) * 16;
-      if (_yearlyBilling) {
-        _price *= 0.75; // Apply 25% discount
-      }
+      _updatePrice(_pageViews);
     });
   }
 
@@ -34,14 +62,13 @@ class _PricingComponentState extends State<PricingComponent> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      drawer: const Drawer(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              '${_pageViews.toInt()} Assistants',
+              'You have $_numberAssistants Assistants',
               style: const TextStyle(fontSize: 24),
             ),
             Slider(
@@ -54,40 +81,40 @@ class _PricingComponentState extends State<PricingComponent> {
                 _updatePrice(value);
               },
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Text(
               '\$${_price.toStringAsFixed(2)} / month',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Monthly Billing'),
+                const Text('Monthly Billing'),
                 Switch(
                   value: _yearlyBilling,
                   onChanged: (value) {
                     _toggleBillingMode();
                   },
                 ),
-                Text('Yearly Billing (25% discount)'),
+                const Text('Yearly Billing (25% discount)'),
               ],
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {},
-              child: Text('Start my trial'),
+              child: const Text('Pay Now'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             const Column(
               children: [
                 ListTile(
                   leading: Icon(Icons.check),
-                  title: Text('more accurate'),
+                  title: Text('More accurate'),
                 ),
                 ListTile(
                   leading: Icon(Icons.check),
-                  title: Text('scheduls reports'),
+                  title: Text('Schedules reports'),
                 ),
                 ListTile(
                   leading: Icon(Icons.check),

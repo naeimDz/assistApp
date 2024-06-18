@@ -1,9 +1,11 @@
 import 'package:assistantsapp/controllers/authentication_controller.dart';
+import 'package:assistantsapp/models/enum/role_enum.dart';
 import 'package:assistantsapp/providers/dark_mode.dart';
 import 'package:assistantsapp/services/firestore_service.dart';
 import 'package:assistantsapp/utils/routes/route_name_strings.dart';
 import 'package:assistantsapp/views/sharedwidgets/circle_avatar.dart';
 import 'package:assistantsapp/views/sharedwidgets/headline_with_row.dart';
+import 'package:assistantsapp/views/sharedwidgets/pricing_component.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -65,37 +67,53 @@ class SettingScreen extends StatelessWidget {
               Navigator.pushNamed(context, RouteNameStrings.editContactScreen);
             },
           ),
-          ListTile(
-            //trailing: Icon(Icons.arrow_forward),
-            title: const Text('im a assistant'),
-            leading: const Icon(Icons.assistant),
-            onTap: () {
-              String userRole = SharedPreferencesManager.getUserRole();
+          if (Role.enterprises.name != SharedPreferencesManager.getUserRole())
+            ListTile(
+              //trailing: Icon(Icons.arrow_forward),
 
-              if ("clients" == userRole) {
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: Text('Alert'),
-                      content: Text('you dont have access '),
-                      actions: <Widget>[
-                        TextButton(
-                          child: const Text('Close'),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ],
-                    );
-                  },
-                );
-              } else {
-                Navigator.pushNamed(
-                    context, RouteNameStrings.editAssistantProfileView);
-              }
-            },
-          ),
+              title: const Text('im a assistant'),
+              leading: const Icon(Icons.assistant),
+              onTap: () {
+                String userRole = SharedPreferencesManager.getUserRole();
+
+                if ("clients" == userRole) {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text('Alert'),
+                        content: Text('you dont have access '),
+                        actions: <Widget>[
+                          TextButton(
+                            child: const Text('Close'),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                } else {
+                  Navigator.pushNamed(
+                      context, RouteNameStrings.editAssistantProfileView);
+                }
+              },
+            ),
+          if (Role.enterprises.name == SharedPreferencesManager.getUserRole())
+            ListTile(
+              //trailing: Icon(Icons.arrow_forward),
+
+              title: const Text('Subscription'),
+              leading: const Icon(Icons.price_change),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PricingComponent(),
+                    ));
+              },
+            ),
           const Divider(),
           const HeadlineRow(
             headline: "Application settings",
