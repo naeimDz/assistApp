@@ -121,12 +121,13 @@ class AppointScreenState extends State<AppointScreen> {
             ),
           ),
           TimePickerSpinner(
-            is24HourMode: false,
+            alignment: Alignment.centerLeft,
+            is24HourMode: true,
             normalTextStyle: const TextStyle(fontSize: 18, color: Colors.black),
             highlightedTextStyle:
-                const TextStyle(fontSize: 24, color: Colors.blue),
-            spacing: 50,
-            itemHeight: 80,
+                const TextStyle(fontSize: 24, color: AppColors.primary),
+            spacing: 17,
+            itemHeight: 51,
             isForce2Digits: true,
             onTimeChange: (time) {
               setState(() {
