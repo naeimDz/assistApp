@@ -17,11 +17,13 @@ class DialogMakeAttendingAssistants extends StatefulWidget {
   final DateTime selectedDate;
   final String priceController;
   final Duration durationHours;
+  final DateTime selectedTime;
   const DialogMakeAttendingAssistants(
       {super.key,
       required this.selectedDate,
       required this.priceController,
-      required this.durationHours});
+      required this.durationHours,
+      required this.selectedTime});
 
   @override
   State<DialogMakeAttendingAssistants> createState() =>
@@ -111,7 +113,13 @@ class _DialogMakeAttendingAssistantsState
                       assistantId: assistant.id,
                       clientEmail: clientSelected!.email,
                       clientDisplayName: clientSelected.userName,
-                      dateTime: widget.selectedDate,
+                      dateTime: DateTime(
+                        widget.selectedDate.year,
+                        widget.selectedDate.month,
+                        widget.selectedDate.day,
+                        widget.selectedTime.hour,
+                        widget.selectedTime.minute,
+                      ),
                       duration: widget.durationHours,
                       price: double.parse(widget.priceController),
                       clientId: clientSelected.id,

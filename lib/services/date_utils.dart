@@ -135,4 +135,10 @@ class Utils {
   static DateTime nextWeek(DateTime w) {
     return w.add(const Duration(days: 7));
   }
+
+  static String timeFormat(DateTime dateTime) {
+    // Use the DateFormat class from the intl package to format the time
+    final DateFormat formatter = DateFormat('hh:mm a');
+    return formatter.format(dateTime);
+  }
 }

@@ -231,6 +231,7 @@ class AppointScreenState extends State<AppointScreen> {
               durationHours: _durationHours,
               priceController: _priceController.text,
               selectedDate: _selectedDate,
+              selectedTime: _selectedTime,
             ),
           );
           return;
@@ -241,6 +242,7 @@ class AppointScreenState extends State<AppointScreen> {
               durationHours: _durationHours,
               priceController: _priceController.text,
               selectedDate: _selectedDate,
+              selectedTime: _selectedTime,
             ),
           );
           return;

@@ -69,11 +69,22 @@ class AppointmentCard extends StatelessWidget {
                   ],
                 ),
                 const Spacer(),
-                Text(
-                  appointment.dateTime != null
-                      ? Utils.fullDayFormat(appointment.dateTime!)
-                      : 'No Date',
-                  style: const TextStyle(color: Colors.black54),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      appointment.dateTime != null
+                          ? Utils.fullDayFormat(appointment.dateTime!)
+                          : 'No Date',
+                      style: const TextStyle(color: Colors.black54),
+                    ),
+                    Text(
+                      appointment.dateTime != null
+                          ? Utils.timeFormat(appointment.dateTime!)
+                          : 'No Time',
+                      style: const TextStyle(color: Colors.black54),
+                    ),
+                  ],
                 ),
               ],
             ),
