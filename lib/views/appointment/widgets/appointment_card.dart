@@ -25,20 +25,20 @@ class AppointmentCard extends StatelessWidget {
                 radius: 45,
                 child: Center(
                   child: Text(
-                    "${appointment.duration?.inHours.toString() ?? '0'} H",
+                    "${appointment.duration.inHours.toString()} H",
                     style: const TextStyle(color: Colors.black54),
                   ),
                 ),
               ),
               title: Text(
-                appointment.assistantDisplayName ?? 'Unknown Assistant',
-                style: TextStyle(color: Colors.black87),
+                appointment.assistantDisplayName,
+                style: const TextStyle(color: Colors.black87),
               ),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Scheduled with ${appointment.clientDisplayName ?? 'Unknown Client'}",
+                    "Scheduled with ${appointment.clientDisplayName}",
                     style: const TextStyle(color: Colors.black38),
                   ),
                   if (appointment.enterpriseCreator != null)
@@ -73,15 +73,11 @@ class AppointmentCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      appointment.dateTime != null
-                          ? Utils.fullDayFormat(appointment.dateTime!)
-                          : 'No Date',
+                      Utils.fullDayFormat(appointment.dateTime),
                       style: const TextStyle(color: Colors.black54),
                     ),
                     Text(
-                      appointment.dateTime != null
-                          ? Utils.timeFormat(appointment.dateTime!)
-                          : 'No Time',
+                      Utils.timeFormat(appointment.dateTime),
                       style: const TextStyle(color: Colors.black54),
                     ),
                   ],
@@ -94,7 +90,7 @@ class AppointmentCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("${appointment.price?.round() ?? 0} DZD",
+                  Text("${appointment.price.round()} DZD",
                       style: const TextStyle(
                           color: Colors.grey,
                           fontSize: 16,
@@ -157,7 +153,7 @@ class AppointmentCard extends StatelessWidget {
   }
 
   void showCancellationDialog(BuildContext context) {
-    final TextEditingController _noteController =
+    final TextEditingController noteController =
         TextEditingController(text: "Reason for cancellation ");
     showDialog(
       context: context,
@@ -165,7 +161,7 @@ class AppointmentCard extends StatelessWidget {
         return AlertDialog(
           title: const Text("Cancel Appointment"),
           content: TextField(
-            controller: _noteController,
+            controller: noteController,
             maxLines: 5,
             minLines: 3,
             decoration:
@@ -179,7 +175,7 @@ class AppointmentCard extends StatelessWidget {
             TextButton(
               onPressed: () {
                 var role = SharedPreferencesManager.getUserRole();
-                var noteCancellation = _noteController.text;
+                var noteCancellation = noteController.text;
                 Map<String, dynamic> data = {
                   'cancellationReason': noteCancellation
                 };
@@ -217,9 +213,9 @@ class AppointmentCard extends StatelessWidget {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
+              const Text(
                 'Select a new status for the appointment:',
-                style: const TextStyle(fontSize: 16),
+                style: TextStyle(fontSize: 16),
               ),
               const SizedBox(height: 20),
               DropdownButton<AppointmentStatus>(
