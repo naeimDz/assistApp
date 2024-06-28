@@ -12,6 +12,7 @@ import 'package:assistantsapp/views/sharedwidgets/make_conversation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 import 'package:provider/provider.dart';
 import '../../utils/constants/app_colors.dart';
 import '../sharedwidgets/dialog_alert_list_assistants.dart';
@@ -27,8 +28,9 @@ class AppointScreenState extends State<AppointScreen> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _priceController =
       TextEditingController(text: "1000");
-  Duration _durationHours = Duration(hours: 3.toInt());
+  Duration _durationHours = Duration(hours: 3);
   DateTime _selectedDate = DateTime.now();
+  DateTime _selectedTime = DateTime.now();
 
   @override
   void dispose() {
@@ -54,6 +56,7 @@ class AppointScreenState extends State<AppointScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildDatePicker(),
+            _buildTimePicker(),
             _buildDurationSlider(),
             _buildDescriptionInput(),
             const SizedBox(height: 17),
@@ -73,10 +76,7 @@ class AppointScreenState extends State<AppointScreen> {
       width: double.infinity,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            AppColors.primary,
-            AppColors.secondary,
-          ],
+          colors: [AppColors.primary, AppColors.secondary],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -100,9 +100,41 @@ class AppointScreenState extends State<AppointScreen> {
                   _selectedDate = date;
                 });
               },
-            )
+            ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildTimePicker() {
+    return Padding(
+      padding: const EdgeInsets.all(17.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            "Select Time",
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          TimePickerSpinner(
+            is24HourMode: false,
+            normalTextStyle: const TextStyle(fontSize: 18, color: Colors.black),
+            highlightedTextStyle:
+                const TextStyle(fontSize: 24, color: Colors.blue),
+            spacing: 50,
+            itemHeight: 80,
+            isForce2Digits: true,
+            onTimeChange: (time) {
+              setState(() {
+                _selectedTime = time;
+              });
+            },
+          ),
+        ],
       ),
     );
   }
@@ -114,7 +146,7 @@ class AppointScreenState extends State<AppointScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Duration: (${_durationHours.inHours} hours) ",
+            "Duration: (${_durationHours.inHours} hours)",
             style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -147,7 +179,7 @@ class AppointScreenState extends State<AppointScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            "price",
+            "Price",
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -282,7 +314,13 @@ class AppointScreenState extends State<AppointScreen> {
       assistantId: assistant.id,
       clientEmail: currentUser!.email!,
       clientDisplayName: currentUser.displayName!,
-      dateTime: _selectedDate,
+      dateTime: DateTime(
+        _selectedDate.year,
+        _selectedDate.month,
+        _selectedDate.day,
+        _selectedTime.hour,
+        _selectedTime.minute,
+      ),
       duration: _durationHours,
       price: double.parse(_priceController.text),
       clientId: currentUser.uid,
@@ -290,6 +328,7 @@ class AppointScreenState extends State<AppointScreen> {
     );
 
     AppointmentController().createAppointme(appointment: newAppointment);
+
     return assistant.lastName;
   }
 }
