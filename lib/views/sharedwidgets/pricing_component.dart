@@ -9,11 +9,12 @@ class PricingComponent extends StatefulWidget {
 }
 
 class PricingComponentState extends State<PricingComponent> {
-  double _pageViews = 1.0;
-  double _priceSubscription = 1600.0;
+  double _numberClients = 10.0;
+  double _priceSubscription = 25000.00;
   double _price = 1600.0;
   bool _yearlyBilling = false;
-  int _numberAssistants = 1;
+  int _numberAssistants = 10;
+  double discount = 0.8; //20% discount
 
   @override
   void initState() {
@@ -31,11 +32,11 @@ class PricingComponentState extends State<PricingComponent> {
           List<String> assistants =
               userData['assistants']?.cast<String>() ?? [];
           _numberAssistants = assistants.length;
-          if (_numberAssistants != 0) {
-            _pageViews = _numberAssistants.toDouble();
-            _updatePrice(_pageViews);
+          if (_numberAssistants > 10) {
+            _numberClients = _numberAssistants.toDouble();
+            _updatePrice(_numberClients);
           } else {
-            _updatePrice(1);
+            _updatePrice(10);
           }
         });
       }
@@ -44,10 +45,10 @@ class PricingComponentState extends State<PricingComponent> {
 
   void _updatePrice(double pageViews) {
     setState(() {
-      _pageViews = pageViews;
-      _price = (_pageViews / 1) * _priceSubscription;
+      _numberClients = pageViews;
+      _price = (_numberClients / 50) * _priceSubscription;
       if (_yearlyBilling) {
-        _price *= 0.75; // Apply 25% discount
+        _price *= discount; // Apply discount
       }
     });
   }
@@ -55,7 +56,7 @@ class PricingComponentState extends State<PricingComponent> {
   void _toggleBillingMode() {
     setState(() {
       _yearlyBilling = !_yearlyBilling;
-      _updatePrice(_pageViews);
+      _updatePrice(_numberClients);
     });
   }
 
@@ -69,15 +70,15 @@ class PricingComponentState extends State<PricingComponent> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'You have $_numberAssistants Assistants',
+              'You have $_numberAssistants Clients',
               style: const TextStyle(fontSize: 24),
             ),
             Slider(
-              value: _pageViews,
-              min: 1,
-              max: 16,
-              divisions: 15,
-              label: _pageViews.round().toString(),
+              value: _numberClients,
+              min: 10,
+              max: 200,
+              divisions: 19,
+              label: _numberClients.round().toString(),
               onChanged: (double value) {
                 _updatePrice(value);
               },
@@ -98,7 +99,7 @@ class PricingComponentState extends State<PricingComponent> {
                     _toggleBillingMode();
                   },
                 ),
-                const Text('Yearly Billing (25% discount)'),
+                const Text('Yearly Billing (20% discount)'),
               ],
             ),
             const SizedBox(height: 20),
